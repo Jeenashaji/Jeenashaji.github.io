@@ -128,7 +128,7 @@ html{
 }
 
 #home .content h1::after{
-  content: "Darkcode";
+  content: "Jeena";
   animation: textanim 10s linear infinite;
 }
 
@@ -140,7 +140,7 @@ html{
     content: "A Designer";
   }
   75%{
-    content: "A Youtuber";
+    content: "Problem Solver";
   }
 }
 
@@ -928,3 +928,4 @@ section.dark .project-details {
 section.dark .project-content h2 {
   color: #f1f1f1;
 }
+
