@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Grave</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0906;
+      --surface: #100e0b;
+      --text: #c9b99a;
+      --text-dim: #6e5f4a;
+      --text-bright: #e8d9c0;
+      --accent: #7a6248;
+      --crack: #1e1a14;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.125rem;
+      line-height: 1.95;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.35;
+    }
+
+    .page-wrapper {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Header */
+    header {
+      padding: 7rem 0 4rem;
+      opacity: 0;
+      animation: fadeUp 1.4s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.8rem, 8vw, 4.5rem);
+      color: var(--text-bright);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .title-rule {
+      width: 3rem;
+      height: 1px;
+      background: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Decorative grave illustration */
+    .grave-illustration {
+      margin: 0 0 5rem;
+      opacity: 0;
+      animation: fadeUp 1.4s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .grave-illustration svg {
+      width: 100%;
+      max-width: 220px;
+      opacity: 0.18;
+      display: block;
+    }
+
+    /* Main content */
+    .prose {
+      opacity: 0;
+      animation: fadeUp 1.4s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    p {
+      margin-bottom: 1.6rem;
+      color: var(--text);
+      font-size: 1.08rem;
+    }
+
+    /* The "you" paragraphs — slightly warmer */
+    p.intimate {
+      color: var(--text-bright);
+      font-style: italic;
+    }
+
+    /* Reveal section */
+    .reveal {
+      margin: 3.5rem 0;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--crack);
+      border-bottom: 1px solid var(--crack);
+    }
+
+    .reveal p {
+      font-size: 1.15rem;
+      line-height: 2.1;
+    }
+
+    .reveal-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      font-weight: 300;
+      color: var(--text-bright);
+      letter-spacing: 0.04em;
+      margin: 2rem 0;
+      display: block;
+    }
+
+    /* Short punching lines */
+    p.punch {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 300;
+      color: var(--text-bright);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.6rem;
+      line-height: 1.6;
+    }
+
+    /* The final devastating line */
+    .final-line {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--crack);
+    }
+
+    /* Divider */
+    .divider {
+      text-align: center;
+      color: var(--accent);
+      margin: 2.5rem 0;
+      letter-spacing: 0.4em;
+      font-size: 0.6rem;
+    }
+
+    footer {
+      padding: 6rem 0 4rem;
+      opacity: 0.3;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Scroll fade-in for paragraphs */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 1rem; }
+      header { padding: 4rem 0 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header>
+      <h1 class="title">The Grave</h1>
+      <div class="title-rule"></div>
+    </header>
+
+    <div class="grave-illustration">
+      <svg viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Gravestone -->
+        <rect x="60" y="40" width="80" height="110" rx="40" ry="10" fill="#c9b99a"/>
+        <!-- Crack -->
+        <path d="M100 55 L96 90 L102 120 L99 150" stroke="#0a0906" stroke-width="1.5" fill="none"/>
+        <!-- Base -->
+        <rect x="45" y="148" width="110" height="14" rx="2" fill="#c9b99a"/>
+        <!-- Ground -->
+        <rect x="20" y="162" width="160" height="8" rx="3" fill="#6e5f4a" opacity="0.5"/>
+        <!-- Leaves -->
+        <ellipse cx="72" cy="160" rx="10" ry="4" fill="#3a3020" transform="rotate(-20 72 160)"/>
+        <ellipse cx="130" cy="158" rx="8" ry="3" fill="#3a3020" transform="rotate(15 130 158)"/>
+        <ellipse cx="90" cy="163" rx="12" ry="3.5" fill="#2e2818" transform="rotate(-5 90 163)"/>
+        <ellipse cx="115" cy="164" rx="9" ry="3" fill="#3a3020" transform="rotate(10 115 164)"/>
+        <!-- Hands in soil -->
+        <path d="M55 185 Q50 178 48 170" stroke="#c9b99a" stroke-width="1.2" fill="none" opacity="0.6"/>
+        <path d="M60 187 Q57 179 56 171" stroke="#c9b99a" stroke-width="1.2" fill="none" opacity="0.6"/>
+        <path d="M145 185 Q150 178 152 170" stroke="#c9b99a" stroke-width="1.2" fill="none" opacity="0.6"/>
+        <path d="M140 187 Q143 179 144 171" stroke="#c9b99a" stroke-width="1.2" fill="none" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <article class="prose">
+
+      <p class="fade-in">In my dreams these nights, I come back to the same place.</p>
+
+      <p class="fade-in">I sit with my back against a gravestone, knees pulled to my chest, and I cry. Not the kind of crying that ends. The kind that just keeps going, long after your throat goes raw and your eyes stop making tears and all that's left is the shaking.</p>
+
+      <p class="fade-in">The grave is abandoned. Leaves rotting against the stone, a crack running through the middle like something gave up trying to hold itself together. No flowers. No light. No sign that anyone has stood here recently, or maybe ever.</p>
+
+      <p class="fade-in">I don't know whose grave it is.</p>
+
+      <p class="fade-in intimate">But I know I have always known you.</p>
+
+      <p class="fade-in">I think about who you were. I have to. It is the only way I can stay here without losing my mind entirely. So I build you from what I remember — or what I think I remember, or what I need to believe was real.</p>
+
+      <p class="fade-in intimate">You were someone who laughed easily. Someone who trusted without needing a reason to. Someone who believed in love not as an idea but as something physical, something you could feel arriving. You woke up and thought tomorrow was coming and meant it. You held people and let yourself be held and never once thought to ask how long it would last.</p>
+
+      <p class="fade-in intimate">You were loved properly. Deeply. Without question.</p>
+
+      <p class="fade-in">I hold onto that.</p>
+      <p class="fade-in">Because it is the only way I can sit here without breaking completely.</p>
+
+      <div class="divider fade-in">· · ·</div>
+
+      <p class="fade-in">I think about how you waited.</p>
+
+      <p class="fade-in">I think about the specific cruelty of that — waiting for someone who doesn't come. Not the clean grief of knowing they're gone, but the prolonged kind. The kind where every morning is a door you open expecting someone to be on the other side, and every morning it's just the same empty room. And you keep opening it anyway. You keep believing, because what else do you do with a love that size — where do you put it, if not toward the person it was meant for?</p>
+
+      <p class="fade-in punch">No one came back.</p>
+
+      <p class="fade-in">And the worst of it is not that they left. It is that you had given them everything before they did. Not carefully, not in pieces — all of it, without holding anything back, the way you give when you still believe giving is safe. Your trust. Your time. The quiet parts of yourself you had never shown anyone else. You emptied yourself for people who were already on their way out the door. And when they left, they did not just take themselves. They took everything you had poured into them. Left you with nothing to return to. Not even the person you were before you loved them.</p>
+
+      <p class="fade-in">And I think about what that must have done to you. Not all at once — it never happens all at once. But slowly. The way hope doesn't die so much as thin out, day by day, until one morning you reach for it and it has no weight anymore. Until even breathing felt like waiting.</p>
+
+      <p class="fade-in">I cry for you.</p>
+
+      <p class="fade-in">For everything you must have felt when the world stopped answering. For the way trust must have quietly caved in on itself. For the dreams that had nowhere left to go. For the love you kept offering long after anyone was there to take it.</p>
+
+      <div class="divider fade-in">· · ·</div>
+
+      <p class="fade-in">I cannot leave you here.</p>
+
+      <p class="fade-in">My hands press into the ground beside the grave, fingers going past the dead leaves, into the cold underneath. I grip. Hard. The cold moves up through my palms and into my wrists and I hold on because this is real — the resistance of it, the earth pushing back, the certainty of something that does not shift or leave or stop answering.</p>
+
+      <p class="fade-in">It is the only thing that feels certain.</p>
+
+      <p class="fade-in">And still, I do not turn back.</p>
+
+      <p class="fade-in">Because if I turn back, I might lose you completely. Because if I look too closely, I might have to accept that no one came for you. That no one stayed the way I am staying now.</p>
+
+      <p class="fade-in">So I stay instead.</p>
+
+      <p class="fade-in">Night after night, I return to the same place. The same grave. The same unbearable ache that feels like love that was never allowed to finish speaking. I press my hands into the soil and I hold on and I tell myself it is devotion. I tell myself that staying is the only love I have left to give.</p>
+
+      <div class="divider fade-in">· · ·</div>
+
+      <p class="fade-in">Until one night, something shifts.</p>
+
+      <p class="fade-in">The weight of it changes. It is no longer just sadness. It becomes recognition — quiet, edgeless, the kind that doesn't announce itself. As if something in me has already known this truth for too long and has simply grown tired of keeping it back.</p>
+
+      <p class="fade-in">My breath breaks. My grip loosens slightly from the ground, like something inside me is finally giving way.</p>
+
+      <p class="fade-in punch">Slowly, I turn.</p>
+      <p class="fade-in punch">Not fully.</p>
+      <p class="fade-in punch">Not yet.</p>
+      <p class="fade-in punch">Just enough to see the name on the stone.</p>
+
+      <div class="reveal fade-in">
+        <span class="reveal-line">And everything stops.</span>
+        <p>It is mine.</p>
+        <p>And suddenly —</p>
+        <p>there was never a "you."</p>
+        <p>There was never someone who was loved the way I thought I was loving. There was never laughter waiting somewhere outside of me, never hands that held me the way I imagined, never a return that was coming back for me.</p>
+        <p>All of it — the hope, the warmth, the belief that someone stayed somewhere — it was what I gave myself in fragments, and lost in silence.</p>
+        <p>The grave was not where someone I loved was left behind.</p>
+        <p>It was where I kept placing myself, every night, without realizing.</p>
+        <p>My hands were not holding the earth to stay close to you.</p>
+        <p>They were holding it to keep myself from disappearing completely.</p>
+        <p>And the refusal to turn back was not devotion.</p>
+        <p punch style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text-bright);letter-spacing:0.02em;">It was delay.</p>
+        <p punch style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text-bright);letter-spacing:0.02em;">The life I could not end myself.</p>
+      </div>
+
+      <p class="fade-in">Because even then, something in me knew: if I turned fully around, there would be nothing left of the person I thought I was waiting for. Only me. The one who had believed. The one who had trusted. The one who had held love like it was the most natural thing in the world and never thought to protect herself from giving it.</p>
+
+      <p class="fade-in intimate">She deserved someone who came back.</p>
+      <p class="fade-in intimate">She just never got it.</p>
+
+      <div class="divider fade-in">· · ·</div>
+
+      <p class="fade-in">I face the grave fully now.</p>
+
+      <p class="fade-in">The crack in the stone. The rotting leaves. The silence that has always been here, in every version of this dream, in every version of my life that led to this place.</p>
+
+      <p class="fade-in">My hand loosens from the ground.</p>
+
+      <p class="fade-in">Not out of peace. Not because anything has healed. But because the mind, when it has carried something long enough, arrives at a place beyond despair — a stillness. The moment after the last resistance gives way. The moment when surrender is no longer a choice but simply what remains.</p>
+
+      <p class="fade-in">Like finally standing at the edge of something I have been approaching in every version of my life I never had the courage to name.</p>
+
+      <p class="fade-in">And in that moment, the dream no longer feels like a place I return to.</p>
+      <p class="fade-in">It feels like a place I finally understand.</p>
+
+      <p class="fade-in">Not out of fear.</p>
+      <p class="fade-in">Not out of grief.</p>
+      <p class="fade-in">But because something inside me has already accepted it.</p>
+
+      <p class="fade-in">That there was never anyone coming back.</p>
+      <p class="fade-in punch">That there was never a "you."</p>
+      <p class="fade-in">Only the silence I kept surviving inside.</p>
+
+      <p class="fade-in">I turn fully around.</p>
+
+      <p class="fade-in">And as I do, it is not the grave that changes.</p>
+      <p class="fade-in">It is me.</p>
+
+      <p class="fade-in">And for the first time, I do not reach for the ground again.</p>
+      <p class="fade-in punch">I simply stop holding on.</p>
+
+      <span class="final-line fade-in">This was never a dream I planned to wake up from.</span>
+
+    </article>
+
+    <footer>
+      <div class="page-wrapper">
+        &nbsp;
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
