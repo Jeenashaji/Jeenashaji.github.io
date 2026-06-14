@@ -3,951 +3,2624 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personal webiste</title>
-  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
-  <script src="js/scripts.js"></script>
+  <title>Jeena Shaji | AI Engineer & HCI Specialist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dim: #00a8cc;
+      --secondary: #ff6b6b;
+      --accent: #c084fc;
+      --bg-dark: #0a0a0f;
+      --bg-card: #111118;
+      --bg-card-hover: #1a1a24;
+      --bg-light: #0f0f16;
+      --text-primary: #f0f0f5;
+      --text-secondary: #a0a0b0;
+      --text-muted: #6b6b7b;
+      --border: #1e1e2e;
+      --border-light: #2a2a3e;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #c084fc 50%, #ff6b6b 100%);
+      --gradient-2: linear-gradient(90deg, #00d4ff, #c084fc);
+      --gradient-3: linear-gradient(135deg, #ff6b6b, #fbbf24);
+      --shadow-glow: 0 0 40px rgba(0, 212, 255, 0.15);
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    #canvas-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .navbar.scrolled {
+      padding: 0.75rem 2rem;
+      background: rgba(10, 10, 15, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      letter-spacing: -1px;
+    }
+    .logo span { font-weight: 400; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 0;
+      width: 0; height: 2px;
+      background: var(--gradient-2);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--primary); }
+    .nav-links a.active::after { width: 100%; }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 6rem 2rem 4rem;
+    }
+    .hero-container {
+      max-width: 1400px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero-content h1 .gradient-text {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hero-subtitle .typing-cursor {
+      display: inline-block;
+      width: 3px; height: 1.2em;
+      background: var(--primary);
+      animation: blink 1s infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+    .hero-description {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--gradient-1);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(0, 212, 255, 0.05);
+    }
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .hero-image-container {
+      position: relative;
+      width: 380px;
+      height: 380px;
+    }
+    .hero-image {
+      width: 100%; height: 100%;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      object-fit: cover;
+      border: 3px solid var(--border-light);
+      box-shadow: var(--shadow-glow);
+      animation: morph 8s ease-in-out infinite;
+      transition: all 0.5s;
+    }
+    @keyframes morph {
+      0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+      50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+      75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+    }
+    .hero-image-container::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      border: 2px dashed var(--primary);
+      opacity: 0.3;
+      animation: morph 8s ease-in-out infinite reverse, spin 20s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .floating-badge {
+      position: absolute;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-card);
+      animation: float 6s ease-in-out infinite;
+    }
+    .floating-badge i { color: var(--primary); }
+    .badge-1 { top: 10%; right: -10%; animation-delay: 0s; }
+    .badge-2 { bottom: 15%; left: -15%; animation-delay: 2s; }
+    .badge-3 { top: 50%; right: -20%; animation-delay: 4s; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    section { padding: 6rem 2rem; position: relative; }
+    .section-container { max-width: 1400px; margin: 0 auto; }
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      background: rgba(0, 212, 255, 0.05);
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .about-image-wrapper { position: sticky; top: 100px; }
+    .about-image {
+      width: 100%;
+      border-radius: 20px;
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-card);
+    }
+    .about-content h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+    .about-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .about-content strong { color: var(--text-primary); }
+    .about-highlights {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .highlight-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      transition: all 0.3s;
+    }
+    .highlight-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-glow);
+    }
+    .highlight-card i {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .highlight-card h4 { font-size: 1rem; margin-bottom: 0.3rem; }
+    .highlight-card p {
+      font-size: 0.85rem;
+      margin: 0;
+      color: var(--text-muted);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .skill-category {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    .skill-category:hover {
+      border-color: var(--border-light);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card);
+    }
+    .skill-category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .skill-category-header i {
+      font-size: 1.5rem;
+      color: var(--primary);
+      width: 40px; height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 212, 255, 0.1);
+      border-radius: 10px;
+    }
+    .skill-category-header h3 { font-size: 1.2rem; font-weight: 700; }
+    .skill-item { margin-bottom: 1.2rem; }
+    .skill-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .skill-info span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+    }
+    .skill-info span:first-child i { color: var(--primary); font-size: 0.85rem; }
+    .skill-bar-bg {
+      height: 6px;
+      background: var(--bg-light);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--gradient-2);
+      position: relative;
+      transition: width 1.5s ease-out;
+      width: 0;
+    }
+    .skill-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 20px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-20px); }
+      100% { transform: translateX(20px); }
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: var(--gradient-2);
+      opacity: 0.3;
+    }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    .timeline-item:nth-child(even) .timeline-content { grid-column: 2; }
+    .timeline-item:nth-child(even) .timeline-date { grid-column: 1; text-align: right; }
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px; height: 16px;
+      background: var(--bg-dark);
+      border: 3px solid var(--primary);
+      border-radius: 50%;
+      z-index: 2;
+      top: 0;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    }
+    .timeline-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .timeline-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gradient-2);
+      border-radius: 16px 16px 0 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .timeline-content:hover::before { opacity: 1; }
+    .timeline-content:hover {
+      border-color: var(--border-light);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card);
+    }
+    .timeline-date {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding-top: 0.5rem;
+    }
+    .timeline-content h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .timeline-content h3 i { color: var(--primary); font-size: 1.1rem; }
+    .timeline-content .company {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .timeline-content .company i { color: var(--accent); }
+    .timeline-content ul {
+      list-style: none;
+      padding: 0;
+    }
+    .timeline-content ul li {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .timeline-content ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+    }
+    .timeline-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--primary);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s;
+      position: relative;
+      cursor: pointer;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover::before { opacity: 1; }
+    .project-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-light);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .project-image {
+      height: 200px;
+      background: linear-gradient(135deg, var(--bg-light), var(--bg-card));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--primary);
+      position: relative;
+      overflow: hidden;
+    }
+    .project-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.1), transparent);
+    }
+    .project-body { padding: 1.8rem; }
+    .project-duration {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .project-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .project-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.7;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .project-tag {
+      padding: 0.3rem 0.8rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .project-links { display: flex; gap: 1rem; }
+    .project-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.3s;
+    }
+    .project-link:hover { color: var(--accent); }
+    .award-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(255, 193, 7, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+
+    .learning-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .learning-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .learning-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .learning-card:hover::before { opacity: 1; }
+    .learning-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-glow);
+    }
+    .learning-icon {
+      width: 60px; height: 60px;
+      background: rgba(0, 212, 255, 0.1);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+    }
+    .learning-card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .learning-provider {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .learning-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    .learning-progress { margin-bottom: 1.5rem; }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .progress-header span:first-child { color: var(--text-secondary); }
+    .progress-header span:last-child { color: var(--primary); font-weight: 600; }
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--gradient-2);
+      transition: width 1.5s ease-out;
+    }
+    .learning-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .learning-topic {
+      padding: 0.3rem 0.7rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.05), transparent);
+      border-radius: 50%;
+      transform: translate(30%, 30%);
+    }
+    .service-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-glow);
+    }
+    .service-icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(192, 132, 252, 0.1));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+    }
+    .service-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+    .service-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .service-metric {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 1rem;
+      padding: 0.4rem 1rem;
+      background: rgba(74, 222, 128, 0.1);
+      color: var(--success);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+    .leadership-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    .leadership-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card);
+    }
+    .leadership-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .leadership-icon {
+      width: 50px; height: 50px;
+      background: rgba(192, 132, 252, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: var(--accent);
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+    .leadership-title h3 { font-size: 1.2rem; margin-bottom: 0.2rem; }
+    .leadership-title span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .leadership-card p, .leadership-card ul {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    .leadership-card ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 0.5rem;
+    }
+    .leadership-card ul li {
+      padding-left: 1.2rem;
+      position: relative;
+      margin-bottom: 0.4rem;
+    }
+    .leadership-card ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+    .leadership-links {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .leadership-links a {
+      padding: 0.4rem 1rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .leadership-links a:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: var(--primary);
+    }
+
+    .footer {
+      background: var(--bg-light);
+      border-top: 1px solid var(--border);
+      padding: 4rem 2rem 2rem;
+    }
+    .footer-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-brand p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+    .footer-social a {
+      width: 40px; height: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .footer-social a:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+    .footer-col h4 {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.8rem; }
+    .footer-col ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+    .footer-col ul li a:hover { color: var(--primary); }
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-bottom p { color: var(--text-muted); font-size: 0.85rem; }
+    .footer-bottom .status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--success);
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .go-top {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      width: 50px; height: 50px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      color: var(--primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      z-index: 999;
+      box-shadow: var(--shadow-card);
+    }
+    .go-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .go-top:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalIn 0.4s ease-out;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      width: 40px; height: 40px;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+    .modal-close:hover {
+      background: var(--secondary);
+      color: #fff;
+      border-color: var(--secondary);
+    }
+    .modal-body { padding: 3rem; }
+    .modal-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .modal-header .modal-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .modal-section { margin-bottom: 2rem; }
+    .modal-section h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .modal-section p, .modal-section ul {
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .modal-section ul { list-style: none; padding: 0; }
+    .modal-section ul li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.6rem;
+    }
+    .modal-section ul li::before {
+      content: '->';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+    }
+    .modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .modal-tags span {
+      padding: 0.3rem 0.8rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .modal-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .modal-link:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 1024px) {
+      .hero-container { grid-template-columns: 1fr; text-align: center; }
+      .hero-content { order: 2; }
+      .hero-visual { order: 1; }
+      .hero-stats { justify-content: center; }
+      .hero-buttons { justify-content: center; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-image-wrapper { position: relative; top: 0; max-width: 400px; margin: 0 auto; }
+      .timeline::before { left: 20px; }
+      .timeline-item { grid-template-columns: 1fr; gap: 1rem; padding-left: 50px; }
+      .timeline-item:nth-child(even) .timeline-content { grid-column: 1; }
+      .timeline-item:nth-child(even) .timeline-date { grid-column: 1; text-align: left; }
+      .timeline-dot { left: 20px; transform: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 70px; left: 0; right: 0;
+        background: rgba(10, 10, 15, 0.98);
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        transform: translateY(-150%);
+        transition: transform 0.3s;
+      }
+      .nav-links.active { transform: translateY(0); }
+      .menu-toggle { display: block; }
+      .hero-image-container { width: 280px; height: 280px; }
+      .floating-badge { display: none; }
+      .about-highlights { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="inner-width">
-      <!-- <a href="/" class="logo"></a> -->
-      <button class="menu-toggler">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <div class="navbar-menu">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#education">Education</a>
-        <a href="#works">Featured Projects</a>
-        <a href="#contact">Leadership & Involvement</a>
-        <!-- <a href="#contact">Contact</a> -->
-      </div>
+  <canvas id="canvas-bg"></canvas>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">JS<span>.dev</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#learning">Learning</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#leadership">Leadership</a></li>
+      </ul>
     </div>
   </nav>
 
-  <!-- Home -->
-  <section id="home">
-    <div class="inner-width">
-      <div class="content">
-        <h1>Hi I'm </h1>
-        <div class="sm">
-          <a href="#" class="fab fa-facebook-f"></a>
-          <a href="#" class="fab fa-twitter"></a>
-          <a href="#" class="fab fa-instagram"></a>
-          <a href="#" class="fab fa-linkedin-in"></a>
-          <a href="#" class="fab fa-youtube"></a>
+  <section class="hero" id="home">
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-subtitle">
+          <span id="typewriter"></span><span class="typing-cursor"></span>
         </div>
-        <div class="buttons">
-          <a href="https://www.linkedin.com/in/jeena-shaji-19020716a/">Contact me</a>
-          <a href="https://drive.google.com/file/d/1TG76mToDo8Bmh5W3gK05MWX1d5HGGfGI/view?usp=sharing">Download CV</a>
+        <h1>Hi, I'm <span class="gradient-text">Jeena Shaji</span></h1>
+        <p class="hero-description">
+          AI Engineer & HCI Specialist crafting intelligent systems that bridge human intuition with machine intelligence. 
+          Currently pursuing Master's in Socio-Technical Systems at University of Oldenburg, with focus on autonomous systems and human-AI collaboration.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">5+</div>
+            <div class="stat-label">Years Exp</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">16+</div>
+            <div class="stat-label">Projects</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Research Roles</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">2TB+</div>
+            <div class="stat-label">Daily Data</div>
+          </div>
+        </div>
+        <div class="hero-buttons">
+          <a href="https://www.linkedin.com/in/jeena-shaji-19020716a/" class="btn btn-primary" target="_blank">
+            <i class="fab fa-linkedin"></i> Connect on LinkedIn
+          </a>
+          <a href="https://drive.google.com/file/d/1TG76mToDo8Bmh5W3gK05MWX1d5HGGfGI/view?usp=sharing" class="btn btn-outline" target="_blank">
+            <i class="fas fa-download"></i> Download CV
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image-container">
+          <img src="images/jeena.png" alt="Jeena Shaji" class="hero-image">
+          <div class="floating-badge badge-1">
+            <i class="fas fa-robot"></i> AI & Deep Learning
+          </div>
+          <div class="floating-badge badge-2">
+            <i class="fas fa-brain"></i> HCI Research
+          </div>
+          <div class="floating-badge badge-3">
+            <i class="fas fa-cloud"></i> Cloud Architecture
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Home -->
   <section id="about">
-    <div class="inner-width">
-      <h1 class="section-title">About</h1>
-      <div class="about-content">
-        <img src="images/jeena.png" alt="" class="about-pic">
-        <div class="about-text">
-          <h2>Hi! I'm Jeena</h2>
-          <h3>
-            <span>Data Analyst</span>
-            <span>Machine Learning Engineer</span>
-            <span>Human–Computer Interaction Specialist</span>
-          </h3>
-          <p>Hi, I’m <strong>Jeena</strong> — a student pursuing my <strong>Master’s in Engineering of Socio-Technical Systems</strong> with a specialization in <strong>Human–Computer Interaction (HCI)</strong>.</p>
-
-  <p>My journey into this field began with a simple curiosity — how do humans truly perceive technology across different domains? In the early days, human–computer interaction was defined by screens, buttons, and user interfaces — the world of UI/UX. But today, we’ve moved far beyond that. Technology no longer just lives in software; it breathes through hardware, sensors, and intelligent systems that respond, adapt, and even feel intuitive.</p>
-
-  <p>We now live in an era of <strong>cyber-physical systems</strong> and <strong>large language models (LLMs)</strong> — technologies that can communicate with people in natural, human ways. What fascinates me most is how even those unfamiliar with the complex science behind these systems can interact with them effortlessly — just by typing a few words. That’s the beauty of thoughtful design and intelligent interaction.</p>
-
-  <p>My technical foundation was built during my <strong>Bachelor’s in Computer Science and Engineering</strong>, where I learned the essentials — data structures, algorithms, object-oriented design, and networking. My three years at <strong>TCS</strong> deepened this foundation, giving me hands-on experience in <strong>IBM Maximo</strong> (asset management systems), data engineering, and tools like <strong>Python, SQL, AWS, Power BI</strong>, and <strong>advanced analytics</strong>.</p>
-
-  <p>Over time, I found my true passion — leveraging <strong>AI, deep learning, and large language models</strong> to design intelligent systems that understand, assist, and empower humans. With my background in HCI, I focus on creating experiences that merge usability, psychology, and empathy — crafting technology that feels not just functional, but <em>human</em>.</p>
-
-  <p>Looking ahead, I aspire to innovate in areas like <strong>energy, logistics, and the automotive industry</strong>, especially in <strong>autonomous systems and self-driving cars</strong>. My goal is simple yet profound: to build a future where <strong>machine intelligence enhances human potential</strong> — where technology works for people, not the other way around.</p>
-          </p>
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">01 // About Me</span>
+        <h2 class="section-title">Engineering Intelligence</h2>
+        <p class="section-subtitle">From data pipelines to human-centered AI — building technology that understands people.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-image-wrapper fade-in">
+          <img src="images/jeena.png" alt="Jeena Shaji" class="about-image">
         </div>
-      </div>
-
-<!-- Skills Section -->
-<section id="skills" class="light">
-  <div class="inner-width">
-    <h1 class="section-title">Skills & Competencies</h1>
-    
-    <!-- Skills Grid -->
-    <div class="skills-grid">
-
-      <!-- Programming Languages -->
-      <div class="skill-category">
-        <div class="category-header">
-          <i class="icon fas fa-code"></i>
-          <h3>Programming</h3>
-        </div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-python"></i> Python</span><span>90%</span></div><div class="skill-bar" style="width:90%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-database"></i> SQL</span><span>95%</span></div><div class="skill-bar" style="width:95%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-java"></i> Java</span><span>75%</span></div><div class="skill-bar" style="width:75%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-r-project"></i> R Programming</span><span>70%</span></div><div class="skill-bar" style="width:70%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-code"></i> C++</span><span>65%</span></div><div class="skill-bar" style="width:65%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-bolt"></i> PySpark</span><span>60%</span></div><div class="skill-bar" style="width:60%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-square-root-alt"></i> Pandas/Numpy</span><span>92%</span></div><div class="skill-bar" style="width:92%;"></div></div>
-      </div>
-
-      <!-- Data Engineering -->
-      <div class="skill-category">
-        <div class="category-header">
-          <i class="icon fas fa-server"></i>
-          <h3>Data & Analytics</h3>
-        </div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-aws"></i> AWS (Glue/Redshift)</span><span>85%</span></div><div class="skill-bar" style="width:85%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-wind"></i> Apache Airflow</span><span>80%</span></div><div class="skill-bar" style="width:80%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-chart-pie"></i> Power BI</span><span>88%</span></div><div class="skill-bar" style="width:88%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-gitlab"></i> Machine Learning</span><span>83%</span></div><div class="skill-bar" style="width:83%;"></div></div>
-        
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-gitlab"></i> GitLab CI/CD</span><span>83%</span></div><div class="skill-bar" style="width:83%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-docker"></i> Docker</span><span>78%</span></div><div class="skill-bar" style="width:78%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-plug"></i> MQTT/Telegraf</span><span>75%</span></div><div class="skill-bar" style="width:75%;"></div></div>
-      </div>
-
-      <!-- Tools & DevOps -->
-      <!-- <div class="skill-category">
-        <div class="category-header">
-          <i class="icon fas fa-tools"></i>
-          <h3>Tools & DevOps</h3>
-        </div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-gitlab"></i> GitLab CI/CD</span><span>83%</span></div><div class="skill-bar" style="width:83%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fab fa-docker"></i> Docker</span><span>78%</span></div><div class="skill-bar" style="width:78%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-plug"></i> MQTT/Telegraf</span><span>75%</span></div><div class="skill-bar" style="width:75%;"></div></div>
-      </div> -->
-
-      <!-- Organizational & Soft Skills -->
-      <div class="skill-category">
-        <div class="category-header">
-          <i class="icon fas fa-users-cog"></i>
-          <h3>Organizational Skills</h3>
-        </div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-tasks"></i> Project Management</span><span>85%</span></div><div class="skill-bar" style="width:85%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-comments"></i> Communication</span><span>90%</span></div><div class="skill-bar" style="width:90%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-lightbulb"></i> Problem Solving</span><span>88%</span></div><div class="skill-bar" style="width:88%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-users"></i> Decision Making</span><span>92%</span></div><div class="skill-bar" style="width:92%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-users"></i> Requirement Gathering</span><span>92%</span></div><div class="skill-bar" style="width:92%;"></div></div>
-        <div class="skill"><div class="skill-info"><span><i class="fas fa-users"></i> Documentation</span><span>92%</span></div><div class="skill-bar" style="width:92%;"></div></div>
-      </div>
-
-      <!-- Languages -->
-      <div class="skill-category">
-        <div class="category-header">
-          <i class="icon fas fa-language"></i>
-          <h3>Languages</h3>
-        </div>
-        <div class="skill"><div class="skill-info"><span>English</span><span>Fluent (C1)</span></div><div class="skill-bar" style="width:95%;"></div></div>
-        <div class="skill"><div class="skill-info"><span>German</span><span>Elementary level (A2)</span></div><div class="skill-bar" style="width:95%;"></div></div>
-        <div class="skill"><div class="skill-info"><span>Hindi</span><span>Conversational</span></div><div class="skill-bar" style="width:100%;"></div></div>
-        <div class="skill"><div class="skill-info"><span>Malayalam</span><span>Native</span></div><div class="skill-bar" style="width:70%;"></div></div>
-        <div class="skill"><div class="skill-info"><span>Korean</span><span>Beginner’s level</span></div><div class="skill-bar" style="width:70%;"></div></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-  <!-- Services -->
-  <!-- Services -->
-<section id="services" class="dark">
-  <div class="inner-width">
-    <h1 class="section-title">Services</h1>
-    <div class="services">
-      <div class="service">
-        <i class="icon fas fa-database"></i>
-        <h4>ETL Pipeline Development</h4>
-        <p>Design and automate scalable data pipelines (AWS Glue, Kinesis, Redshift) to process 2TB+ daily, reducing latency by 40%.</p>
-      </div>
-
-      <div class="service">
-        <i class="icon fas fa-chart-line"></i>
-        <h4>Data Visualization</h4>
-        <p>Build interactive Power BI dashboards with backend integration, cutting report generation time from 6 hours to 45 minutes.</p>
-      </div>
-
-      <div class="service">
-        <i class="icon fas fa-cogs"></i>
-        <h4>Workflow Automation</h4>
-        <p>Optimize CI/CD workflows (Airflow, GitLab) to validate and deploy data schemas, saving 70% manual effort.</p>
-      </div>
-
-      <div class="service">
-        <i class="icon fas fa-bolt"></i>
-        <h4>Energy Data Systems</h4>
-        <p>Engineer HEMS solutions with IoT (InfluxDB, MQTT) to reduce grid dependency by 30% during peak hours.</p>
-      </div>
-
-      <div class="service">
-        <i class="icon fas fa-code"></i>
-        <h4>Python Scripting</h4>
-        <p>Develop modular libraries (Pandas, PyYAML) for data validation and transformation, optimizing memory by 60%.</p>
-      </div>
-
-      <div class="service">
-        <i class="icon fas fa-cloud"></i>
-        <h4>Cloud Solutions</h4>
-        <p>Architect AWS-based data lakes (S3, Athena) and serverless workflows (Lambda) for real-time analytics.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-  <!-- Education -->
-  <!-- Education & Experiences -->
-<section id="education">
-  <div class="inner-width">
-    <h1 class="section-title">Education & Experience</h1>
-    <div class="time-line">
-      <!-- Current Education -->
-      <div class="block">
-        <h4>Oct 2023 - Present</h4>
-        <h3><i class="fas fa-graduation-cap"></i> Master’s in Engineering of Socio-Technical Systems</h3>
-        <p>Carl von Ossietzky University of Oldenburg, Germany</p>
-        <ul class="education-details">
-          <li><span>Relevant Modules:</span> Business Intelligence, Autonomous Driving Systems, Computational Intelligence</li>
-          <li><span>Thesis:</span> Research on human-AI collaboration in autonomous transportation</li>
-        </ul>
-      </div>
-
-      <!-- Current Work -->
-      <div class="block">
-        <h4>Sep 2024 - Present</h4>
-        <h3><i class="fas fa-briefcase"></i> Tutor & Research Assistant (ancpBIDS Project)</h3>
-        <p>Carl von Ossietzky University of Oldenburg</p>
-        <ul class="education-details">
-          <li>Developed Python automation scripts (Pandas, PyYAML) reducing manual data prep by 70%</li>
-          <li>Optimized memory consumption by 60% using lazy loading techniques</li>
-          <li>Implemented CI/CD pipelines in GitLab for schema validation</li>
-        </ul>
-      </div>
-
-      <!-- Previous Work -->
-      <div class="block">
-        <h4>Apr 2024 - Mar 2025</h4>
-        <h3><i class="fas fa-bolt"></i> Research Assistant (Redispatch 3.0)</h3>
-        <p>OFFIS - Institute for Information Technology</p>
-        <ul class="education-details">
-          <li>Engineered Home Energy Management System (HEMS) reducing grid dependency by 30%</li>
-          <li>Built IoT data pipelines with InfluxDB and MQTT for real-time monitoring</li>
-          <li>Designed interactive dashboards for energy consumption analysis</li>
-        </ul>
-      </div>
-
-      <!-- Bachelor's Degree -->
-      <div class="block">
-        <h4>May 2016 - Sep 2020</h4>
-        <h3><i class="fas fa-graduation-cap"></i> B.Tech in Computer Science & Engineering</h3>
-        <p>APJ Abdul Kalam Technological University, India</p>
-        <ul class="education-details">
-          <li><span>Key Courses:</span> Data Science, Machine Learning, Database Management</li>
-          <li><span>Projects:</span> Predictive analytics models using Python and R</li>
-        </ul>
-      </div>
-
-      <!-- Professional Experience -->
-      <div class="block">
-        <h4>Oct 2020 - Oct 2023</h4>
-        <h3><i class="fas fa-server"></i> Data Engineer</h3>
-        <p>Tata Consultancy Services, India</p>
-        <ul class="education-details">
-          <li>Designed 15+ ETL pipelines processing 2TB/day using AWS Glue/Redshift</li>
-          <li>Reduced query latency by 40% through PostgreSQL optimization</li>
-          <li>Automated 15+ daily workflows with Airflow and Power BI integration</li>
-        </ul>
-      </div>
-
-      <!-- Internship -->
-      <div class="block">
-        <h4>Apr 2023 - Sep 2023</h4>
-        <h3><i class="fas fa-chart-line"></i> Data Analytics Intern</h3>
-        <p>PwC Switzerland (Virtual Internship)</p>
-        <ul class="education-details">
-          <li>Created Power BI dashboards analyzing HR gender imbalance</li>
-          <li>Developed actionable strategies for executive diversity</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Projects Section -->
-  <section id="works" class="dark">
-    <div class="inner-width">
-      <h1 class="section-title">Featured Projects</h1>
-      <div class="projects-grid">
-        
-        <!-- HeART Beat Project -->
-        <div class="project-card" onclick="openModal('heartbeat-modal')">
-          <div class="project-header">
-            <i class="project-icon fas fa-heart"></i>
-            <h3 class="project-title">HeART Beat: AR Relaxation System</h3>
+        <div class="about-content fade-in stagger-1">
+          <h3>Bridging Human Intuition & Machine Intelligence</h3>
+          <p>I'm <strong>Jeena</strong> — a Master's student in <strong>Engineering of Socio-Technical Systems</strong> at Carl von Ossietzky University of Oldenburg, specializing in <strong>Human–Computer Interaction (HCI)</strong> and autonomous systems.</p>
+          <p>My journey began with a curiosity about how humans perceive technology. Today, I work at the intersection of <strong>AI, deep learning, and human-centered design</strong> — creating systems that don't just process data, but understand context, adapt to users, and enhance human potential.</p>
+          <p>With 3 years at <strong>TCS</strong> building enterprise data pipelines (AWS, Python, SQL) and current research roles at <strong>DLR</strong> (German Aerospace Center) and <strong>OFFIS</strong>, I bring a unique blend of industrial-scale engineering and cutting-edge research.</p>
+          <p>My goal is simple yet profound: <strong>build a future where machine intelligence enhances human potential</strong> — where technology works for people, not the other way around.</p>
+          <div class="about-highlights">
+            <div class="highlight-card">
+              <i class="fas fa-graduation-cap"></i>
+              <h4>M.Sc. Socio-Technical Systems</h4>
+              <p>University of Oldenburg, Germany</p>
+            </div>
+            <div class="highlight-card">
+              <i class="fas fa-flask"></i>
+              <h4>Research Focus</h4>
+              <p>Human-AI Collaboration & Autonomous Systems</p>
+            </div>
+            <div class="highlight-card">
+              <i class="fas fa-code"></i>
+              <h4>Technical Foundation</h4>
+              <p>Computer Science & Engineering (B.Tech)</p>
+            </div>
+            <div class="highlight-card">
+              <i class="fas fa-rocket"></i>
+              <h4>Current Role</h4>
+              <p>Research Assistant at DLR & University</p>
+            </div>
           </div>
-          <div class="project-duration">10/2024 – 02/2025</div>
-          <p class="project-description">
-            An innovative augmented reality relaxation app that combines heart rate monitoring, haptic feedback, and immersive 3D environments to guide users through calming experiences.
-          </p>
-          <div class="tech-skills">
-            <span class="tech-tag">Unity3D</span>
-            <span class="tech-tag">C#</span>
-            <span class="tech-tag">BLE</span>
-            <span class="tech-tag">ESP32</span>
-            <span class="tech-tag">ARKit/ARCore</span>
-          </div>
-          <button class="btn-view-details">View Details</button>
         </div>
-
-        <!-- AdaptiveComfort Project -->
-        <div class="project-card" onclick="openModal('pillow-modal')">
-          <div class="project-header">
-            <i class="project-icon fas fa-bed"></i>
-            <h3 class="project-title">AdaptiveComfort Smart Pillow</h3>
-          </div>
-          <div class="project-duration">10/2024 – 03/2025</div>
-          <p class="project-description">
-            A revolutionary shape-shifting pillow that automatically adjusts firmness based on user posture using inflatable compartments and advanced sensor technology.
-          </p>
-          <div class="tech-skills">
-            <span class="tech-tag">Arduino UNO</span>
-            <span class="tech-tag">I2C Multiplexing</span>
-            <span class="tech-tag">MPRLS Sensors</span>
-            <span class="tech-tag">MPU-6050</span>
-            <span class="tech-tag">IoT</span>
-          </div>
-          <button class="btn-view-details">View Details</button>
-        </div>
-
-        <!-- The Wavelet Project -->
-        <div class="project-card" onclick="openModal('wavelet-modal')">
-          <div class="project-header">
-            <i class="project-icon fas fa-hand-paper"></i>
-            <h3 class="project-title">The Wavelet Gesture Interface</h3>
-          </div>
-          <div class="project-duration">2019 – 2020</div>
-          <div class="award-badge">🏆 Regional Finalist - e-Yantra IIT Bombay</div>
-          <p class="project-description">
-            A wearable gesture-driven interface for controlling home appliances, making technology more accessible and supporting sustainable development goals.
-          </p>
-          <div class="tech-skills">
-            <span class="tech-tag">Arduino Nano</span>
-            <span class="tech-tag">MPU6050</span>
-            <span class="tech-tag">IR Protocol</span>
-            <span class="tech-tag">Embedded C</span>
-          </div>
-          <a href="https://youtu.be/6MBsjS2hvnk" class="project-link" target="_blank">
-            <i class="fab fa-youtube"></i> Watch Demo
-          </a>
-          <button class="btn-view-details">View Details</button>
-        </div>
-
-        <!-- Digital Hospital Project -->
-        <div class="project-card" onclick="openModal('hospital-modal')">
-          <div class="project-header">
-            <i class="project-icon fas fa-hospital"></i>
-            <h3 class="project-title">Digital Hospital Blockchain System</h3>
-          </div>
-          <div class="project-duration">2019 – 2020</div>
-          <div class="award-badge">🥉 Pre-Finalist - TCS EngiNX Contest</div>
-          <p class="project-description">
-            A comprehensive healthcare solution using blockchain and machine learning to transform traditional paper-based hospital systems into secure digital platforms.
-          </p>
-          <div class="tech-skills">
-            <span class="tech-tag">Blockchain</span>
-            <span class="tech-tag">AWS Cloud</span>
-            <span class="tech-tag">IoT</span>
-            <span class="tech-tag">Machine Learning</span>
-            <span class="tech-tag">BaaS</span>
-          </div>
-          <a href="https://youtu.be/PdcMySVy0eQ" class="project-link" target="_blank">
-            <i class="fab fa-youtube"></i> Watch Demo
-          </a>
-          <button class="btn-view-details">View Details</button>
-        </div>
-
-        <!-- Futuristic Multimodal Transportation Hub Project -->
-<div class="project-card" onclick="openModal('transporthub-modal')">
-  <div class="project-header">
-    <i class="project-icon fas fa-plane-departure"></i>
-    <h3 class="project-title">Futuristic Multimodal Transportation Hub</h3>
-  </div>
-  <div class="project-duration">Winter 2024 – 2025</div>
-  <p class="project-description">
-    Engineered system architecture for a futuristic transport hub integrating maglev, autonomous air taxis, and AI-driven traffic management.
-  </p>
-  <div class="tech-skills">
-    <span class="tech-tag">Systems Engineering</span>
-    <span class="tech-tag">AI Traffic Management</span>
-    <span class="tech-tag">Simulation</span>
-    <span class="tech-tag">ASIL Safety Analysis</span>
-  </div>
-  <button class="btn-view-details">View Details</button>
-</div>
-
-<!-- Interactive Web-AR Navigation System Project -->
-<div class="project-card" onclick="openModal('webar-modal')">
-  <div class="project-header">
-    <i class="project-icon fas fa-vr-cardboard"></i>
-    <h3 class="project-title">Interactive Web-AR Navigation System</h3>
-  </div>
-  <div class="project-duration">Winter 2024 – 2025</div>
-  <p class="project-description">
-    A web-based AR navigation system with QR code integration for real-time campus navigation using browser overlays.
-  </p>
-  <div class="tech-skills">
-    <span class="tech-tag">WebAR SDK</span>
-    <span class="tech-tag">Figma</span>
-    <span class="tech-tag">User Research</span>
-    <span class="tech-tag">HCI / UCD</span>
-    <span class="tech-tag">Statistical Testing</span>
-  </div>
-  <button class="btn-view-details">View Details</button>
-</div>
-
-
       </div>
     </div>
   </section>
 
-  <!-- Project Modals -->
-  
-  <!-- HeART Beat Modal -->
-  <div id="heartbeat-modal" class="project-modal">
+  <section id="experience" style="background: var(--bg-light);">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">02 // Experience</span>
+        <h2 class="section-title">Career Trajectory</h2>
+        <p class="section-subtitle">From enterprise data engineering to cutting-edge AI research.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item fade-in">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-rocket"></i> Research Assistant</h3>
+            <div class="company"><i class="fas fa-building"></i> German Aerospace Center (DLR), Germany</div>
+            <ul>
+              <li>Using <strong>oemof.solph</strong> and <strong>TESPy</strong> in Python to model industrial heating systems for different scenarios, focusing on investment cost optimization</li>
+              <li>Developed an interactive <strong>Streamlit-based GUI</strong> for industrial steam system optimization, integrating TESPy</li>
+            </ul>
+            <span class="timeline-badge">Current</span>
+          </div>
+          <div class="timeline-date">Oct 2025 – Present</div>
+        </div>
+        <div class="timeline-item fade-in stagger-1">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-brain"></i> Research Assistant</h3>
+            <div class="company"><i class="fas fa-building"></i> Carl von Ossietzky University of Oldenburg</div>
+            <ul>
+              <li>Worked with a <strong>Parkinson's patient dataset</strong>, creating Python pipeline using <strong>MediaPipe</strong> to analyze movement videos and extract 3D joint coordinates</li>
+              <li>Performed feature engineering by converting positional data into <strong>IMU-like features</strong> and applying temporal windowing to generate structured time-series datasets in NPZ format</li>
+            </ul>
+          </div>
+          <div class="timeline-date">Jul 2025 – Dec 2025</div>
+        </div>
+        <div class="timeline-item fade-in stagger-2">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-code"></i> Research Assistant — ancpBIDS Project</h3>
+            <div class="company"><i class="fas fa-building"></i> Carl von Ossietzky University of Oldenburg</div>
+            <ul>
+              <li>Developed automation scripts in Python to update schema versions based on changes in the BIDS dataset</li>
+              <li>Performed enhancement tasks (functions for storing temporary artifacts, lazy loading) for improved memory usage and execution time</li>
+              <li>Wrote <strong>pytest unit tests</strong>, including parameterized test cases, to validate new functionalities before merging into the main repository</li>
+              <li>Evaluated different <strong>LLMs</strong> based on token usage, model size, memory efficiency, and compute time to integrate best code assistant</li>
+            </ul>
+          </div>
+          <div class="timeline-date">Sep 2024 – Dec 2025</div>
+        </div>
+        <div class="timeline-item fade-in stagger-3">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-bolt"></i> Research Assistant — Redispatch 3.0</h3>
+            <div class="company"><i class="fas fa-building"></i> OFFIS - Institute for Information Technology, Germany</div>
+            <ul>
+              <li>Contributed to Project Redispatch 3.0, developing a <strong>smart home energy management system</strong> for household power optimization</li>
+              <li>Used Python for loading, processing, and visualizing electricity production and consumption data profiles</li>
+              <li>Implemented energy components such as battery charge/discharge logic and EV charging with dynamic prioritization using OOP</li>
+              <li>Configured real-time energy simulations in Python using <strong>InfluxDB, Telegraf, MQTT, Docker, and Grafana</strong> for system performance visualization</li>
+            </ul>
+          </div>
+          <div class="timeline-date">Apr 2024 – Mar 2025</div>
+        </div>
+        <div class="timeline-item fade-in">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-server"></i> System Engineer / Data Engineer</h3>
+            <div class="company"><i class="fas fa-building"></i> Tata Consultancy Services (TCS), India</div>
+            <ul>
+              <li><strong>AWS Data Engineer</strong> for Belgium-based project: Utilized AWS Kinesis, S3, Athena, and Redshift to develop end-to-end data pipelines</li>
+              <li>Implemented Python and PySpark programs for data analysis and business transformation, developing scalable Glue jobs and EMR code</li>
+              <li>Traveled to Belgium for client meetings, building stronger relationships and understanding requirements</li>
+              <li>Created Power BI reports and conducted weekly presentations on KPIs and report quality</li>
+              <li><strong>Agile Software Developer</strong> for US-based project: Supported EAM transformation using IBM Maximo across remote operational sites</li>
+              <li>Conducted daily data integrity monitoring across distributed SQL Server environments, resolving 30+ incident types using ITIL framework</li>
+              <li>Automated repetitive tasks by scripting against Maximo's REST API and produced operational reports using BIRT</li>
+            </ul>
+          </div>
+          <div class="timeline-date">Oct 2020 – Oct 2023</div>
+        </div>
+        <div class="timeline-item fade-in stagger-1">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-chart-line"></i> Data Analytics Intern</h3>
+            <div class="company"><i class="fas fa-building"></i> PwC Switzerland (Virtual Internship)</div>
+            <ul>
+              <li>Created impactful Power BI dashboards that effectively communicated KPIs and insights to stakeholders</li>
+              <li>Analyzed HR data, focusing on gender-related KPIs to identify and propose solutions for executive-level gender balance issues</li>
+            </ul>
+          </div>
+          <div class="timeline-date">Apr 2023 – Sep 2023</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">03 // Education</span>
+        <h2 class="section-title">Academic Foundation</h2>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item fade-in">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-graduation-cap"></i> M.Eng. Socio-Technical Systems</h3>
+            <div class="company"><i class="fas fa-university"></i> Carl von Ossietzky University of Oldenburg, Germany</div>
+            <ul>
+              <li><strong>Main Subjects:</strong> System Engineering, Convolutional Neural Networks, Business Intelligence, Applied Deep Learning in PyTorch, Statistics and Programming, Design of Autonomous Systems, Statistics with R</li>
+              <li><strong>Thesis:</strong> Research on human-AI collaboration in autonomous transportation</li>
+            </ul>
+            <span class="timeline-badge">Current</span>
+          </div>
+          <div class="timeline-date">Oct 2023 – Present</div>
+        </div>
+        <div class="timeline-item fade-in stagger-1">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3><i class="fas fa-graduation-cap"></i> B.Tech Computer Science & Engineering</h3>
+            <div class="company"><i class="fas fa-university"></i> APJ Abdul Kalam Technological University, India</div>
+            <ul>
+              <li><strong>Key Courses:</strong> Data Structures, Object Oriented Design, Database Design, Soft Computing, Machine Learning, Data Mining and Warehousing</li>
+              <li><strong>Projects:</strong> Predictive analytics models using Python and R</li>
+            </ul>
+          </div>
+          <div class="timeline-date">May 2016 – Sep 2020</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" style="background: var(--bg-light);">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">04 // Skills</span>
+        <h2 class="section-title">Technical Arsenal</h2>
+        <p class="section-subtitle">Tools and technologies I wield to build intelligent systems.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-category fade-in">
+          <div class="skill-category-header">
+            <i class="fas fa-code"></i>
+            <h3>Programming</h3>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fab fa-python"></i> Python</span><span>95%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-database"></i> SQL / PostgreSQL</span><span>95%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fab fa-java"></i> Java</span><span>75%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-r-project"></i> R Programming</span><span>70%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-code"></i> C++</span><span>65%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="65"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-bolt"></i> PySpark</span><span>70%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-square-root-alt"></i> Pandas / NumPy</span><span>95%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category fade-in stagger-1">
+          <div class="skill-category-header">
+            <i class="fas fa-brain"></i>
+            <h3>AI & Machine Learning</h3>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-network-wired"></i> Deep Learning (PyTorch)</span><span>85%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-robot"></i> LLMs & RAG Agents</span><span>80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-eye"></i> Computer Vision (MediaPipe)</span><span>75%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-chart-line"></i> Machine Learning</span><span>85%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-comments"></i> NLP & Text Analytics</span><span>70%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70"></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category fade-in stagger-2">
+          <div class="skill-category-header">
+            <i class="fas fa-cloud"></i>
+            <h3>Cloud & Data Engineering</h3>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fab fa-aws"></i> AWS (Glue, Redshift, S3, Athena)</span><span>90%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-wind"></i> Apache Airflow</span><span>80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-chart-pie"></i> Power BI</span><span>88%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fab fa-docker"></i> Docker</span><span>78%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="78"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fab fa-gitlab"></i> GitLab CI/CD</span><span>83%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="83"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-plug"></i> MQTT / Telegraf / InfluxDB</span><span>75%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category fade-in stagger-3">
+          <div class="skill-category-header">
+            <i class="fas fa-vr-cardboard"></i>
+            <h3>HCI & Emerging Tech</h3>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-cube"></i> Unity3D / AR Development</span><span>75%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-microchip"></i> IoT / Embedded Systems</span><span>80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-car"></i> Autonomous Systems</span><span>70%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-palette"></i> Figma / UI-UX Design</span><span>75%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category fade-in">
+          <div class="skill-category-header">
+            <i class="fas fa-users-cog"></i>
+            <h3>Organizational Skills</h3>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-tasks"></i> Project Management</span><span>85%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-comments"></i> Communication</span><span>90%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-lightbulb"></i> Problem Solving</span><span>88%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-users"></i> Decision Making</span><span>92%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="92"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span><i class="fas fa-file-alt"></i> Documentation</span><span>92%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="92"></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category fade-in stagger-1">
+          <div class="skill-category-header">
+            <i class="fas fa-language"></i>
+            <h3>Languages</h3>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>English</span><span>C1 Fluent</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>German</span><span>A2 Elementary</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="40"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Hindi</span><span>Conversational</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Malayalam</span><span>Native</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="100"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Korean</span><span>A1 Beginner</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="25"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">05 // Projects</span>
+        <h2 class="section-title">Featured Projects</h2>
+        <p class="section-subtitle">Building the future, one project at a time.</p>
+      </div>
+      <div class="projects-grid">
+        <div class="project-card fade-in" onclick="openModal('heartbeat-modal')">
+          <div class="project-image"><i class="fas fa-heart"></i></div>
+          <div class="project-body">
+            <div class="project-duration">10/2024 – 02/2025</div>
+            <h3 class="project-title">HeART Beat: AR Relaxation System</h3>
+            <p class="project-desc">An innovative augmented reality relaxation app combining heart rate monitoring, haptic feedback, and immersive 3D environments to guide users through calming experiences.</p>
+            <div class="project-tags">
+              <span class="project-tag">Unity3D</span>
+              <span class="project-tag">C#</span>
+              <span class="project-tag">BLE</span>
+              <span class="project-tag">ESP32</span>
+              <span class="project-tag">ARKit/ARCore</span>
+            </div>
+            <div class="project-links">
+              <span class="project-link"><i class="fas fa-arrow-right"></i> View Details</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card fade-in stagger-1" onclick="openModal('pillow-modal')">
+          <div class="project-image"><i class="fas fa-bed"></i></div>
+          <div class="project-body">
+            <div class="project-duration">10/2024 – 03/2025</div>
+            <h3 class="project-title">AdaptiveComfort Smart Pillow</h3>
+            <p class="project-desc">A revolutionary shape-shifting pillow that automatically adjusts firmness based on user posture using inflatable compartments and advanced sensor technology.</p>
+            <div class="project-tags">
+              <span class="project-tag">Arduino UNO</span>
+              <span class="project-tag">I2C Multiplexing</span>
+              <span class="project-tag">MPRLS Sensors</span>
+              <span class="project-tag">MPU-6050</span>
+              <span class="project-tag">IoT</span>
+            </div>
+            <div class="project-links">
+              <span class="project-link"><i class="fas fa-arrow-right"></i> View Details</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card fade-in stagger-2" onclick="openModal('wavelet-modal')">
+          <div class="project-image"><i class="fas fa-hand-paper"></i></div>
+          <div class="project-body">
+            <div class="project-duration">2019 – 2020</div>
+            <div class="award-badge"><i class="fas fa-trophy"></i> Regional Finalist - e-Yantra IIT Bombay</div>
+            <h3 class="project-title">The Wavelet Gesture Interface</h3>
+            <p class="project-desc">A wearable gesture-driven interface for controlling home appliances, making technology more accessible and supporting sustainable development goals.</p>
+            <div class="project-tags">
+              <span class="project-tag">Arduino Nano</span>
+              <span class="project-tag">MPU6050</span>
+              <span class="project-tag">IR Protocol</span>
+              <span class="project-tag">Embedded C</span>
+            </div>
+            <div class="project-links">
+              <a href="https://youtu.be/6MBsjS2hvnk" class="project-link" target="_blank"><i class="fab fa-youtube"></i> Watch Demo</a>
+              <span class="project-link" onclick="event.stopPropagation(); openModal('wavelet-modal')"><i class="fas fa-arrow-right"></i> Details</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card fade-in stagger-3" onclick="openModal('hospital-modal')">
+          <div class="project-image"><i class="fas fa-hospital"></i></div>
+          <div class="project-body">
+            <div class="project-duration">2019 – 2020</div>
+            <div class="award-badge"><i class="fas fa-medal"></i> Pre-Finalist - TCS EngiNX Contest</div>
+            <h3 class="project-title">Digital Hospital Blockchain System</h3>
+            <p class="project-desc">A comprehensive healthcare solution using blockchain and machine learning to transform traditional paper-based hospital systems into secure digital platforms.</p>
+            <div class="project-tags">
+              <span class="project-tag">Blockchain</span>
+              <span class="project-tag">AWS Cloud</span>
+              <span class="project-tag">IoT</span>
+              <span class="project-tag">Machine Learning</span>
+              <span class="project-tag">BaaS</span>
+            </div>
+            <div class="project-links">
+              <a href="https://youtu.be/PdcMySVy0eQ" class="project-link" target="_blank"><i class="fab fa-youtube"></i> Watch Demo</a>
+              <span class="project-link" onclick="event.stopPropagation(); openModal('hospital-modal')"><i class="fas fa-arrow-right"></i> Details</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card fade-in" onclick="openModal('transporthub-modal')">
+          <div class="project-image"><i class="fas fa-plane-departure"></i></div>
+          <div class="project-body">
+            <div class="project-duration">Winter 2024 – 2025</div>
+            <h3 class="project-title">Futuristic Multimodal Transportation Hub</h3>
+            <p class="project-desc">Engineered system architecture for a futuristic transport hub integrating maglev, autonomous air taxis, and AI-driven traffic management.</p>
+            <div class="project-tags">
+              <span class="project-tag">Systems Engineering</span>
+              <span class="project-tag">AI Traffic Management</span>
+              <span class="project-tag">Simulation</span>
+              <span class="project-tag">ASIL Safety Analysis</span>
+            </div>
+            <div class="project-links">
+              <span class="project-link"><i class="fas fa-arrow-right"></i> View Details</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card fade-in stagger-1" onclick="openModal('webar-modal')">
+          <div class="project-image"><i class="fas fa-vr-cardboard"></i></div>
+          <div class="project-body">
+            <div class="project-duration">Winter 2024 – 2025</div>
+            <h3 class="project-title">Interactive Web-AR Navigation System</h3>
+            <p class="project-desc">A web-based AR navigation system with QR code integration for real-time campus navigation using browser overlays.</p>
+            <div class="project-tags">
+              <span class="project-tag">WebAR SDK</span>
+              <span class="project-tag">Figma</span>
+              <span class="project-tag">User Research</span>
+              <span class="project-tag">HCI / UCD</span>
+              <span class="project-tag">Statistical Testing</span>
+            </div>
+            <div class="project-links">
+              <span class="project-link"><i class="fas fa-arrow-right"></i> View Details</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TechNav Project -->
+        <div class="project-card fade-in stagger-2" onclick="openModal('technav-modal')">
+          <div class="project-image"><i class="fas fa-sitemap"></i></div>
+          <div class="project-body">
+            <div class="project-duration">2025 – Ongoing</div>
+            <div class="award-badge"><i class="fas fa-rocket"></i> Live Prototype</div>
+            <h3 class="project-title">TechNav — Neural Execution Engine</h3>
+            <p class="project-desc">An interactive decision engine that maps startup and creator journeys through branching question trees. Users answer plain-language questions and get personalized execution flows with tool recommendations, prompts, and resource playbooks.</p>
+            <div class="project-tags">
+              <span class="project-tag">Interactive UI</span>
+              <span class="project-tag">Decision Trees</span>
+              <span class="project-tag">Three.js</span>
+              <span class="project-tag">No-Code Intelligence</span>
+              <span class="project-tag">Startup Mapping</span>
+            </div>
+            <div class="project-links">
+              <a href="technav_v6.html" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i> Try Live Demo</a>
+              <span class="project-link" onclick="event.stopPropagation(); openModal('technav-modal')"><i class="fas fa-arrow-right"></i> Details</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="learning" style="background: var(--bg-light);">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">06 // Current Learning</span>
+        <h2 class="section-title">Always Evolving</h2>
+        <p class="section-subtitle">Pushing boundaries through continuous education in cutting-edge AI.</p>
+      </div>
+      <div class="learning-grid">
+        <div class="learning-card fade-in">
+          <div class="learning-icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>MIT Introduction to Deep Learning</h3>
+          <div class="learning-provider">MIT 6.S191 | introtodeeplearning.com</div>
+          <p>MIT's flagship deep learning course covering neural net architectures (MLPs, CNNs, RNNs, Transformers), backpropagation, automatic differentiation, and applications to computer vision, NLP, and robotics. Includes hands-on labs in Google Colab with GPU acceleration.</p>
+          <div class="learning-progress">
+            <div class="progress-header"><span>Progress</span><span>In Progress</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 65%;"></div></div>
+          </div>
+          <div class="learning-topics">
+            <span class="learning-topic">Neural Networks</span>
+            <span class="learning-topic">Computer Vision</span>
+            <span class="learning-topic">Transformers</span>
+            <span class="learning-topic">Generative AI</span>
+            <span class="learning-topic">PyTorch</span>
+            <span class="learning-topic">Google Colab</span>
+          </div>
+        </div>
+
+        <div class="learning-card fade-in stagger-1">
+          <div class="learning-icon"><i class="fas fa-robot"></i></div>
+          <h3>Anthropic Agentic AI & MCP</h3>
+          <div class="learning-provider">Anthropic Academy | Skilljar</div>
+          <p>Comprehensive training on building agentic AI systems with Claude. Covers the Claude API, Model Context Protocol (MCP), Claude Code workflows, Agent Skills, and enterprise adoption strategies. Learning to build reliable, safe, and debuggable AI-powered features.</p>
+          <div class="learning-progress">
+            <div class="progress-header"><span>Progress</span><span>In Progress</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 55%;"></div></div>
+          </div>
+          <div class="learning-topics">
+            <span class="learning-topic">Claude API</span>
+            <span class="learning-topic">MCP Protocol</span>
+            <span class="learning-topic">Agent Skills</span>
+            <span class="learning-topic">RAG Systems</span>
+            <span class="learning-topic">AI Fluency</span>
+            <span class="learning-topic">Enterprise AI</span>
+          </div>
+        </div>
+
+        <div class="learning-card fade-in stagger-2">
+          <div class="learning-icon"><i class="fas fa-car"></i></div>
+          <h3>Autonomous Systems & Safety</h3>
+          <div class="learning-provider">University of Oldenburg</div>
+          <p>Advanced coursework in Design of Autonomous Systems with focus on ASIL safety analysis, systems engineering methodologies, and simulation frameworks for autonomous transportation. Applying deep learning to perception and decision-making in self-driving contexts.</p>
+          <div class="learning-progress">
+            <div class="progress-header"><span>Progress</span><span>Ongoing</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
+          </div>
+          <div class="learning-topics">
+            <span class="learning-topic">ASIL Analysis</span>
+            <span class="learning-topic">Systems Engineering</span>
+            <span class="learning-topic">Simulation</span>
+            <span class="learning-topic">Safety-Critical</span>
+            <span class="learning-topic">Perception</span>
+          </div>
+        </div>
+
+        <div class="learning-card fade-in stagger-3">
+          <div class="learning-icon"><i class="fas fa-brain"></i></div>
+          <h3>Human-AI Collaboration Research</h3>
+          <div class="learning-provider">Master Thesis Research</div>
+          <p>Investigating how humans and AI systems can collaborate effectively in autonomous transportation scenarios. Exploring trust calibration, explainable AI, and adaptive interfaces that enhance human decision-making without replacing human agency.</p>
+          <div class="learning-progress">
+            <div class="progress-header"><span>Progress</span><span>Research Phase</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+          </div>
+          <div class="learning-topics">
+            <span class="learning-topic">XAI</span>
+            <span class="learning-topic">Trust Calibration</span>
+            <span class="learning-topic">Adaptive UI</span>
+            <span class="learning-topic">Cognitive Load</span>
+            <span class="learning-topic">Ethics</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">07 // Services</span>
+        <h2 class="section-title">What I Deliver</h2>
+        <p class="section-subtitle">End-to-end solutions from data to intelligence.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-database"></i></div>
+          <h3>ETL Pipeline Development</h3>
+          <p>Design and automate scalable data pipelines (AWS Glue, Kinesis, Redshift) to process 2TB+ daily, reducing latency by 40%.</p>
+          <div class="service-metric"><i class="fas fa-arrow-up"></i> 40% Latency Reduction</div>
+        </div>
+        <div class="service-card fade-in stagger-1">
+          <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Data Visualization</h3>
+          <p>Build interactive Power BI dashboards with backend integration, cutting report generation time from 6 hours to 45 minutes.</p>
+          <div class="service-metric"><i class="fas fa-clock"></i> 87% Time Saved</div>
+        </div>
+        <div class="service-card fade-in stagger-2">
+          <div class="service-icon"><i class="fas fa-cogs"></i></div>
+          <h3>Workflow Automation</h3>
+          <p>Optimize CI/CD workflows (Airflow, GitLab) to validate and deploy data schemas, saving 70% manual effort.</p>
+          <div class="service-metric"><i class="fas fa-robot"></i> 70% Automation</div>
+        </div>
+        <div class="service-card fade-in stagger-3">
+          <div class="service-icon"><i class="fas fa-bolt"></i></div>
+          <h3>Energy Data Systems</h3>
+          <p>Engineer HEMS solutions with IoT (InfluxDB, MQTT) to reduce grid dependency by 30% during peak hours.</p>
+          <div class="service-metric"><i class="fas fa-leaf"></i> 30% Grid Reduction</div>
+        </div>
+        <div class="service-card fade-in">
+          <div class="service-icon"><i class="fas fa-code"></i></div>
+          <h3>Python & AI Development</h3>
+          <p>Develop modular libraries (Pandas, PyYAML) for data validation and transformation, optimizing memory by 60%.</p>
+          <div class="service-metric"><i class="fas fa-memory"></i> 60% Memory Optimization</div>
+        </div>
+        <div class="service-card fade-in stagger-1">
+          <div class="service-icon"><i class="fas fa-cloud"></i></div>
+          <h3>Cloud Architecture</h3>
+          <p>Architect AWS-based data lakes (S3, Athena) and serverless workflows (Lambda) for real-time analytics.</p>
+          <div class="service-metric"><i class="fas fa-server"></i> Enterprise Scale</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="leadership" style="background: var(--bg-light);">
+    <div class="section-container">
+      <div class="section-header fade-in">
+        <span class="section-tag">08 // Leadership & Involvement</span>
+        <h2 class="section-title">Beyond the Code</h2>
+        <p class="section-subtitle">Community, creativity, and continuous impact.</p>
+      </div>
+      <div class="leadership-grid">
+        <div class="leadership-card fade-in">
+          <div class="leadership-header">
+            <div class="leadership-icon"><i class="fas fa-hands-helping"></i></div>
+            <div class="leadership-title">
+              <h3>NSS Volunteer</h3>
+              <span>2017 – 2019 | India</span>
+            </div>
+          </div>
+          <p>Completed a two-year tenure, contributing over 240 hours of community service.</p>
+          <ul>
+            <li>Hospital Renovation: Assisted in cleaning, painting, and minor repairs</li>
+            <li>Old Age Home Outreach: Engaged elderly residents with activities and support</li>
+            <li>Environmental Clean-Up at Tourist Site: Maintained pathways and promoted eco-tourism</li>
+            <li>NSS Annual Special Camp: Participated in rural development and leadership activities</li>
+          </ul>
+          <div class="leadership-links">
+            <a href="https://drive.google.com/file/d/1q9oquwNEwgTSctNgVDDb9xrZTibGFRjB/view?usp=sharing" target="_blank"><i class="fas fa-certificate"></i> NSS Certificate</a>
+          </div>
+        </div>
+
+        <div class="leadership-card fade-in stagger-1">
+          <div class="leadership-header">
+            <div class="leadership-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="leadership-title">
+              <h3>TCS Youth Employment Program</h3>
+              <span>11/2020 – 09/2023 | India</span>
+            </div>
+          </div>
+          <p>Volunteer technology trainer for rural students, bridging the digital divide.</p>
+          <ul>
+            <li>Conducted technology training workshops (PowerPoint, Excel, technical skills) for rural students</li>
+            <li>Provided interview preparation guidance, mock interviews, and feedback</li>
+            <li>Guided students on essential skill development and employability</li>
+            <li>Referred successful candidates to the next stage of interviews</li>
+          </ul>
+          <div class="leadership-links">
+            <a href="https://drive.google.com/file/d/1z2sswFgJsk4J1PH2vlGv6As9eZ14Jknz/view?usp=sharing" target="_blank"><i class="fas fa-certificate"></i> Certificate 1</a>
+            <a href="https://drive.google.com/file/d/1O2o9VsZUnn_jzXv13Mmy0xTOMw7CRxM7/view?usp=sharing" target="_blank"><i class="fas fa-certificate"></i> Certificate 2</a>
+          </div>
+        </div>
+
+        <div class="leadership-card fade-in stagger-2">
+          <div class="leadership-header">
+            <div class="leadership-icon"><i class="fas fa-pen-nib"></i></div>
+            <div class="leadership-title">
+              <h3>Creative Writing</h3>
+              <span>Ongoing Hobby</span>
+            </div>
+          </div>
+          <p>Creative writing has been a personal passion, exploring imagination through short stories and novels.</p>
+          <div class="leadership-links">
+            <a href="novel.html" target="_blank"><i class="fas fa-book"></i> Story 1</a>
+            <a href="nove2.html" target="_blank"><i class="fas fa-book"></i> Story 2</a>
+            <a href="nove3.html" target="_blank"><i class="fas fa-book"></i> Story 3</a>
+            <a href="the-grave.html" target="_blank"><i class="fas fa-book"></i> Story 4</a>
+          </div>
+        </div>
+
+        <div class="leadership-card fade-in stagger-3">
+          <div class="leadership-header">
+            <div class="leadership-icon"><i class="fas fa-project-diagram"></i></div>
+            <div class="leadership-title">
+              <h3>Additional Projects</h3>
+              <span>Portfolio Extensions</span>
+            </div>
+          </div>
+          <p>Extended project work and experimental builds.</p>
+          <div class="leadership-links">
+            <a href="Project_BI_Final_abhi.html" target="_blank"><i class="fas fa-chart-bar"></i> Business Intelligence Project</a>
+          </div>
+        </div>
+
+        <div class="leadership-card fade-in">
+          <div class="leadership-header">
+            <div class="leadership-icon"><i class="fas fa-sitemap"></i></div>
+            <div class="leadership-title">
+              <h3>Startup: TechNav</h3>
+              <span>Live Prototype · Decision Engine</span>
+            </div>
+          </div>
+          <p>An interactive neural execution engine that maps startup and creator journeys through AI-powered decision trees. 6 pillars, 40+ tools, infinite flow combinations.</p>
+          <div class="leadership-links">
+            <a href="technav_v6.html" target="_blank"><i class="fas fa-external-link-alt"></i> Try Live Demo</a>
+          </div>
+        </div>
+
+        <div class="leadership-card fade-in">
+          <div class="leadership-header">
+            <div class="leadership-icon"><i class="fas fa-rocket"></i></div>
+            <div class="leadership-title">
+              <h3>Startup: Ripple</h3>
+              <span>First MVP</span>
+            </div>
+          </div>
+          <p>Neurodivergent Workflow Management Application — an innovative startup project focused on creating inclusive productivity tools.</p>
+          <div class="leadership-links">
+            <a href="v1/index.html" target="_blank"><i class="fas fa-external-link-alt"></i> View Ripple MVP</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h2>JS.dev</h2>
+        <p>Building intelligent systems that bridge human intuition with machine intelligence. Based in Oldenburg, Germany — available for collaborations worldwide.</p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/jeena-shaji-19020716a/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://drive.google.com/file/d/1TG76mToDo8Bmh5W3gK05MWX1d5HGGfGI/view?usp=sharing" target="_blank">Download CV</a></li>
+          <li><a href="https://introtodeeplearning.com/" target="_blank">MIT Deep Learning</a></li>
+          <li><a href="https://anthropic.skilljar.com/" target="_blank">Anthropic Academy</a></li>
+          <li><a href="v1/index.html" target="_blank">Ripple Startup</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:jeena.shaji@uni-oldenburg.de"><i class="fas fa-envelope" style="margin-right:0.5rem"></i>jeena.shaji@uni-oldenburg.de</a></li>
+          <li><a href="tel:+4915782008417"><i class="fas fa-phone" style="margin-right:0.5rem"></i>(+49) 157 8200 8417</a></li>
+          <li><a href="#"><i class="fas fa-map-marker-alt" style="margin-right:0.5rem"></i>Oldenburg, Germany</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>2026 Jeena Shaji. Crafted with code and curiosity.</p>
+      <div class="status">
+        <div class="status-dot"></div>
+        <span>Open to Opportunities</span>
+      </div>
+    </div>
+  </footer>
+
+  <button class="go-top" id="goTop"><i class="fas fa-arrow-up"></i></button>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="heartbeat-modal">
     <div class="modal-content">
-      <span class="close-modal" onclick="closeModal('heartbeat-modal')">&times;</span>
-      <h2 class="modal-title">HeART Beat: AR-Powered Heart Rate Relaxation System</h2>
-      <div class="modal-duration">October 2024 – February 2025</div>
-      
-      <div class="project-image">
-        <i class="fas fa-heart-broken"></i>
-        <p style="margin-left: 1rem; color: rgba(255,255,255,0.7);">AR Heart Rate Monitoring Interface</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Project Overview</h3>
-        <p>HeART Beat is an innovative augmented reality application that combines real-time heart rate monitoring with immersive relaxation experiences. The system detects elevated heart rates through pulse sensors and guides users through calming breathing exercises in a beautiful 3D garden environment.</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Key Features</h3>
-        <ul>
-          <li><strong>Real-time Heart Rate Detection:</strong> Integrated pulse sensor with ESP32 microcontroller for continuous monitoring</li>
-          <li><strong>Haptic Feedback System:</strong> Adaptive vibration alerts that respond to heart rate changes</li>
-          <li><strong>Immersive AR Environment:</strong> Interactive 3D garden with particle effects and spatial anchoring</li>
-          <li><strong>Guided Breathing Exercises:</strong> Personalized relaxation routines based on user's stress levels</li>
-          <li><strong>Wearable Integration:</strong> Prototyped glove/armband sensors for seamless user experience</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technical Implementation</h3>
-        <ul>
-          <li>Engineered Bluetooth Low Energy (BLE) connectivity between ESP32 and Unity</li>
-          <li>Developed custom Android plugins to resolve compatibility challenges</li>
-          <li>Created dynamic UI elements with real-time data visualization</li>
-          <li>Implemented spatial anchoring for stable AR experiences</li>
-          <li>Optimized performance for mobile AR platforms (ARKit/ARCore)</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technologies Used</h3>
-        <div class="tech-skills">
-          <span class="tech-tag">Unity3D</span>
-          <span class="tech-tag">C# Scripting</span>
-          <span class="tech-tag">Bluetooth Low Energy</span>
-          <span class="tech-tag">ESP32 Microcontroller</span>
-          <span class="tech-tag">ARKit</span>
-          <span class="tech-tag">ARCore</span>
-          <span class="tech-tag">3D Modeling</span>
-          <span class="tech-tag">Android Plugins</span>
+      <button class="modal-close" onclick="closeModal('heartbeat-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>HeART Beat: AR-Powered Heart Rate Relaxation System</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> Oct 2024 – Feb 2025</span>
+            <span><i class="fas fa-tag"></i> HCI / AR / IoT</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>HeART Beat is an innovative augmented reality application that combines real-time heart rate monitoring with immersive relaxation experiences. The system detects elevated heart rates through pulse sensors and guides users through calming breathing exercises in a beautiful 3D garden environment.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>Real-time Heart Rate Detection:</strong> Integrated pulse sensor with ESP32 microcontroller for continuous monitoring</li>
+            <li><strong>Haptic Feedback System:</strong> Adaptive vibration alerts that respond to heart rate changes</li>
+            <li><strong>Immersive AR Environment:</strong> Interactive 3D garden with particle effects and spatial anchoring</li>
+            <li><strong>Guided Breathing Exercises:</strong> Personalized relaxation routines based on user's stress levels</li>
+            <li><strong>Wearable Integration:</strong> Prototyped glove/armband sensors for seamless user experience</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-cogs"></i> Technical Implementation</h3>
+          <ul>
+            <li>Engineered Bluetooth Low Energy (BLE) connectivity between ESP32 and Unity</li>
+            <li>Developed custom Android plugins to resolve compatibility challenges</li>
+            <li>Created dynamic UI elements with real-time data visualization</li>
+            <li>Implemented spatial anchoring for stable AR experiences</li>
+            <li>Optimized performance for mobile AR platforms (ARKit/ARCore)</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>Unity3D</span><span>C#</span><span>BLE</span><span>ESP32</span><span>ARKit</span><span>ARCore</span><span>3D Modeling</span><span>Android Plugins</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- AdaptiveComfort Modal -->
-  <div id="pillow-modal" class="project-modal">
+  <div class="modal-overlay" id="pillow-modal">
     <div class="modal-content">
-      <span class="close-modal" onclick="closeModal('pillow-modal')">&times;</span>
-      <h2 class="modal-title">AdaptiveComfort – Smart Shape-Shifting Pillow</h2>
-      <div class="modal-duration">October 2024 – March 2025</div>
-      
-      <div class="project-image">
-        <i class="fas fa-bed"></i>
-        <p style="margin-left: 1rem; color: rgba(255,255,255,0.7);">Smart Pillow Control System</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Project Overview</h3>
-        <p>AdaptiveComfort is a revolutionary smart pillow that automatically adjusts its firmness based on user posture and sleep position. Using inflatable compartments and advanced sensor technology, it provides personalized comfort without requiring any app interaction.</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Key Features</h3>
-        <ul>
-          <li><strong>Auto-Posture Detection:</strong> Recognizes sleeping, reading, and wake-up modes automatically</li>
-          <li><strong>Dynamic Firmness Adjustment:</strong> Inflatable Nylon TPU compartments adjust in real-time</li>
-          <li><strong>Multi-Sensor Integration:</strong> 3 pressure sensors and gyroscope for accurate position tracking</li>
-          <li><strong>No App Dependency:</strong> Fully autonomous operation based on sensor data</li>
-          <li><strong>Optimized Hardware:</strong> Reduced complexity from 18 to 2 pumps through smart design</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technical Implementation</h3>
-        <ul>
-          <li>Developed Arduino-based control logic with real-time sensor processing</li>
-          <li>Implemented TCA9548A I2C multiplexer for managing multiple sensors</li>
-          <li>Engineered airflow optimization system with 6 air pumps and solenoid valves</li>
-          <li>Created iterative prototyping process for hardware optimization</li>
-          <li>Designed fail-safe mechanisms for pump and valve operations</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technologies Used</h3>
-        <div class="tech-skills">
-          <span class="tech-tag">Arduino UNO</span>
-          <span class="tech-tag">I2C Multiplexing</span>
-          <span class="tech-tag">MPRLS Pressure Sensors</span>
-          <span class="tech-tag">MPU-6050 Gyroscope</span>
-          <span class="tech-tag">IoT Prototyping</span>
-          <span class="tech-tag">TCA9548A</span>
-          <span class="tech-tag">Pneumatic Systems</span>
+      <button class="modal-close" onclick="closeModal('pillow-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>AdaptiveComfort – Smart Shape-Shifting Pillow</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> Oct 2024 – Mar 2025</span>
+            <span><i class="fas fa-tag"></i> IoT / Hardware / HCI</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>AdaptiveComfort is a revolutionary smart pillow that automatically adjusts its firmness based on user posture and sleep position. Using inflatable compartments and advanced sensor technology, it provides personalized comfort without requiring any app interaction.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>Auto-Posture Detection:</strong> Recognizes sleeping, reading, and wake-up modes automatically</li>
+            <li><strong>Dynamic Firmness Adjustment:</strong> Inflatable Nylon TPU compartments adjust in real-time</li>
+            <li><strong>Multi-Sensor Integration:</strong> 3 pressure sensors and gyroscope for accurate position tracking</li>
+            <li><strong>No App Dependency:</strong> Fully autonomous operation based on sensor data</li>
+            <li><strong>Optimized Hardware:</strong> Reduced complexity from 18 to 2 pumps through smart design</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-cogs"></i> Technical Implementation</h3>
+          <ul>
+            <li>Developed Arduino-based control logic with real-time sensor processing</li>
+            <li>Implemented TCA9548A I2C multiplexer for managing multiple sensors</li>
+            <li>Engineered airflow optimization system with 6 air pumps and solenoid valves</li>
+            <li>Created iterative prototyping process for hardware optimization</li>
+            <li>Designed fail-safe mechanisms for pump and valve operations</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>Arduino UNO</span><span>I2C Multiplexing</span><span>MPRLS Sensors</span><span>MPU-6050</span><span>IoT</span><span>TCA9548A</span><span>Pneumatic Systems</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- The Wavelet Modal -->
-  <div id="wavelet-modal" class="project-modal">
+  <div class="modal-overlay" id="wavelet-modal">
     <div class="modal-content">
-      <span class="close-modal" onclick="closeModal('wavelet-modal')">&times;</span>
-      <h2 class="modal-title">The Wavelet – Gesture-Driven Interface</h2>
-      <div class="modal-duration">2019 – 2020</div>
-      <div class="award-badge">🏆 Regional Finalist - e-Yantra Ideas Competition, IIT Bombay</div>
-      
-      <div class="project-image">
-        <i class="fas fa-hand-paper"></i>
-        <p style="margin-left: 1rem; color: rgba(255,255,255,0.7);">Gesture Control Interface</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Project Overview</h3>
-        <p>The Wavelet is a wearable device that revolutionizes human-machine interaction by enabling intuitive gesture-based control of home appliances and electronic devices. This project directly addresses UN SDG Goal 9 by promoting inclusive and sustainable technology innovation.</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Key Features</h3>
-        <ul>
-          <li><strong>Intuitive Gesture Control:</strong> Natural hand movements replace complex remote controls</li>
-          <li><strong>Universal Compatibility:</strong> Works with various IR-enabled appliances</li>
-          <li><strong>Real-time Motion Capture:</strong> MPU6050 IMU sensor for precise gesture recognition</li>
-          <li><strong>Accessibility Focus:</strong> Designed for elderly and differently-abled users</li>
-          <li><strong>Energy Efficient:</strong> Promotes sustainable home automation</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technical Implementation</h3>
-        <ul>
-          <li>Implemented Infrared Protocol for universal device communication</li>
-          <li>Developed real-time motion processing algorithms</li>
-          <li>Created gesture-to-IR signal conversion system</li>
-          <li>Optimized for low power consumption and wearable form factor</li>
-          <li>Extensive testing with various home appliances</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Impact & Recognition</h3>
-        <ul>
-          <li>Regional Finalist at prestigious e-Yantra Ideas Competition 2019-2020</li>
-          <li>Addresses UN Sustainable Development Goal 9 (Industry, Innovation, Infrastructure)</li>
-          <li>Promotes inclusive technology design for accessibility</li>
-          <li>Encourages energy-efficient home automation adoption</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technologies Used</h3>
-        <div class="tech-skills">
-          <span class="tech-tag">Arduino Nano</span>
-          <span class="tech-tag">MPU6050 IMU</span>
-          <span class="tech-tag">Infrared Protocol</span>
-          <span class="tech-tag">IR Receiver</span>
-          <span class="tech-tag">Embedded C</span>
-          <span class="tech-tag">Gesture Recognition</span>
-          <span class="tech-tag">Wearable Technology</span>
+      <button class="modal-close" onclick="closeModal('wavelet-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>The Wavelet – Gesture-Driven Interface</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> 2019 – 2020</span>
+            <span><i class="fas fa-trophy"></i> Regional Finalist - e-Yantra IIT Bombay</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>The Wavelet is a wearable device that revolutionizes human-machine interaction by enabling intuitive gesture-based control of home appliances and electronic devices. This project directly addresses UN SDG Goal 9 by promoting inclusive and sustainable technology innovation.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>Intuitive Gesture Control:</strong> Natural hand movements replace complex remote controls</li>
+            <li><strong>Universal Compatibility:</strong> Works with various IR-enabled appliances</li>
+            <li><strong>Real-time Motion Capture:</strong> MPU6050 IMU sensor for precise gesture recognition</li>
+            <li><strong>Accessibility Focus:</strong> Designed for elderly and differently-abled users</li>
+            <li><strong>Energy Efficient:</strong> Promotes sustainable home automation</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-cogs"></i> Technical Implementation</h3>
+          <ul>
+            <li>Implemented Infrared Protocol for universal device communication</li>
+            <li>Developed real-time motion processing algorithms</li>
+            <li>Created gesture-to-IR signal conversion system</li>
+            <li>Optimized for low power consumption and wearable form factor</li>
+            <li>Extensive testing with various home appliances</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>Arduino Nano</span><span>MPU6050 IMU</span><span>Infrared Protocol</span><span>IR Receiver</span><span>Embedded C</span><span>Gesture Recognition</span><span>Wearable Tech</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <a href="https://youtu.be/6MBsjS2hvnk" class="modal-link" target="_blank"><i class="fab fa-youtube"></i> Watch Full Demonstration</a>
         </div>
       </div>
-
-      <div class="modal-section">
-        <h3>Demo Video</h3>
-        <a href="https://youtu.be/6MBsjS2hvnk" class="project-link" target="_blank">
-          <i class="fab fa-youtube"></i> Watch Full Demonstration
-        </a>
-      </div>
     </div>
   </div>
 
-  <!-- Digital Hospital Modal -->
-  <div id="hospital-modal" class="project-modal">
+  <div class="modal-overlay" id="hospital-modal">
     <div class="modal-content">
-      <span class="close-modal" onclick="closeModal('hospital-modal')">&times;</span>
-      <h2 class="modal-title">Digital Hospital Transformation System</h2>
-      <div class="modal-duration">2019 – 2020</div>
-      <div class="award-badge">🥉 Pre-Finalist - EngiNX Innovation Contest by TCS</div>
-      
-      <div class="project-image">
-        <i class="fas fa-hospital"></i>
-        <p style="margin-left: 1rem; color: rgba(255,255,255,0.7);">Blockchain Healthcare Platform</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Project Overview</h3>
-        <p>A comprehensive digital transformation solution for healthcare institutions, replacing traditional paper-based systems with a secure, blockchain-powered platform that integrates IoT devices, cloud computing, and machine learning for enhanced patient care and data management.</p>
-      </div>
-
-      <div class="modal-section">
-        <h3>Key Features</h3>
-        <ul>
-          <li><strong>Blockchain Security:</strong> Tamper-proof medical records with complete data integrity</li>
-          <li><strong>Real-time IoT Integration:</strong> Connected medical devices for continuous monitoring</li>
-          <li><strong>Cloud-Based Architecture:</strong> Scalable AWS infrastructure for hospital-wide deployment</li>
-          <li><strong>Secure Data Sharing:</strong> Inter-departmental collaboration with privacy protection</li>
-          <li><strong>Machine Learning Analytics:</strong> Predictive insights for better patient outcomes</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technical Implementation</h3>
-        <ul>
-          <li>Implemented Blockchain as a Service (BaaS) on AWS Cloud platform</li>
-          <li>Developed secure APIs for inter-departmental data exchange</li>
-          <li>Created IoT device integration layer for real-time data collection</li>
-          <li>Built machine learning models for patient data analysis</li>
-          <li>Designed comprehensive security infrastructure for healthcare compliance</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Impact & Benefits</h3>
-        <ul>
-          <li>Eliminates paper-based inefficiencies in hospital operations</li>
-          <li>Ensures HIPAA compliance and patient data privacy</li>
-          <li>Enables real-time collaboration between medical departments</li>
-          <li>Provides audit trail for all medical record access and modifications</li>
-          <li>Supports telemedicine and remote patient monitoring</li>
-        </ul>
-      </div>
-
-      <div class="modal-section">
-        <h3>Technologies Used</h3>
-        <div class="tech-skills">
-          <span class="tech-tag">Blockchain</span>
-          <span class="tech-tag">AWS Cloud</span>
-          <span class="tech-tag">Blockchain as a Service</span>
-          <span class="tech-tag">IoT Integration</span>
-          <span class="tech-tag">Machine Learning</span>
-          <span class="tech-tag">Cloud Computing</span>
-          <span class="tech-tag">Healthcare APIs</span>
-          <span class="tech-tag">Data Analytics</span>
+      <button class="modal-close" onclick="closeModal('hospital-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>Digital Hospital Transformation System</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> 2019 – 2020</span>
+            <span><i class="fas fa-medal"></i> Pre-Finalist - TCS EngiNX Contest</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>A comprehensive digital transformation solution for healthcare institutions, replacing traditional paper-based systems with a secure, blockchain-powered platform that integrates IoT devices, cloud computing, and machine learning for enhanced patient care and data management.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>Blockchain Security:</strong> Tamper-proof medical records with complete data integrity</li>
+            <li><strong>Real-time IoT Integration:</strong> Connected medical devices for continuous monitoring</li>
+            <li><strong>Cloud-Based Architecture:</strong> Scalable AWS infrastructure for hospital-wide deployment</li>
+            <li><strong>Secure Data Sharing:</strong> Inter-departmental collaboration with privacy protection</li>
+            <li><strong>Machine Learning Analytics:</strong> Predictive insights for better patient outcomes</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-cogs"></i> Technical Implementation</h3>
+          <ul>
+            <li>Implemented Blockchain as a Service (BaaS) on AWS Cloud platform</li>
+            <li>Developed secure APIs for inter-departmental data exchange</li>
+            <li>Created IoT device integration layer for real-time data collection</li>
+            <li>Built machine learning models for patient data analysis</li>
+            <li>Designed comprehensive security infrastructure for healthcare compliance</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>Blockchain</span><span>AWS Cloud</span><span>BaaS</span><span>IoT</span><span>Machine Learning</span><span>Cloud Computing</span><span>Healthcare APIs</span><span>Data Analytics</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <a href="https://youtu.be/PdcMySVy0eQ" class="modal-link" target="_blank"><i class="fab fa-youtube"></i> Watch System Demo</a>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="modal-section">
-        <h3>Demo Video</h3>
-        <a href="https://youtu.be/PdcMySVy0eQ" class="project-link" target="_blank">
-          <i class="fab fa-youtube"></i> Watch System Demo
-        </a>
+  <div class="modal-overlay" id="transporthub-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('transporthub-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>Futuristic Multimodal Transportation Hub</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> Winter 2024–2025</span>
+            <span><i class="fas fa-university"></i> University of Oldenburg</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>Designed and engineered a futuristic multimodal transport hub integrating maglev, autonomous air taxis, and AI-driven traffic management. The project emphasized modular system design and seamless interoperability between hardware and software subsystems.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>System Architecture:</strong> Defined modular components ensuring hardware-software interoperability</li>
+            <li><strong>Safety-Critical Analysis:</strong> Conducted ASIL-based hazard analysis with risk classifications</li>
+            <li><strong>Simulation Frameworks:</strong> Built test scenarios for capsule routing, air taxi boarding, and traffic optimization</li>
+            <li><strong>Future Mobility Integration:</strong> Designed for compatibility with urban mobility simulation platforms</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>Systems Engineering</span><span>Simulation</span><span>AI Traffic Management</span><span>ASIL Safety Analysis</span><span>Urban Mobility</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Futuristic Multimodal Transportation Hub Modal -->
-<div id="transporthub-modal" class="project-modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('transporthub-modal')">&times;</span>
-    <h2 class="modal-title">Futuristic Multimodal Transportation Hub with Air Taxi Integration</h2>
-    <div class="modal-duration">Carl von Ossietzky University Oldenburg — Winter 2024–2025</div>
-
-    <div class="project-image">
-      <i class="fas fa-plane-departure"></i>
-      <p style="margin-left: 1rem; color: rgba(255,255,255,0.7);">AI-Driven Transport Hub Simulation</p>
-    </div>
-
-    <div class="modal-section">
-      <h3>Project Overview</h3>
-      <p>
-        Designed and engineered a futuristic multimodal transport hub integrating maglev, autonomous air taxis, and AI-driven traffic management. The project emphasized modular system design and seamless interoperability between hardware and software subsystems.
-      </p>
-    </div>
-
-    <div class="modal-section">
-      <h3>Key Features</h3>
-      <ul>
-        <li><strong>System Architecture:</strong> Defined modular components ensuring hardware-software interoperability.</li>
-        <li><strong>Safety-Critical Analysis:</strong> Conducted ASIL-based hazard analysis with risk classifications.</li>
-        <li><strong>Simulation Frameworks:</strong> Built test scenarios for capsule routing, air taxi boarding, and traffic optimization.</li>
-        <li><strong>Future Mobility Integration:</strong> Designed for compatibility with urban mobility simulation platforms.</li>
-      </ul>
-    </div>
-
-    <div class="modal-section">
-      <h3>Technologies Used</h3>
-      <div class="tech-skills">
-        <span class="tech-tag">Systems Engineering</span>
-        <span class="tech-tag">Simulation</span>
-        <span class="tech-tag">AI Traffic Management</span>
-        <span class="tech-tag">ASIL Safety Analysis</span>
-        <span class="tech-tag">Urban Mobility</span>
+  <div class="modal-overlay" id="webar-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('webar-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>Interactive Web-AR Navigation System</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> Winter 2024–2025</span>
+            <span><i class="fas fa-university"></i> University of Oldenburg</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>An interactive web-based Augmented Reality (AR) navigation system designed to optimize route guidance within a university campus. The system provides real-time AR path overlays triggered via QR codes, enabling easy browser-based navigation without dedicated apps.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>Web-based AR Navigation:</strong> Works directly in browsers, no installation required</li>
+            <li><strong>Optimized Route Guidance:</strong> AR arrows and markers overlaid on real-world surroundings</li>
+            <li><strong>QR Code Integration:</strong> Building entrances and maps serve as access points</li>
+            <li><strong>User-Centric Design:</strong> Iterative refinement based on surveys and usability testing</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-cogs"></i> Technical Implementation</h3>
+          <ul>
+            <li>Developed using WebAR SDKs (AR.js / 8th Wall) for AR overlays</li>
+            <li>QR codes generated and linked to AR navigation routes</li>
+            <li>Designed and tested UI/UX prototypes in Figma & Adobe XD</li>
+            <li>Survey and feedback data collected via Google Forms</li>
+            <li>Statistical validation conducted using Shapiro-Wilk Test and Paired Samples T-Test</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>WebAR SDK</span><span>QR Code Generator</span><span>Figma</span><span>Adobe XD</span><span>Google Forms</span><span>Statistical Testing</span><span>HCI / UCD</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Interactive Web-AR Navigation Modal -->
-<div id="webar-modal" class="project-modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('webar-modal')">&times;</span>
-    <h2 class="modal-title">Interactive Web-AR Navigation System</h2>
-    <div class="modal-duration">Carl von Ossietzky University Oldenburg — Winter 2024–2025</div>
 
-    <div class="project-image">
-      <i class="fas fa-vr-cardboard"></i>
-      <p style="margin-left: 1rem; color: rgba(255,255,255,0.7);">Web-AR Campus Navigation Interface</p>
-    </div>
-
-    <!-- Project Overview -->
-    <div class="modal-section">
-      <h3>Project Overview</h3>
-      <p>
-        An interactive web-based Augmented Reality (AR) navigation system designed to optimize route guidance within a university campus. 
-        The system provides real-time AR path overlays triggered via QR codes, enabling easy browser-based navigation without dedicated apps.
-      </p>
-    </div>
-
-    <!-- Key Features -->
-    <div class="modal-section">
-      <h3>Key Features</h3>
-      <ul>
-        <li><strong>Web-based AR Navigation:</strong> Works directly in browsers, no installation required</li>
-        <li><strong>Optimized Route Guidance:</strong> AR arrows and markers overlaid on real-world surroundings</li>
-        <li><strong>QR Code Integration:</strong> Building entrances and maps serve as access points</li>
-        <li><strong>User-Centric Design:</strong> Iterative refinement based on surveys and usability testing</li>
-      </ul>
-    </div>
-
-    <!-- Technical Implementation -->
-    <div class="modal-section">
-      <h3>Technical Implementation</h3>
-      <ul>
-        <li>Developed using WebAR SDKs (e.g., AR.js / 8th Wall) for AR overlays</li>
-        <li>QR codes generated and linked to AR navigation routes</li>
-        <li>Designed and tested UI/UX prototypes in Figma & Adobe XD</li>
-        <li>Survey and feedback data collected via Google Forms</li>
-        <li>Statistical validation conducted using Shapiro-Wilk Test and Paired Samples T-Test</li>
-      </ul>
-    </div>
-
-    <!-- Impact & Benefits -->
-    <div class="modal-section">
-      <h3>Impact & Benefits</h3>
-      <ul>
-        <li>Statistically significant improvement in navigation time compared to traditional maps</li>
-        <li>Positive feedback on intuitiveness and convenience of QR-triggered AR markers</li>
-        <li>Provided recommendations for QR code placement strategies</li>
-        <li>Laid the foundation for future integration of voice-assisted and 3D avatar navigation</li>
-      </ul>
-    </div>
-
-    <!-- Technologies Used -->
-    <div class="modal-section">
-      <h3>Technologies Used</h3>
-      <div class="tech-skills">
-        <span class="tech-tag">WebAR SDK (AR.js / 8th Wall)</span>
-        <span class="tech-tag">QR Code Generator</span>
-        <span class="tech-tag">Figma</span>
-        <span class="tech-tag">Adobe XD</span>
-        <span class="tech-tag">Google Forms</span>
-        <span class="tech-tag">Excel / SPSS / Python</span>
-        <span class="tech-tag">Statistical Testing</span>
+  <!-- TechNav Modal -->
+  <div class="modal-overlay" id="technav-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('technav-modal')"><i class="fas fa-times"></i></button>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2>TechNav — Neural Execution Engine</h2>
+          <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> 2025 – Ongoing</span>
+            <span><i class="fas fa-rocket"></i> Live Prototype</span>
+            <span><i class="fas fa-tag"></i> Interactive Decision Engine</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-bullseye"></i> Project Overview</h3>
+          <p>TechNav is an interactive decision engine that transforms how entrepreneurs and creators navigate the overwhelming landscape of tools, platforms, and strategies. Instead of static lists, users answer a series of plain-language questions about their goals, constraints, and current stage — and receive a personalized, end-to-end execution flow.</p>
+          <p>The system covers <strong>6 pillars</strong> (Build a Startup, Sell Digital Products, Automate Workflows, Build a Creator Page, Use AI Effectively, Earn Money Online) with <strong>40+ mapped tools</strong>, branching decision trees, and infinite flow combinations.</p>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-star"></i> Key Features</h3>
+          <ul>
+            <li><strong>3D Ring Selector:</strong> An interactive 3D carousel built with CSS transforms for selecting your journey pillar</li>
+            <li><strong>Branching Decision Trees:</strong> Dynamic question paths that adapt based on previous answers — no two flows are identical</li>
+            <li><strong>Tool Intelligence:</strong> Each recommended tool includes pros, cons, cost, skill level, skip signals, and alternatives</li>
+            <li><strong>Prompt Library:</strong> Ready-to-copy prompts following a 5-part structure (Role → Task → Audience → Constraints → Format)</li>
+            <li><strong>Resource Playbooks:</strong> Curated resources like "50 Digital Product Ideas", "15-Hour Launch Sprint", and "Tool Tier Lists"</li>
+            <li><strong>Progressive Disclosure:</strong> Free plan shows full flow + first 2 steps; Pro unlocks all steps and prompts</li>
+            <li><strong>WebGL Background:</strong> Three.js particle cloud with mouse-reactive camera for immersive atmosphere</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-cogs"></i> Technical Implementation</h3>
+          <ul>
+            <li>Built entirely in vanilla HTML/CSS/JS — no frameworks, no build step</li>
+            <li>Three.js for the WebGL particle cloud background with additive blending and fog</li>
+            <li>CSS 3D transforms for the ring selector with snap-to-card behavior</li>
+            <li>State machine for question flow management with history/backtracking</li>
+            <li>Dynamic content generation based on user answers — no hardcoded paths</li>
+            <li>Modal system for tool deep-dives with copy-to-clipboard prompts</li>
+            <li>Responsive design with reduced-motion support for accessibility</li>
+          </ul>
+        </div>
+        <div class="modal-section">
+          <h3><i class="fas fa-layer-group"></i> Technologies</h3>
+          <div class="modal-tags">
+            <span>HTML5</span><span>CSS3</span><span>Vanilla JavaScript</span><span>Three.js</span><span>WebGL</span><span>CSS 3D Transforms</span><span>State Machines</span><span>Interactive Design</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <a href="technav_v6.html" class="modal-link" target="_blank"><i class="fas fa-external-link-alt"></i> Try the Live Demo</a>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
 
   <script>
-    // Modal functionality
-    function openModal(modalId) {
-      document.getElementById(modalId).style.display = 'block';
-      document.body.style.overflow = 'hidden';
-    }
+    // Typewriter Effect
+    const phrases = ["AI Engineer", "HCI Researcher", "Data Architect", "Deep Learning Specialist", "Autonomous Systems Enthusiast"];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typewriter = document.getElementById('typewriter');
 
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-      document.body.style.overflow = 'auto';
+    function typeEffect() {
+      const current = phrases[phraseIndex];
+      if (isDeleting) {
+        typewriter.textContent = current.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typewriter.textContent = current.substring(0, charIndex + 1);
+        charIndex++;
+      }
+      let typeSpeed = isDeleting ? 50 : 100;
+      if (!isDeleting && charIndex === current.length) {
+        typeSpeed = 2000;
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        typeSpeed = 500;
+      }
+      setTimeout(typeEffect, typeSpeed);
     }
+    typeEffect();
 
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-      const modals = document.getElementsByClassName('project-modal');
-      for (let modal of modals) {
-        if (event.target === modal) {
-          modal.style.display = 'none';
-          document.body.style.overflow = 'auto';
+    // Canvas Particle Background
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    const particleCount = 80;
+    const connectionDistance = 150;
+    const mouseDistance = 200;
+    let mouse = { x: null, y: null };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2 + 1;
+        this.color = Math.random() > 0.5 ? 'rgba(0, 212, 255, ' : 'rgba(192, 132, 252, ';
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        if (mouse.x != null) {
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouseDistance) {
+            const force = (mouseDistance - distance) / mouseDistance;
+            this.vx += dx * force * 0.001;
+            this.vy += dy * force * 0.001;
+          }
         }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color + '0.6)';
+        ctx.fill();
       }
     }
 
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+    initParticles();
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < connectionDistance) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0, 212, 255, ${0.15 * (1 - distance / connectionDistance)})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    window.addEventListener('mousemove', e => {
+      mouse.x = e.x;
+      mouse.y = e.y;
+    });
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
     // Mobile menu toggle
-    document.querySelector('.menu-toggler').addEventListener('click', function() {
-      document.querySelector('.navbar-menu').classList.toggle('active');
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // Active nav link
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (scrollY >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+      navItems.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Fade in animation on scroll
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeElements.forEach(el => fadeObserver.observe(el));
+
+    // Skill bar animation
+    const skillBars = document.querySelectorAll('.skill-bar-fill');
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const width = entry.target.getAttribute('data-width');
+          entry.target.style.width = width + '%';
+        }
+      });
+    }, { threshold: 0.5 });
+    skillBars.forEach(bar => skillObserver.observe(bar));
+
+    // Go top button
+    const goTop = document.getElementById('goTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 500) {
+        goTop.classList.add('visible');
+      } else {
+        goTop.classList.remove('visible');
+      }
+    });
+    goTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    // Close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+          modal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      }
     });
   </script>
-
-  <!-- Works -->
-  <!-- Contact -->
-  <!-- Contact Section -->
-<!-- <section id="contact">
-  <div class="inner-width">
-    <h1 class="section-title">Get in touch</h1>
-    
-    <div class="contact-info">
-      <div class="item">
-        <i class="fas fa-mobile-alt"></i>
-        (+49) 017645703155
-      </div>
-      <div class="item">
-        <i class="fas fa-envelope"></i>
-        jeenas1421@gmail.com
-      </div>
-      <div class="item">
-        <i class="fas fa-map-marker-alt"></i>
-        Oldenburg, Germany
-      </div>
-    </div>
-
-    <form action="#" class="contact-form">
-      <input type="text" class="nameZone" placeholder="Your Full Name">
-      <input type="email" class="emailZone" placeholder="Your Email">
-      <input type="text" class="subjectZone" placeholder="Subject">
-      <textarea class="messageZone" placeholder="Message"></textarea>
-      <input type="submit" value="Send Message" class="btn">
-    </form>
-  </div>
-</section> -->
-
-<!-- Extracurricular / Volunteering Section -->
-<!-- Volunteering / Extracurricular Section -->
-<section id="contact" style="padding: 50px 20px; background-color: #f9f9f9; font-family: Arial, sans-serif;">
-  <div style="max-width: 900px; margin: 0 auto;">
-    <h1 style="text-align: center; font-size: 36px; margin-bottom: 40px; color: #2c3e50;">Leadership & Involvement</h1>
-
-    <!-- NSS Volunteer -->
-    <div style="margin-bottom: 40px; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-      <h2 style="font-size: 28px; margin-bottom: 10px; color: #34495e;">National Service Scheme (NSS) Volunteer</h2>
-      <p style="font-weight: bold; margin-bottom: 10px;">[2017 – 2019] India</p>
-      <p style="margin-bottom: 10px;">Completed a two-year tenure, contributing over 240 hours of community service. Highlights include:</p>
-      <ul style="margin-left: 20px; margin-bottom: 10px;">
-        <li>Hospital Renovation Work: Assisted in cleaning, painting, and minor repairs.</li>
-        <li>Old Age Home Outreach: Engaged elderly residents with activities and support.</li>
-        <li>Environmental Clean-Up at Tourist Site: Maintained pathways and promoted eco-tourism.</li>
-        <li>NSS Annual Special Camp: Participated in rural development and leadership activities (31st Aug – 6th Sep 2017).</li>
-      </ul>
-      <p>Link: <a href="https://drive.google.com/file/d/1q9oquwNEwgTSctNgVDDb9xrZTibGFRjB/view?usp=sharing" target="_blank" style="color: #2980b9; text-decoration: none;">NSS Certificate</a></p>
-    </div>
-
-    <!-- TCS Volunteer -->
-    <div style="margin-bottom: 40px; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-      <h2 style="font-size: 28px; margin-bottom: 10px; color: #34495e;">TCS Youth Employment Program Volunteer</h2>
-      <p style="font-weight: bold; margin-bottom: 10px;">[11/2020 – 09/2023] India</p>
-      <p style="margin-bottom: 10px;">Volunteer Activities:</p>
-      <ul style="margin-left: 20px; margin-bottom: 10px;">
-        <li>Conducted technology training workshops (PowerPoint, Excel, technical skills) for rural students.</li>
-        <li>Provided interview preparation guidance, mock interviews, and feedback.</li>
-        <li>Guided students on essential skill development and employability.</li>
-        <li>Referred successful candidates to the next stage of interviews.</li>
-      </ul>
-      <p>Links: 
-        <a href="https://drive.google.com/file/d/1z2sswFgJsk4J1PH2vlGv6As9eZ14Jknz/view?usp=sharing" target="_blank" style="color: #2980b9; text-decoration: none;">Certificate 1</a>, 
-        <a href="1O2o9VsZUnn_jzXv13Mmy0xTOMw7CRxM7/view?usp=sharing" target="_blank" style="color: #2980b9; text-decoration: none;">Certificate 2</a>
-      </p>
-    </div>
-
-    <!-- Writing Stories Hobby -->
-<div style="margin-bottom: 40px; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-  <h2 style="font-size: 28px; margin-bottom: 10px; color: #34495e;">Writing Stories</h2>
-  <p style="font-weight: bold; margin-bottom: 10px;">[Ongoing Hobby]</p>
-  <p style="margin-bottom: 10px;">Creative writing has been a personal passion, where I explore imagination through short stories and novels.</p>
-  <p>Read my work here: 
-    <a href="novel.html" target="_blank" style="color: #2980b9; text-decoration: none;">Story 1</a>
-    <a href="nove2.html" target="_blank" style="color: #2980b9; text-decoration: none;">Story 2</a>  
-    <a href="nove3.html" target="_blank" style="color: #2980b9; text-decoration: none;">Story 3</a>
-    <a href="the-grave.html" target="_blank" style="color: #2980b9; text-decoration: none;">Story 4</a> 
-  </p>
-</div>
-
-<div style="margin-bottom: 40px; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-  <h2 style="font-size: 28px; margin-bottom: 10px; color: #34495e;">Additional Projects</h2>
-  <p style="font-weight: bold; margin-bottom: 10px;">Additional Projects</p>
-  <!-- <p style="margin-bottom: 10px;">Creative writing has been a personal passion, where I explore imagination through short stories and novels.</p> -->
-    <a href="Project_BI_Final_abhi.html" target="_blank" style="color: #2980b9; text-decoration: none;">Business Intelligence Project</a>
-  </p>
-</div>
-
-
-<div style="margin-bottom: 40px; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-  <h2 style="font-size: 28px; margin-bottom: 10px; color: #34495e;">Startup Project</h2>
-  <p style="font-weight: bold; margin-bottom: 10px;">First MVP </p>
-  <p style="margin-bottom: 10px;">Neurodivergent Workflow Management Application</p>
-    <a href="v1/index.html" target="_blank" style="color: #2980b9; text-decoration: none;">Ripple</a>
-  </p>
-</div>
-
-    
-  </div>
-</section>
-
-
-
-  <!-- Footer
-  <footer>
-    <div class="inner-width">
-      <div class="copyright">
-        &copy; 2020 | Created & Designed By <a href="#">darkcode</a>
-      </div>
-      <div class="sm">
-        <a href="#" class="fab fa-facebook-f"></a>
-        <a href="#" class="fab fa-twitter"></a>
-        <a href="#" class="fab fa-instagram"></a>
-        <a href="#" class="fab fa-linkedin-in"></a>
-        <a href="#" class="fab fa-youtube"></a>
-      </div>
-    </div>
-  </footer> -->
-
-  <!-- Go Top BTN -->
-  <button class="goTop fas fa-arrow-up"></button>
-
 </body>
 </html>

@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechNav — Neural Execution Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  --void:#05080f;--void2:#0a0f1a;--void3:#0d1324;--neon:#00f0ff;--neon2:#7b2dff;--neon3:#ff2d7b;--neon4:#2dff7b;--neon5:#ff9d00;
+  --text:#e0e6f0;--text2:#8a94a8;--text3:#4a5570;--glass:rgba(10,15,30,0.75);--glass2:rgba(10,15,30,0.4);
+  --border:rgba(0,240,255,0.08);--border2:rgba(0,240,255,0.15);--glow:0 0 20px rgba(0,240,255,0.3),0 0 60px rgba(0,240,255,0.08);
+  --radius:16px;--radius-sm:10px;
+  /* depth / glass-3D system */
+  --glass-hi:rgba(18,26,46,0.55);--glass-lo:rgba(8,12,24,0.35);
+  --edge-light:rgba(255,255,255,0.07);--edge-dark:rgba(0,0,0,0.4);
+  --depth-1:0 1px 0 var(--edge-light) inset,0 -1px 0 var(--edge-dark) inset,0 18px 40px -18px rgba(0,0,0,0.7);
+  --depth-2:0 1px 0 var(--edge-light) inset,0 24px 60px -20px rgba(0,0,0,0.8),0 0 40px rgba(0,240,255,0.06);
+  --depth-float:0 30px 80px -28px rgba(0,0,0,0.9),0 0 50px rgba(0,240,255,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+body{background:var(--void);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+
+.bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-grid{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(0,240,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.02) 1px,transparent 1px);background-size:60px 60px;transform:perspective(1000px) rotateX(60deg) translateY(-200px) scale(2);opacity:0.4;animation:gridFloat 20s ease-in-out infinite}
+@keyframes gridFloat{0%,100%{transform:perspective(1000px) rotateX(60deg) translateY(-200px) scale(2)}50%{transform:perspective(1000px) rotateX(60deg) translateY(-180px) scale(2.05)}}
+
+.particle{position:fixed;width:2px;height:2px;background:var(--neon);border-radius:50%;pointer-events:none;z-index:2;opacity:0.6;animation:particleFloat linear infinite}
+@keyframes particleFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:0.6}90%{opacity:0.6}100%{transform:translateY(-100vh) rotate(720deg);opacity:0}}
+
+.noise{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(5,8,15,0.95) 0%,rgba(5,8,15,0.8) 100%);backdrop-filter:blur(20px)}
+.hbar{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:20px}
+.wordmark{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.03em;display:flex;align-items:center;gap:12px;background:none;border:none;color:var(--text);cursor:pointer;position:relative}
+.wordmark .logo-orb{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon2));position:relative;overflow:hidden;box-shadow:0 0 20px rgba(0,240,255,0.3),inset 0 0 10px rgba(255,255,255,0.1)}
+.wordmark .logo-orb::before{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--void);border:1px solid rgba(0,240,255,0.2)}
+.wordmark .logo-orb::after{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:0.5;transform:translateX(-50%) scale(1.5)}}
+
+nav{display:flex;align-items:center;gap:8px}
+.navbtn{background:transparent;border:1px solid transparent;border-radius:99px;padding:8px 18px;font-family:'Inter',sans-serif;font-weight:500;font-size:13.5px;color:var(--text2);cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.navbtn:hover{color:var(--text);border-color:var(--border2)}
+.navbtn[aria-current="true"]{color:var(--neon);border-color:rgba(0,240,255,0.25);background:rgba(0,240,255,0.05)}
+.plan{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border:1px solid var(--border);border-radius:99px;padding:5px 14px;color:var(--text3);background:var(--glass2);cursor:pointer;transition:all 0.3s;letter-spacing:0.05em}
+.plan.pro{color:var(--neon);border-color:rgba(0,240,255,0.3);background:rgba(0,240,255,0.06);box-shadow:0 0 15px rgba(0,240,255,0.1)}
+
+main{position:relative;z-index:10}
+.screen{display:none;padding:100px 0 120px;min-height:100vh}
+.screen.active{display:block}
+.wrap{max-width:1400px;margin:0 auto;padding:0 24px}
+
+.hero-section{position:relative;padding:140px 0 80px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1400px;margin:0 auto;padding:0 24px}
+@media(max-width:1000px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.15em;color:var(--neon);border:1px solid rgba(0,240,255,0.2);border-radius:99px;padding:6px 16px;background:rgba(0,240,255,0.05);margin-bottom:28px;position:relative;overflow:hidden}
+.hero-badge::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.1),transparent);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;line-height:1.05;letter-spacing:-0.03em;margin-bottom:24px}
+.hero-title .gradient-text{background:linear-gradient(135deg,var(--neon),var(--neon2),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative}
+.hero-title .gradient-text::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--neon),var(--neon2),var(--neon3));filter:blur(40px);opacity:0.15;z-index:-1}
+
+.hero-subtitle{font-size:17px;color:var(--text2);max-width:520px;line-height:1.7;margin-bottom:36px}
+
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+.btn-primary{font-family:'Inter',sans-serif;font-weight:600;font-size:15px;border:none;border-radius:99px;padding:14px 32px;background:linear-gradient(135deg,var(--neon),var(--neon2));color:var(--void);cursor:pointer;position:relative;overflow:hidden;transition:all 0.3s;box-shadow:0 4px 30px rgba(0,240,255,0.25)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(0,240,255,0.35)}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.2),transparent);transform:translateX(-100%);transition:transform 0.6s}
+.btn-primary:hover::after{transform:translateX(100%)}
+
+.btn-ghost{font-family:'Inter',sans-serif;font-weight:500;font-size:15px;border:1px solid var(--border2);border-radius:99px;padding:14px 28px;background:transparent;color:var(--text);cursor:pointer;transition:all 0.3s;backdrop-filter:blur(10px)}
+.btn-ghost:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 0 20px rgba(0,240,255,0.1)}
+
+.hero-stats{display:flex;gap:32px}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--neon);text-shadow:0 0 20px rgba(0,240,255,0.3)}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+
+.visualizer{position:relative;height:500px;display:flex;align-items:center;justify-content:center;perspective:1200px}
+@media(max-width:1000px){.visualizer{height:350px}}
+.viz-scene{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:sceneRotate 30s linear infinite}
+@keyframes sceneRotate{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+
+.viz-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 30%30%,var(--neon),var(--neon2));box-shadow:0 0 60px rgba(0,240,255,0.4),0 0 120px rgba(123,45,255,0.2),inset 0 0 30px rgba(255,255,255,0.1);animation:corePulse 3s ease-in-out infinite;z-index:10}
+@keyframes corePulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
+.viz-core::before{content:'';position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(0,240,255,0.15);animation:ringExpand 3s ease-in-out infinite}
+.viz-core::after{content:'';position:absolute;inset:-40px;border-radius:50%;border:1px solid rgba(0,240,255,0.08);animation:ringExpand 3s ease-in-out infinite 0.5s}
+@keyframes ringExpand{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0.3}}
+
+.viz-orbit{position:absolute;top:50%;left:50%;width:280px;height:280px;border:1px solid rgba(0,240,255,0.08);border-radius:50%;transform:translate(-50%,-50%) rotateX(70deg);animation:orbitSpin 20s linear infinite}
+@keyframes orbitSpin{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(0deg)}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(360deg)}}
+
+.viz-node{position:absolute;width:48px;height:48px;border-radius:50%;background:var(--glass);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--neon);box-shadow:0 0 15px rgba(0,240,255,0.1);backdrop-filter:blur(10px);cursor:pointer;transition:all 0.3s;z-index:5}
+.viz-node:hover{transform:scale(1.2);border-color:var(--neon);box-shadow:0 0 30px rgba(0,240,255,0.3)}
+.viz-node.n1{top:0;left:50%;transform:translate(-50%,-50%)}
+.viz-node.n2{top:25%;right:0;transform:translate(50%,-50%)}
+.viz-node.n3{bottom:0;right:25%;transform:translate(50%,50%)}
+.viz-node.n4{bottom:0;left:25%;transform:translate(-50%,50%)}
+.viz-node.n5{top:25%;left:0;transform:translate(-50%,-50%)}
+
+.viz-line{position:absolute;top:50%;left:50%;width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);transform-origin:left center;opacity:0.3;animation:linePulse 2s ease-in-out infinite}
+.viz-line.l1{transform:translate(-50%,-50%) rotate(0deg)}
+.viz-line.l2{transform:translate(-50%,-50%) rotate(72deg)}
+.viz-line.l3{transform:translate(-50%,-50%) rotate(144deg)}
+.viz-line.l4{transform:translate(-50%,-50%) rotate(216deg)}
+.viz-line.l5{transform:translate(-50%,-50%) rotate(288deg)}
+@keyframes linePulse{0%,100%{opacity:0.2}50%{opacity:0.6}}
+
+.viz-label{position:absolute;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap}
+.viz-label.l1{top:15%;left:50%;transform:translateX(-50%)}
+.viz-label.l2{top:35%;right:10%}
+.viz-label.l3{bottom:15%;right:20%}
+.viz-label.l4{bottom:15%;left:20%}
+.viz-label.l5{top:35%;left:10%}
+
+.pillars-section{padding:60px 0}
+.section-header{text-align:center;margin-bottom:50px}
+.section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.2em;color:var(--neon);margin-bottom:12px}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;margin-bottom:16px}
+.section-desc{color:var(--text2);font-size:16px;max-width:560px;margin:0 auto}
+
+.pillars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.pillar-card{position:relative;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:28px 26px;cursor:pointer;transition:all 0.4s;overflow:hidden;backdrop-filter:blur(10px)}
+.pillar-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:0;transition:opacity 0.4s}
+.pillar-card:hover::before{opacity:1}
+.pillar-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:var(--glow)}
+
+.pillar-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.12em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.pillar-num::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.pillar-name{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin-bottom:10px;color:var(--text)}
+.pillar-desc{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.pillar-meta{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3)}
+.pillar-meta span{display:flex;align-items:center;gap:6px}
+.pillar-arrow{position:absolute;bottom:20px;right:24px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:14px;transition:all 0.3s}
+.pillar-card:hover .pillar-arrow{border-color:var(--neon);color:var(--neon);box-shadow:0 0 15px rgba(0,240,255,0.2);transform:translateX(4px)}
+
+.question-section{padding:120px 0 80px}
+.q-container{max-width:800px;margin:0 auto}
+
+.q-progress{display:flex;gap:6px;margin-bottom:40px}
+.q-progress .bar{flex:1;height:3px;border-radius:99px;background:var(--void3);overflow:hidden}
+.q-progress .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--neon),var(--neon2));transition:width 0.6s;width:0%}
+.q-progress .bar.done .bar-fill{width:100%}
+.q-progress .bar.active .bar-fill{width:60%;animation:progressPulse 1.5s ease-in-out infinite}
+@keyframes progressPulse{0%,100%{width:40%}50%{width:70%}}
+
+.q-crumbs{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:30px;font-family:'JetBrains Mono',monospace;font-size:11px}
+.q-crumb{background:var(--glass);border:1px solid var(--border);border-radius:99px;padding:5px 14px;color:var(--text2);transition:all 0.3s}
+.q-crumb.active{color:var(--neon);border-color:rgba(0,240,255,0.25);background:rgba(0,240,255,0.05)}
+.q-crumb .sep{color:var(--text3);margin:0 4px}
+
+.q-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:40px 36px;backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:0.5}
+
+.q-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--neon);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:16px}
+.q-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3.5vw,36px);font-weight:700;line-height:1.15;margin-bottom:12px}
+.q-sub{color:var(--text2);font-size:15px;margin-bottom:36px;max-width:600px}
+
+.q-options{display:grid;gap:12px}
+.q-option{position:relative;text-align:left;background:var(--void2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 22px;display:flex;align-items:flex-start;gap:16px;cursor:pointer;transition:all 0.3s;overflow:hidden}
+.q-option::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--neon),var(--neon2));opacity:0;transition:opacity 0.3s}
+.q-option:hover{border-color:var(--border2);background:var(--void3);transform:translateX(4px)}
+.q-option:hover::before{opacity:1}
+.q-option:hover .opt-key{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px rgba(0,240,255,0.2)}
+
+.opt-key{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;flex:0 0 auto;transition:all 0.3s;margin-top:2px}
+.opt-content{flex:1}
+.opt-content b{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;display:block;margin-bottom:4px;color:var(--text)}
+.opt-content .hint{font-size:13.5px;color:var(--text2);line-height:1.5}
+
+.q-back{margin-top:24px;display:flex;gap:12px}
+
+.ready-section{padding:120px 0 80px}
+.ready-card{max-width:700px;margin:0 auto;text-align:center;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:60px 40px;backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.ready-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:0.5}
+.ready-card::after{content:'';position:absolute;bottom:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,240,255,0.08),transparent 70%);pointer-events:none}
+
+.ready-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--neon);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:20px}
+.ready-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.1;margin-bottom:16px}
+.ready-desc{color:var(--text2);font-size:16px;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto}
+
+.ready-preview{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:32px;padding:20px;background:var(--void2);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.ready-node{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;background:var(--void3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text2);transition:all 0.3s}
+.ready-node.first{border-color:var(--neon);color:var(--neon);box-shadow:0 0 15px rgba(0,240,255,0.15)}
+.ready-arrow{color:var(--text3);font-size:18px}
+.ready-more{border-style:dashed}
+
+.ready-summary{background:var(--void2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 22px;text-align:left;font-size:14px;color:var(--text2);margin-bottom:36px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.6}
+.ready-summary b{color:var(--text);font-weight:600}
+
+.flow-section{padding:100px 0 80px}
+.flow-header{margin-bottom:40px}
+.flow-header .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--neon);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px}
+.flow-header h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.1;margin-bottom:12px}
+.flow-header .sub{color:var(--text2);font-size:15px;max-width:680px;line-height:1.6}
+
+.flow-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.flow-chip{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;border-radius:99px;padding:5px 14px;border:1px solid var(--border);background:var(--glass);color:var(--text2);transition:all 0.3s}
+.flow-chip.free{color:var(--neon4);border-color:rgba(45,255,123,0.25);background:rgba(45,255,123,0.05)}
+.flow-chip.tune{color:var(--neon);border-color:rgba(0,240,255,0.2);background:rgba(0,240,255,0.05)}
+
+.flow-tree-container{position:relative;margin:40px 0;padding:40px 0;overflow-x:auto;overflow-y:hidden;min-height:500px}
+.flow-tree{display:flex;align-items:flex-start;gap:0;min-width:max-content;padding:0 20px;position:relative}
+
+.fnode-wrapper{position:relative;padding:0 30px;flex:0 0 auto}
+.fnode-wrapper:first-child{padding-left:0}
+.fnode-wrapper:last-child{padding-right:0}
+
+.fnode{position:relative;width:240px;flex:0 0 auto}
+.fnode-card{
+  background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 18px;display:flex;flex-direction:column;gap:10px;
+  transition:all 0.4s;position:relative;cursor:pointer;
+  backdrop-filter:blur(15px);overflow:hidden;
+}
+.fnode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:0;transition:opacity 0.4s}
+.fnode-card:hover::before{opacity:1}
+.fnode-card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--border2);box-shadow:var(--glow);z-index:10}
+.fnode-card.locked{border-style:dashed;border-color:rgba(154,107,18,0.4);background:rgba(154,107,18,0.04);cursor:not-allowed}
+.fnode-card.locked:hover{transform:none;box-shadow:none;border-color:rgba(154,107,18,0.4)}
+.fnode-card.locked .ftool,.fnode-card.locked .ftask{filter:blur(3px);opacity:0.4}
+
+.fnode-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.fnode-num::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.fnode-tool{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.15;color:var(--text)}
+.fnode-task{font-size:13px;color:var(--text2);line-height:1.5;flex:1}
+.fnode-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.fnode-chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 10px;border-radius:99px;background:var(--void2);color:var(--text3);font-weight:500;white-space:nowrap;border:1px solid var(--border)}
+.fnode-chip.time{color:var(--neon5);border-color:rgba(255,157,0,0.2);background:rgba(255,157,0,0.05)}
+.fnode-chip.cost{color:var(--neon4);border-color:rgba(45,255,123,0.2);background:rgba(45,255,123,0.05)}
+.fnode-tap{font-size:11.5px;font-weight:600;color:var(--neon);margin-top:4px;display:flex;align-items:center;gap:6px;transition:all 0.3s}
+.fnode-card:hover .fnode-tap{gap:10px}
+
+.lockbadge{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(154,107,18,0.15);color:#c49a3a;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(154,107,18,0.3)}
+
+.fconn{flex:0 0 50px;display:flex;align-items:center;justify-content:center;position:relative;align-self:center}
+.fconn-line{position:absolute;height:2px;background:linear-gradient(90deg,var(--neon),var(--neon2));opacity:0.3;width:100%}
+.fconn-arrow{position:relative;z-index:2;color:var(--neon);font-size:20px;text-shadow:0 0 10px rgba(0,240,255,0.5);animation:arrowPulse 2s ease-in-out infinite}
+@keyframes arrowPulse{0%,100%{opacity:0.6}50%{opacity:1}}
+
+.endcap{flex:0 0 auto;align-self:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding-left:20px}
+.endcap .dot{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon2));color:var(--void);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 30px rgba(0,240,255,0.3),0 0 60px rgba(123,45,255,0.15);animation:endcapPulse 3s ease-in-out infinite}
+@keyframes endcapPulse{0%,100%{box-shadow:0 0 30px rgba(0,240,255,0.3),0 0 60px rgba(123,45,255,0.15)}50%{box-shadow:0 0 40px rgba(0,240,255,0.4),0 0 80px rgba(123,45,255,0.2)}}
+.endcap small{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--neon);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+
+.flow-lower{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:30px;margin-top:40px}
+@media(max-width:1000px){.flow-lower{grid-template-columns:1fr}}
+
+.gradbox{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:28px 26px;position:relative;overflow:hidden;backdrop-filter:blur(15px)}
+.gradbox::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon4),transparent);opacity:0.5}
+.gradbox .eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--neon4);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:10px;display:block}
+.gradbox p{font-weight:600;font-size:17px;line-height:1.5;color:var(--text)}
+.gradbox .then{font-weight:400;font-size:14px;color:var(--text2);margin-top:10px;line-height:1.6}
+
+.skippanel{background:var(--glass);border:1px solid rgba(255,45,123,0.15);border-radius:var(--radius);padding:24px 22px 20px;position:relative;backdrop-filter:blur(15px)}
+.skippanel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,45,123,0.4),transparent);opacity:0.5}
+.skippanel h3{font-size:18px;font-weight:600;color:var(--neon3);display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:'Space Grotesk',sans-serif}
+.skippanel h3 .x{width:24px;height:24px;border-radius:6px;background:rgba(255,45,123,0.15);color:var(--neon3);display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto;border:1px solid rgba(255,45,123,0.2)}
+.skippanel p.lead{font-size:13.5px;color:var(--text2);margin-bottom:14px;line-height:1.5}
+.skipitem{padding:10px 0;border-top:1px dashed rgba(255,45,123,0.15)}
+.skipitem b{display:block;text-decoration:line-through;text-decoration-color:var(--neon3);text-decoration-thickness:2px;font-weight:600;color:var(--text);margin-bottom:3px}
+.skipitem span{font-size:13px;color:var(--text2);line-height:1.5}
+
+.ffoot{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(5,8,15,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:40px 18px;overflow-y:auto;backdrop-filter:blur(10px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--glass);border:1px solid var(--border);border-radius:20px;max-width:580px;width:100%;padding:0;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.5),0 0 60px rgba(0,240,255,0.08);backdrop-filter:blur(30px);position:relative}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:0.6}
+.modal-head{padding:24px 28px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.modal-head .mt{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--text)}
+.modal-head .mc{font-size:13px;color:var(--text2);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.modal-x{background:var(--void2);border:1px solid var(--border);border-radius:10px;width:36px;height:36px;font-size:18px;color:var(--text2);flex:0 0 auto;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center}
+.modal-x:hover{color:var(--neon);border-color:var(--neon);box-shadow:0 0 15px rgba(0,240,255,0.15)}
+.modal-body{padding:24px 28px 28px;font-size:14.5px}
+.trow{margin-bottom:16px}
+.tl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px}
+.modal-body ul{padding-left:20px;display:grid;gap:5px}
+.modal-body ul li{color:var(--text2);font-size:14px;line-height:1.5}
+.modal-body ul li::marker{color:var(--neon)}
+.skipline{background:rgba(255,45,123,0.06);color:var(--neon3);border-radius:10px;padding:10px 14px;font-weight:500;font-size:13.5px;border:1px solid rgba(255,45,123,0.12)}
+.promptbox{background:var(--void2);color:var(--text);border-radius:12px;padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;white-space:pre-wrap;position:relative;border:1px solid var(--border);overflow-x:auto}
+.copybtn{position:absolute;top:10px;right:10px;background:var(--glass);color:var(--neon);border:1px solid var(--border);border-radius:8px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif}
+.copybtn:hover{border-color:var(--neon);box-shadow:0 0 15px rgba(0,240,255,0.15)}
+.alts span{display:block;color:var(--text2);font-size:13.5px;margin-bottom:4px}
+.alts b{color:var(--text)}
+
+.paywall{text-align:center;padding:40px 32px 34px}
+.paywall .lockbig{width:64px;height:64px;border-radius:16px;background:rgba(154,107,18,0.1);color:#c49a3a;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;border:1px solid rgba(154,107,18,0.2);box-shadow:0 0 30px rgba(154,107,18,0.1)}
+.paywall h3{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;margin-bottom:10px}
+.paywall p{color:var(--text2);max-width:400px;margin:0 auto 8px;font-size:14.5px;line-height:1.6}
+.paywall .pricing{display:flex;gap:14px;margin:28px 0 22px;text-align:left}
+.ptier{flex:1;border:1px solid var(--border);border-radius:14px;padding:20px 18px 22px;background:var(--void2);transition:all 0.3s}
+.ptier:hover{border-color:var(--border2)}
+.ptier.hl{border-color:var(--neon);box-shadow:0 0 0 1px var(--neon),0 0 30px rgba(0,240,255,0.1);background:rgba(0,240,255,0.03)}
+.ptier .pname{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase}
+.ptier .pprice{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:30px;margin:6px 0 4px;color:var(--text)}
+.ptier .pprice small{font-size:14px;font-weight:500;color:var(--text3)}
+.ptier ul{list-style:none;margin-top:12px;display:grid;gap:6px;font-size:13px;color:var(--text2)}
+.ptier ul li::before{content:"✓ ";color:var(--neon4);font-weight:700}
+.paywall .fineprint{font-size:12px;color:var(--text3);margin-top:14px}
+
+.lib-section{padding:100px 0 80px}
+.lib-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.fbtn{background:var(--glass);border:1px solid var(--border);border-radius:99px;padding:7px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;backdrop-filter:blur(10px)}
+.fbtn:hover{border-color:var(--border2);color:var(--text)}
+.fbtn[aria-pressed="true"]{background:linear-gradient(135deg,var(--neon),var(--neon2));color:var(--void);border-color:transparent;font-weight:600;box-shadow:0 4px 20px rgba(0,240,255,0.2)}
+
+.plist{display:grid;gap:14px}
+.pitem{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;position:relative;transition:all 0.3s;backdrop-filter:blur(10px)}
+.pitem:hover{border-color:var(--border2)}
+.pitem.locked{border-style:dashed;border-color:rgba(154,107,18,0.3);background:rgba(154,107,18,0.03)}
+.pitem.locked .promptbox{filter:blur(4px);user-select:none;pointer-events:none}
+.pitem .lockover{display:none}
+.pitem.locked .lockover{display:flex;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:10px;border-radius:var(--radius);background:rgba(5,8,15,0.6);backdrop-filter:blur(4px)}
+.pitop{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.pititle{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;color:var(--text)}
+.ptags{display:flex;gap:6px}
+.pitem .promptbox{margin-top:12px}
+
+.anatomy{margin-top:40px;border-top:1px dashed var(--border);padding-top:28px;max-width:700px}
+.anatomy h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:14px;color:var(--text)}
+.anatomy ol{padding-left:22px;display:grid;gap:9px;font-size:14.5px;color:var(--text2);line-height:1.6}
+.anatomy ol li::marker{color:var(--neon)}
+.anatomy ol li b{color:var(--text)}
+
+footer{border-top:1px solid var(--border);padding:28px 0 60px;color:var(--text3);font-size:13px;position:relative;z-index:10}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--void)}
+::-webkit-scrollbar-thumb{background:var(--void3);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+.fade-in{animation:fadeIn 0.6s ease-out forwards;opacity:0}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide-in{animation:slideIn 0.5s ease-out forwards;opacity:0}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.glow-text{text-shadow:0 0 20px rgba(0,240,255,0.3)}
+
+@media(max-width:768px){
+  .hero-grid{padding:0 16px}
+  .wrap{padding:0 16px}
+  .pillars-grid{grid-template-columns:1fr}
+  .fnode{width:200px}
+  .fconn{flex:0 0 30px}
+  .flow-tree-container{padding:20px 0}
+  .q-card{padding:28px 20px}
+  .ready-card{padding:40px 24px}
+}
+
+/* ============ ATMOSPHERE / DEPTH ============ */
+.atmosphere{position:fixed;inset:0;z-index:1;pointer-events:none;background:
+  radial-gradient(120% 80% at 50% -10%,rgba(0,240,255,0.10),transparent 55%),
+  radial-gradient(100% 70% at 85% 15%,rgba(123,45,255,0.10),transparent 50%),
+  radial-gradient(90% 90% at 50% 120%,rgba(0,0,0,0.6),transparent 60%)}
+#webgl{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ============ 3D RING SELECTOR (HERO) ============ */
+.selector{position:relative;height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;perspective:1400px;perspective-origin:50% 42%;user-select:none}
+@media(max-width:1000px){.selector{height:440px}}
+.ring-stage{position:relative;width:100%;height:380px;transform-style:preserve-3d}
+.ring{position:absolute;top:50%;left:50%;width:0;height:0;transform-style:preserve-3d;transition:transform 0.05s linear;will-change:transform}
+.ring.snap{transition:transform 0.7s cubic-bezier(.18,.9,.25,1)}
+.ring-card{position:absolute;top:-130px;left:-110px;width:220px;height:260px;
+  background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));
+  border:1px solid var(--border2);border-radius:18px;backface-visibility:hidden;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:var(--depth-1);cursor:pointer;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:22px 20px;
+  transition:border-color .4s,box-shadow .4s,filter .4s,opacity .4s}
+.ring-card::before{content:'';position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 0%,var(--rc,rgba(0,240,255,0.18)),transparent 60%);opacity:.5;pointer-events:none}
+.ring-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--rc,var(--neon)),transparent);opacity:.7}
+.ring-card .rc-glyph{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--rc,var(--neon));border:1px solid var(--border2);background:rgba(0,0,0,0.25);box-shadow:inset 0 0 14px rgba(0,0,0,0.4)}
+.ring-card .rc-num{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:var(--text3)}
+.ring-card .rc-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;line-height:1.1;color:var(--text)}
+.ring-card .rc-desc{font-size:12.5px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ring-card .rc-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);display:flex;gap:10px;margin-top:2px}
+.ring-card.focused{border-color:var(--rc,var(--neon));box-shadow:var(--depth-float),0 0 0 1px var(--rc,var(--neon));filter:none}
+.ring-card:not(.focused){filter:saturate(.6) brightness(.62)}
+.ring-card .rc-go{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:0.08em;color:var(--rc,var(--neon));opacity:0;transform:translateY(4px);transition:.3s;text-transform:uppercase}
+.ring-card.focused .rc-go{opacity:1;transform:none}
+.ring-hub{position:absolute;top:50%;left:50%;width:110px;height:110px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 32% 30%,var(--neon),var(--neon2));box-shadow:0 0 50px rgba(0,240,255,0.45),0 0 110px rgba(123,45,255,0.25),inset 0 0 26px rgba(255,255,255,0.12);z-index:-1;animation:corePulse 3s ease-in-out infinite;pointer-events:none}
+.ring-hub::after{content:'';position:absolute;inset:-16px;border-radius:50%;border:1px solid rgba(0,240,255,0.18);animation:ringExpand 3s ease-in-out infinite}
+.selector-ctrls{display:flex;align-items:center;gap:16px;margin-top:8px;z-index:5}
+.ring-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));color:var(--text);font-size:18px;cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--depth-1);transition:.3s;display:flex;align-items:center;justify-content:center}
+.ring-btn:hover{border-color:var(--neon);color:var(--neon);box-shadow:var(--depth-2)}
+.ring-hint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.06em;text-align:center}
+.ring-dots{display:flex;gap:7px}
+.ring-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);opacity:.4;transition:.3s;cursor:pointer;border:none;padding:0}
+.ring-dot.on{opacity:1;background:var(--neon);box-shadow:0 0 10px var(--neon);transform:scale(1.25)}
+
+/* ============ BRANCHING FLOWCHART ============ */
+.flowchart{position:relative;display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0 30px;max-width:760px;margin:0 auto}
+.flowchart::before{content:'';position:absolute;top:30px;bottom:80px;left:50%;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,transparent,var(--border2) 8%,var(--border2) 92%,transparent);z-index:0}
+.fc-node{position:relative;z-index:2}
+.fc-link{width:2px;height:34px;background:linear-gradient(180deg,var(--neon),var(--neon2));opacity:.55;position:relative;z-index:1}
+.fc-link.short{height:22px}
+.fc-link .pip{position:absolute;top:50%;left:50%;width:6px;height:6px;border-radius:50%;background:var(--neon);transform:translate(-50%,-50%);box-shadow:0 0 8px var(--neon);animation:pipPulse 2.4s ease-in-out infinite}
+@keyframes pipPulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(.8)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}}
+
+.fc-start,.fc-merge{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:16px 26px;border-radius:14px;background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--depth-2);min-width:260px}
+.fc-start .tag,.fc-merge .tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:var(--neon);text-transform:uppercase}
+.fc-start .pillar{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--text)}
+.fc-start .goal{font-size:13px;color:var(--text2);max-width:340px;line-height:1.5}
+.fc-merge{min-width:auto;flex-direction:row;gap:12px;padding:12px 22px}
+.fc-merge .glyph{font-size:22px;color:var(--neon4);text-shadow:0 0 12px rgba(45,255,123,.5)}
+.fc-merge span.lbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:0.05em}
+
+.fc-decision{display:flex;flex-direction:column;align-items:center;width:100%}
+.fc-diamond{position:relative;padding:18px 30px;max-width:440px;text-align:center;background:linear-gradient(160deg,rgba(0,240,255,.06),var(--glass-lo));border:1px solid var(--border2);border-radius:12px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:var(--depth-1);clip-path:polygon(6% 0,94% 0,100% 50%,94% 100%,6% 100%,0 50%)}
+.fc-diamond .d-lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.16em;color:var(--neon);text-transform:uppercase;margin-bottom:5px}
+.fc-diamond .d-q{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--text);line-height:1.25}
+.fc-branches{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:620px;margin-top:18px;position:relative}
+.fc-branches::before{content:'';position:absolute;top:-18px;left:25%;right:25%;height:18px;border-top:2px solid var(--border2);border-left:2px solid var(--border2);border-right:2px solid var(--border2);border-radius:8px 8px 0 0;opacity:.5}
+.fc-branch{border-radius:12px;padding:16px 16px;background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:.35s}
+.fc-branch .b-tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.fc-branch .b-ans{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;line-height:1.3;color:var(--text)}
+.fc-branch .b-note{font-size:12px;color:var(--text2);margin-top:6px;line-height:1.45}
+.fc-branch.taken{border-color:rgba(45,255,123,.4);box-shadow:var(--depth-1),0 0 26px rgba(45,255,123,.08)}
+.fc-branch.taken .b-tag{color:var(--neon4)}
+.fc-branch.taken .b-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--neon4);box-shadow:0 0 8px var(--neon4)}
+.fc-branch.ghost{border-style:dashed;border-color:var(--border);opacity:.5}
+.fc-branch.ghost .b-tag{color:var(--text3)}
+.fc-branch.ghost .b-ans,.fc-branch.ghost .b-note{color:var(--text3)}
+
+.fc-steps{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:560px}
+.fc-step-card{width:100%;position:relative;background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border);border-radius:14px;padding:18px 20px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--depth-1);cursor:pointer;transition:transform .35s,border-color .35s,box-shadow .35s;overflow:hidden}
+.fc-step-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--neon),var(--neon2));opacity:.7}
+.fc-step-card:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:var(--depth-float)}
+.fc-step-card.locked{border-style:dashed;border-color:rgba(154,107,18,0.4);background:rgba(154,107,18,0.04);cursor:not-allowed}
+.fc-step-card.locked::before{background:rgba(154,107,18,0.5)}
+.fc-step-card.locked:hover{transform:none;box-shadow:var(--depth-1)}
+.fc-step-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
+.fc-step-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3)}
+.fc-step-tool{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;color:var(--text)}
+.fc-step-task{font-size:13px;color:var(--text2);line-height:1.5;margin:2px 0 10px}
+.fc-step-meta{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.fc-step-tap{margin-left:auto;font-size:11px;font-weight:600;color:var(--neon)}
+.fc-step-card.locked .fc-step-tap{color:#c49a3a}
+.fc-step-card.locked .fc-step-tool,.fc-step-card.locked .fc-step-task{filter:blur(2.5px);opacity:.5}
+
+/* ============ RESOURCE PANELS ============ */
+.resources{max-width:900px;margin:50px auto 0;display:flex;flex-direction:column;gap:16px}
+.res-head{text-align:center;margin-bottom:6px}
+.res-head .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--neon5);margin-bottom:8px}
+.res-head h3{font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,3vw,30px);font-weight:700}
+.res-head p{color:var(--text2);font-size:14px;max-width:520px;margin:8px auto 0}
+.res-panel{background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border);border-radius:var(--radius);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--depth-1);overflow:hidden;transition:border-color .3s}
+.res-panel:hover{border-color:var(--border2)}
+.res-toggle{width:100%;display:flex;align-items:center;gap:16px;padding:20px 24px;background:none;border:none;cursor:pointer;text-align:left;color:var(--text)}
+.res-icon{width:46px;height:46px;flex:0 0 auto;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid var(--border2);background:rgba(0,0,0,0.25);box-shadow:inset 0 0 16px rgba(0,0,0,0.4)}
+.res-meta{flex:1}
+.res-meta .rt{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px}
+.res-meta .rs{font-size:13px;color:var(--text2);margin-top:2px}
+.res-chev{font-family:'JetBrains Mono',monospace;color:var(--text3);font-size:18px;transition:transform .35s}
+.res-panel.open .res-chev{transform:rotate(90deg);color:var(--neon)}
+.res-body{display:none;padding:0 24px 24px;border-top:1px solid var(--border)}
+.res-panel.open .res-body{display:block;animation:fadeIn .4s ease-out}
+/* startup stage cycle tracker */
+.stage-cycle{width:100%;max-width:760px;margin:0 auto 6px;padding:18px 22px;border-radius:16px;background:linear-gradient(160deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--depth-2)}
+.stage-cycle .sc-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.stage-cycle .sc-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--neon)}
+.stage-cycle .sc-now{font-size:12.5px;color:var(--text2)}
+.stage-cycle .sc-now b{color:var(--text);font-family:'Space Grotesk',sans-serif;font-weight:600}
+.sc-track{display:flex;align-items:flex-start;gap:0;position:relative}
+.sc-stage{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;position:relative;text-align:center;min-width:0}
+.sc-stage::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--border2);z-index:0}
+.sc-stage:first-child::before{display:none}
+.sc-stage.done::before,.sc-stage.current::before{background:linear-gradient(90deg,var(--neon),var(--neon2))}
+.sc-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--void2);border:2px solid var(--border2);color:var(--text3);position:relative;z-index:1;transition:.3s;font-family:'JetBrains Mono',monospace}
+.sc-stage.done .sc-dot{background:rgba(0,240,255,.12);border-color:var(--neon);color:var(--neon)}
+.sc-stage.current .sc-dot{background:linear-gradient(160deg,var(--neon),var(--neon2));border-color:var(--neon);color:#05080f;box-shadow:0 0 0 4px rgba(0,240,255,.12),0 0 20px rgba(0,240,255,.45);transform:scale(1.18)}
+.sc-name{font-size:11.5px;color:var(--text3);line-height:1.3}
+.sc-stage.done .sc-name{color:var(--text2)}
+.sc-stage.current .sc-name{color:var(--text);font-weight:700;font-family:'Space Grotesk',sans-serif}
+@media(max-width:768px){.stage-cycle{padding:14px 10px}.stage-cycle .sc-name{font-size:9px}.stage-cycle .sc-dot{width:24px;height:24px;font-size:10px}.sc-stage::before{top:11px}}
+
+/* ideas grid */
+.ideas-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}
+.ideas-search{flex:1;min-width:200px;background:var(--void2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
+.ideas-search:focus{outline:none;border-color:var(--neon);box-shadow:0 0 0 1px var(--neon)}
+.ideas-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)}
+.ideas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;max-height:340px;overflow-y:auto;padding-right:4px}
+.idea{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--void2);border:1px solid var(--border);border-radius:9px;font-size:13px;color:var(--text2);transition:.25s}
+.idea:hover{border-color:var(--border2);color:var(--text);transform:translateX(2px)}
+.idea .i-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);flex:0 0 auto}
+.ideas-note{margin-top:16px;padding:14px 16px;border-radius:10px;background:rgba(45,255,123,0.05);border:1px solid rgba(45,255,123,0.2);font-size:13px;color:var(--text2);line-height:1.55}
+.ideas-note b{color:var(--neon4)}
+
+/* acquisition checklist */
+.acq-bar{height:8px;border-radius:99px;background:var(--void3);overflow:hidden;margin:6px 0 18px;border:1px solid var(--border)}
+.acq-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--neon),var(--neon4));width:0;transition:width .5s}
+.acq-status{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);margin-bottom:8px}
+.acq-status b{color:var(--neon4)}
+.acq-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:640px){.acq-list{grid-template-columns:1fr}}
+.acq-item{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--void2);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:.25s;font-size:13.5px;color:var(--text)}
+.acq-item:hover{border-color:var(--border2)}
+.acq-box{width:20px;height:20px;flex:0 0 auto;border-radius:6px;border:1.5px solid var(--text3);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--void);transition:.25s}
+.acq-item.done{border-color:rgba(45,255,123,0.35);background:rgba(45,255,123,0.04)}
+.acq-item.done .acq-box{background:var(--neon4);border-color:var(--neon4);box-shadow:0 0 10px rgba(45,255,123,.4)}
+.acq-item.done .acq-lbl{color:var(--text2);text-decoration:line-through;text-decoration-color:var(--neon4)}
+.acq-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)}
+
+/* launch timeline */
+.timeline{position:relative;margin:18px 0 4px;padding-left:34px}
+.timeline::before{content:'';position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--neon),var(--neon2),var(--neon3))}
+.tl-step{position:relative;padding:0 0 22px}
+.tl-step:last-child{padding-bottom:0}
+.tl-step::before{content:'';position:absolute;left:-28px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--void);border:2px solid var(--neon);box-shadow:0 0 12px rgba(0,240,255,.4)}
+.tl-step.final::before{background:var(--neon4);border-color:var(--neon4)}
+.tl-hours{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--neon);text-transform:uppercase}
+.tl-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15.5px;color:var(--text);margin:3px 0 4px}
+.tl-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.tl-tools{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
+.tl-tool{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:99px;border:1px solid var(--border);background:var(--void2);color:var(--text2);cursor:pointer;transition:.25s}
+.tl-tool:hover{border-color:var(--neon);color:var(--neon)}
+
+/* tier list */
+.tier-caveat{font-size:12.5px;color:var(--text3);margin:14px 0 16px;line-height:1.5;font-style:italic}
+.tier{display:flex;align-items:stretch;gap:14px;margin-bottom:10px;background:var(--void2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.tier-rank{flex:0 0 64px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:26px;color:var(--void)}
+.tier.S .tier-rank{background:linear-gradient(160deg,#00f0ff,#2dff7b)}
+.tier.A .tier-rank{background:linear-gradient(160deg,#2dff7b,#9d00ff)}
+.tier.B .tier-rank{background:linear-gradient(160deg,#7b2dff,#ff2d7b)}
+.tier.C .tier-rank{background:linear-gradient(160deg,#ff9d00,#ff2d7b)}
+.tier-tools{flex:1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px}
+.tier-chip{font-family:'Inter',sans-serif;font-weight:500;font-size:13px;padding:7px 14px;border-radius:99px;border:1px solid var(--border2);background:rgba(0,0,0,0.25);color:var(--text);cursor:pointer;transition:.25s}
+.tier-chip:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 0 14px rgba(0,240,255,.15);transform:translateY(-1px)}
+.tier-chip.static{cursor:default}
+.tier-chip.static:hover{border-color:var(--border2);color:var(--text);box-shadow:none;transform:none}
+
+@media(max-width:768px){
+  .ring-card{width:170px;height:222px;top:-111px;left:-85px;padding:18px 16px}
+  .fc-branches{grid-template-columns:1fr}
+  .fc-branches::before{display:none}
+  .fc-diamond{clip-path:none;border-radius:12px}
+  .ideas-grid{grid-template-columns:1fr}
+}
+
+/* ===== HORIZONTAL DECISION TRAIL ===== */
+.q-trail{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:24px;padding:18px 20px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);backdrop-filter:blur(12px);overflow-x:auto;min-height:64px;position:relative}
+.q-trail:empty{display:none}
+.q-trail::before{content:"TOOLS UNLOCKED SO FAR";position:absolute;top:-10px;left:16px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;color:var(--neon);background:var(--void);padding:0 8px;text-transform:uppercase}
+.trail-node{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 auto}
+.trail-tool{display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--void2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all 0.25s;text-decoration:none;position:relative}
+.trail-tool:hover{border-color:var(--neon);box-shadow:0 0 16px rgba(0,240,255,0.15);transform:translateY(-2px)}
+.trail-tool-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:var(--text);white-space:nowrap}
+.trail-tool-cat{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+.trail-tool-link{font-size:9px;color:var(--neon);font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;margin-top:2px;text-decoration:none;opacity:0.7}
+.trail-tool:hover .trail-tool-link{opacity:1}
+.trail-connector{display:flex;align-items:center;gap:0;padding:0 6px;flex:0 0 auto}
+.trail-connector-line{width:24px;height:2px;background:linear-gradient(90deg,var(--border2),var(--neon));opacity:0.4}
+.trail-connector-arrow{color:var(--neon);font-size:14px;opacity:0.6;margin-left:2px}
+.trail-q-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;text-align:center;white-space:nowrap}
+.trail-answer-badge{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--neon4);border:1px solid rgba(45,255,123,0.25);background:rgba(45,255,123,0.07);border-radius:99px;padding:2px 8px;text-align:center;white-space:nowrap}
+
+/* ===== TOOL LINK BUTTON in modal ===== */
+.tool-open-btn{display:inline-flex;align-items:center;gap:7px;margin-top:14px;background:linear-gradient(135deg,var(--neon),var(--neon2));color:var(--void);font-family:'Inter',sans-serif;font-weight:700;font-size:13.5px;border:none;border-radius:99px;padding:10px 22px;cursor:pointer;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 20px rgba(0,240,255,0.2)}
+.tool-open-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,240,255,0.35)}
+
+/* ===== EBOOK DESIGN UPGRADE CALLOUT ===== */
+.design-callout{background:linear-gradient(135deg,rgba(123,45,255,0.1),rgba(0,240,255,0.05));border:1px solid rgba(123,45,255,0.25);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:16px;display:none}
+.design-callout.show{display:block}
+.design-callout .dc-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--text);margin-bottom:6px}
+.design-callout .dc-desc{font-size:13px;color:var(--text2);line-height:1.5}
+
+/* ===== STEP TOOL LINK in flow ===== */
+.fnode-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--neon);font-family:'JetBrains Mono',monospace;text-decoration:none;border:1px solid rgba(0,240,255,0.2);border-radius:99px;padding:3px 10px;margin-top:6px;transition:all 0.25s;background:rgba(0,240,255,0.04)}
+.fnode-link:hover{background:rgba(0,240,255,0.1);border-color:var(--neon);box-shadow:0 0 12px rgba(0,240,255,0.15)}
+</style>
+</head>
+<body>
+
+<canvas id="webgl"></canvas>
+<div class="atmosphere"></div>
+<div class="bg-grid"></div>
+<div class="noise"></div>
+<div id="particles"></div>
+
+<header>
+  <div class="hbar">
+    <button class="wordmark" onclick="goHome()" aria-label="TechNav home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      TechNav
+    </button>
+    <nav aria-label="Main">
+      <button class="navbtn" id="nav-home" aria-current="true" onclick="goHome()">Navigator</button>
+      <button class="navbtn" id="nav-library" aria-current="false" onclick="showLibrary()">Prompt Library</button>
+      <span class="plan" id="planBadge" onclick="togglePlanDemo()" title="Demo: click to toggle Free/Pro">FREE PLAN</span>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="screen active" id="screen-home" aria-labelledby="home-h">
+  <div class="hero-section">
+    <div class="hero-grid">
+      <div class="hero-content fade-in">
+        <div class="hero-badge"><span class="dot"></span> Neural Execution Engine v2.0</div>
+        <h1 id="home-h" class="hero-title">What do you<br>want to <span class="gradient-text glow-text">build</span>?</h1>
+        <p class="hero-subtitle">Answer a few plain-language questions. We generate your exact execution flow — the tools, in order, beginning to end. Tap any step to see how to use it, what it costs, and the prompt to copy.</p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="scrollToPillars()">Start Mapping →</button>
+          <button class="btn-ghost" onclick="showLibrary()">Browse Prompt Library</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">6</span><span class="stat-label">Pillars</span></div>
+          <div class="stat"><span class="stat-num">40+</span><span class="stat-label">Tools Mapped</span></div>
+          <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Flow Combinations</span></div>
+        </div>
+      </div>
+      <div class="selector" id="selector" role="group" aria-label="Pick a pillar — rotate the ring and select">
+        <div class="ring-stage">
+          <div class="ring-hub" aria-hidden="true"></div>
+          <div class="ring" id="ring"></div>
+        </div>
+        <div class="selector-ctrls">
+          <button class="ring-btn" id="ring-prev" aria-label="Rotate to previous pillar">‹</button>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div class="ring-dots" id="ring-dots" role="tablist" aria-label="Pillars"></div>
+            <span class="ring-hint">Drag to spin · click the front card to start</span>
+          </div>
+          <button class="ring-btn" id="ring-next" aria-label="Rotate to next pillar">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pillars-section">
+    <div class="wrap">
+      <div class="section-header">
+        <p class="section-eyebrow">Choose Your Path</p>
+        <h2 class="section-title">Six pillars. Infinite flows.</h2>
+        <p class="section-desc">Each pillar contains branching decision trees that adapt to your exact situation — budget, timeline, skills, and goals.</p>
+      </div>
+      <div class="pillars-grid" id="pillars"></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screen-question" aria-labelledby="q-h">
+  <div class="wrap">
+    <div class="q-container">
+      <div class="q-progress" id="q-progress"></div>
+      <div class="q-crumbs" id="q-crumbs"></div>
+
+      <!-- Horizontal decision trail: tools recommended so far -->
+      <div class="q-trail" id="q-trail" aria-label="Tools recommended so far"></div>
+
+      <!-- Vertical current question -->
+      <div class="q-card">
+        <p class="q-eyebrow" id="q-eyebrow"></p>
+        <h2 class="q-title" id="q-h"></h2>
+        <p class="q-sub" id="q-sub"></p>
+        <div class="q-options" id="q-opts" role="group" aria-labelledby="q-h"></div>
+        <div class="q-back"><button class="btn-ghost" onclick="stepBack()">← Back</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screen-ready" aria-labelledby="ready-h">
+  <div class="wrap">
+    <div class="ready-card">
+      <p class="ready-eyebrow">Your answers are in</p>
+      <h2 class="ready-title" id="ready-h">Ready to see the execution flow for your goal?</h2>
+      <p class="ready-desc">We've mapped it end to end based on what you told us.</p>
+      <div class="ready-preview" id="ready-preview" aria-hidden="true"></div>
+      <div class="ready-summary" id="ready-summary"></div>
+      <button class="btn-primary" style="font-size:16px;padding:16px 36px" onclick="renderFlow()">Show my execution flow →</button>
+      <div class="q-back" style="justify-content:center;margin-top:20px"><button class="btn-ghost" onclick="stepBack()">← Change my answers</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screen-flow" aria-labelledby="f-h">
+  <div class="wrap">
+    <div class="flow-header">
+      <div class="q-crumbs" id="f-crumbs" style="margin-bottom:20px"></div>
+      <p class="eyebrow" id="f-eyebrow"></p>
+      <h2 id="f-h"></h2>
+      <p class="sub" id="f-sub"></p>
+      <div class="flow-chips" id="f-chips"></div>
+    </div>
+    <div class="flow-tree-container">
+      <div class="flow-tree" id="f-flow"></div>
+    </div>
+    <div class="flow-lower">
+      <div class="gradbox" id="f-grad"></div>
+      <aside><div class="skippanel" id="f-skips"></div></aside>
+    </div>
+    <div class="resources" id="f-resources"></div>
+    <div class="ffoot">
+      <button class="btn-primary" onclick="goHome()">Map another goal</button>
+      <button class="btn-ghost" onclick="stepBack()">← Change my answers</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screen-library" aria-labelledby="lib-h">
+  <div class="wrap">
+    <div class="section-header" style="text-align:left;margin-bottom:30px">
+      <p class="section-eyebrow">Ready to copy</p>
+      <h2 class="section-title" id="lib-h">Prompt Library</h2>
+      <p class="section-desc" style="margin:0">Organized by tool and stage; every prompt follows the same five-part structure. Free plan shows the first three — the rest unlock with Pro.</p>
+    </div>
+    <div class="lib-filters" id="lib-filters" role="group" aria-label="Filter prompts by tool"></div>
+    <div class="plist" id="lib-list"></div>
+    <div class="anatomy">
+      <h3>Why these prompts work — the five-part structure</h3>
+      <ol>
+        <li><b>Role</b> — "You are a…" sets the lens the AI thinks through.</li>
+        <li><b>Task</b> — "Your task is to…" one job, stated plainly.</li>
+        <li><b>Audience / context</b> — who this is for and what stage they're at.</li>
+        <li><b>Constraints</b> — what to leave out. This is where quality comes from.</li>
+        <li><b>Output format</b> — exactly what shape the answer should take.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>TechNav — a decision engine, not a tool list.</span>
+    <span>Free: see any flow + the first two steps in full. Pro: every step, every prompt.</span>
+  </div>
+</footer>
+
+<script>
+
+/* ============ WEBGL DEPTH FIELD ============ */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function initWebGL(){
+  const cv = document.getElementById('webgl');
+  if(!window.THREE){ cv.style.display='none'; return; }
+  const renderer = new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x05080f, 0.018);
+  const camera = new THREE.PerspectiveCamera(62, window.innerWidth/window.innerHeight, 0.1, 200);
+  camera.position.z = 30;
+
+  // layered particle cloud with depth + neon tint
+  const COUNT = 1400;
+  const positions = new Float32Array(COUNT*3);
+  const colors = new Float32Array(COUNT*3);
+  const palette = [new THREE.Color(0x00f0ff), new THREE.Color(0x7b2dff), new THREE.Color(0xff2d7b), new THREE.Color(0x2dff7b)];
+  for(let i=0;i<COUNT;i++){
+    const r = 14 + Math.random()*46;
+    const th = Math.random()*Math.PI*2, ph = Math.acos(2*Math.random()-1);
+    positions[i*3]   = r*Math.sin(ph)*Math.cos(th);
+    positions[i*3+1] = (Math.random()-0.5)*60;
+    positions[i*3+2] = r*Math.cos(ph) - 20;
+    const c = palette[Math.floor(Math.random()*palette.length)];
+    const f = 0.45 + Math.random()*0.55;
+    colors[i*3]=c.r*f; colors[i*3+1]=c.g*f; colors[i*3+2]=c.b*f;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
+  const mat = new THREE.PointsMaterial({size:0.22, vertexColors:true, transparent:true, opacity:0.85, depthWrite:false, blending:THREE.AdditiveBlending});
+  const cloud = new THREE.Points(geo, mat);
+  scene.add(cloud);
+
+  // faint wire icosahedron — a "neural core" hint behind the hero
+  const wire = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(8, 1),
+    new THREE.MeshBasicMaterial({color:0x00f0ff, wireframe:true, transparent:true, opacity:0.06})
+  );
+  wire.position.set(0,0,-6);
+  scene.add(wire);
+
+  let mx=0,my=0,tx=0,ty=0;
+  window.addEventListener('pointermove', e=>{
+    tx=(e.clientX/window.innerWidth-0.5);
+    ty=(e.clientY/window.innerHeight-0.5);
+  });
+  window.addEventListener('resize', ()=>{
+    camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  let t=0;
+  function loop(){
+    t+=0.0016;
+    mx += (tx-mx)*0.04; my += (ty-my)*0.04;
+    cloud.rotation.y = t*0.4 + mx*0.6;
+    cloud.rotation.x = my*0.4;
+    wire.rotation.y = t*0.7; wire.rotation.x = t*0.35;
+    camera.position.x = mx*6; camera.position.y = -my*6;
+    camera.lookAt(0,0,-6);
+    renderer.render(scene,camera);
+    if(!reduceMotion) requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 15; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    const colors = ['var(--neon)', 'var(--neon2)', 'var(--neon3)'];
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+function scrollToPillars() {
+  document.querySelector('.pillars-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+let isPro = false;
+const FREE_NODE_LIMIT = 2;
+function togglePlanDemo() {
+  isPro = !isPro;
+  updatePlanBadge();
+  if (document.getElementById("screen-flow").classList.contains("active")) renderFlow();
+  if (document.getElementById("screen-library").classList.contains("active")) renderLibrary(currentFilter);
+}
+function updatePlanBadge() {
+  const b = document.getElementById("planBadge");
+  b.textContent = isPro ? "PRO PLAN" : "FREE PLAN";
+  b.className = "plan" + (isPro ? " pro" : "");
+}
+
+const TOOLS = {
+claude:{url:"https://claude.ai",name:"Claude",cat:"AI tool",cost:"Free",best:"Thinking work: stress-testing ideas, writing copy, generating content — faster than a mentor, available at 2am.",skill:"Zero — you type, it answers.",pros:["Strong reasoning for idea critique and strategy","Writes long-form content in one pass","Free tier covers everything at this stage"],cons:["Doesn't know your market unless you tell it","Confident even when guessing — verify numbers","Output quality depends on your prompt"],skip:"Skip if you need cited, current statistics — use Perplexity instead.",alts:[["ChatGPT","similar; pick whichever you use"],["Gemini","better when you need web-connected answers"]]},
+perplexity:{url:"https://perplexity.ai",name:"Perplexity AI",cat:"AI research",cost:"Free",best:"Market research where you need sources you can cite — sizes, trends, competitor lists.",skill:"Zero — ask in plain language.",pros:["Every claim comes with a linked source","Pulls current data, not memories","Good at 'who else does this?'"],cons:["Source quality varies — check them","Weaker at creative or strategic thinking","Free tier limits deep runs"],skip:"Skip if you need brainstorming or writing — that's Claude's job.",alts:[["Gemini","web-integrated, good second opinion"],["Manual research","slower but you learn the landscape"]]},
+typeform:{url:"https://typeform.com",name:"Typeform",cat:"Forms & surveys",cost:"Free tier",best:"Collecting structured answers from real humans — demand surveys, feedback, waitlist questions.",skill:"Zero — drag, drop, share a link.",pros:["One-question format lifts completion","Clean table you can analyse","Embeds anywhere, including Carrd"],cons:["Free tier caps responses/month","Limited logic jumps on free","Branding removal costs money"],skip:"Skip if you only need one email field — a Carrd form does that alone.",alts:[["Tally","more generous free tier"],["Google Forms","ugly but unlimited"]]},
+carrd:{url:"https://carrd.co",name:"Carrd",cat:"No-code site builder",cost:"Free",best:"A one-page landing page to describe your idea and collect emails — live in 30 minutes.",skill:"Zero — pick a template, edit the words.",pros:["Fastest idea-to-link path","Free tier is genuinely usable","Forces a one-screen explanation"],cons:["One page only","Custom domain/forms need $19/yr Pro","Low design ceiling"],skip:"Skip if you need multiple pages or a shop — that's a later stage.",alts:[["Framer","more design control"],["GitHub Pages","free hosting for raw HTML"]]},
+framer:{url:"https://framer.com",name:"Framer",cat:"No-code site builder",cost:"Free tier",best:"A landing page that looks designed, once first impressions affect conversions.",skill:"Beginner — AI-assisted start.",pros:["Designer-quality without a designer","AI drafts from a description","Real CMS if you add a blog"],cons:["More to learn than Carrd","Free tier shows branding","Easy to over-polish instead of validating"],skip:"Skip if your Carrd page already converts.",alts:[["Carrd","when speed beats polish"],["Webflow","more power, more learning"]]},
+replit:{url:"https://replit.com",name:"Replit AI",cat:"AI app builder",cost:"Free tier",best:"Single-purpose prototypes: describe it, it builds it, you get a shareable link.",skill:"Zero to beginner.",pros:["Working software without code","Iterates from plain-English feedback","Hosting included"],cons:["Complex apps get fragile","Free compute is limited","Hard to hand to a developer later"],skip:"Skip if a clickable mockup answers your question.",alts:[["Bubble","when you need accounts/database"],["Lovable / v0","similar AI builders"]]},
+beehiiv:{url:"https://beehiiv.com",name:"Beehiiv",cat:"Email & waitlist",cost:"Free to 2.5k",best:"Capturing a waitlist and nurturing it — these people are your launch day.",skill:"Zero.",pros:["Generous free tier","Built-in referral growth","Doubles as a newsletter later"],cons:["Overkill if you never email","Templates push a newsletter look","Migration takes effort"],skip:"Skip under 20 signups — a spreadsheet is fine.",alts:[["Mailchimp","free to 500"],["Kit","stronger creator automations"]]},
+calendly:{url:"https://calendly.com",name:"Calendly + Zoom",cat:"Scheduling",cost:"Free",best:"Getting strangers onto discovery calls without email ping-pong.",skill:"Zero.",pros:["One link, they pick a slot","Auto Zoom link","Free tier covers one event type"],cons:["One event type on free","Basic reminders","People no-show — overbook 30%"],skip:"Skip if a Typeform gets the answer async.",alts:[["Cal.com","open-source twin"],["SavvyCal","nicer invitee UX, paid"]]},
+bubble:{url:"https://bubble.io",name:"Bubble",cat:"No-code app builder",cost:"Free → $29/mo",best:"Real apps with accounts, databases, workflows — marketplaces, communities, dashboards.",skill:"Intermediate — plan a week, not an hour.",pros:["Auth, database, logic, no code","Huge plugin/template ecosystem","Runs a real business to thousands"],cons:["Real learning curve","Degrades if built carelessly","Locked into Bubble hosting"],skip:"Skip if your app is a single tool — Replit/Glide is faster.",alts:[["Glide","when data lives in a sheet"],["FlutterFlow","when mobile-first matters"]]},
+glide:{url:"https://glideapps.com",name:"Glide",cat:"No-code app builder",cost:"Free → $25/mo",best:"Turning a Google Sheet into an app — directories, internal tools, member apps.",skill:"Beginner — if you can use a sheet, you can use Glide.",pros:["Fastest no-code path to an app","Data stays in a sheet you get","Polished out of the box"],cons:["Complex logic hits a ceiling","Per-user pricing stings","Web-wrapper feel"],skip:"Skip if users interact with each other — that's Bubble.",alts:[["Bubble","more power, more learning"],["Softr","on top of Airtable"]]},
+flutterflow:{url:"https://flutterflow.io",name:"FlutterFlow",cat:"No-code mobile builder",cost:"Free tier",best:"Mobile-first products that must live in the App/Play Store.",skill:"Intermediate.",pros:["Exports real Flutter code","iOS + Android from one project","Hand code to devs later"],cons:["Steeper than Bubble/Glide","Store review adds weeks","Most early products don't need native"],skip:"Skip if a mobile-friendly website would do.",alts:[["Glide","installable web app, faster"],["Bubble","web app, mobile layout"]]},
+stripe:{url:"https://stripe.com",name:"Stripe",cat:"Payments",cost:"~1.4–2.9% + fee",best:"Taking real money — the standard that plugs into everything.",skill:"Beginner (Payment Links) to intermediate.",pros:["Payment Links need zero code","Integrates with every platform","Subscriptions, invoices, tax tooling"],cons:["Need a legal way to receive income","Disputes/payouts take learning","Fees add up at volume"],skip:"Skip if selling digital downloads — Gumroad/Payhip wraps payments.",alts:[["Lemon Squeezy","handles tax for you"],["PayPal","trusted, clunkier for you"]]},
+posthog:{url:"https://posthog.com",name:"PostHog",cat:"Product analytics",cost:"Free tier",best:"Seeing what users actually do — funnels, session recordings, drop-off.",skill:"Beginner — paste one snippet.",pros:["Recordings show where people stick","Generous free tier","Grows into A/B testing"],cons:["Easy to drown in dashboards","Recordings need privacy disclosure","No-code setup varies"],skip:"Skip under 50 users — watch them over Zoom.",alts:[["Plausible","simple page analytics"],["Hotjar","recordings + heatmaps"]]},
+notion:{url:"https://notion.so",name:"Notion (+ Zapier)",cat:"CRM & ops",cost:"Free",best:"Early-stage CRM, content calendar, and operating system in one.",skill:"Zero to beginner.",pros:["One workspace for everything","Free for personal use","Zapier pipes forms straight in"],cons:["Gets messy without discipline","Not a real CRM out of the box","External sharing is awkward"],skip:"Skip a real CRM until you have a sales process.",alts:[["Airtable","when data outgrows pages"],["HubSpot Free","when a pipeline emerges"]]},
+fullstack:{url:"https://nextjs.org",name:"React + Node + Supabase",cat:"Full-stack stack",cost:"Scales with usage",best:"Real engineering: when no-code can't do what paying users ask.",skill:"You're hiring engineers — this is their stack.",pros:["Well-documented, huge hiring pool","Supabase = PostgreSQL + auth + API","No platform lock-in"],cons:["Requires actual engineers","Every feature costs sprint time","Easy to over-engineer"],skip:"Skip the rewrite until no-code is demonstrably the bottleneck.",alts:[["Next.js + Vercel","same family, tighter"],["Rails + Postgres","boring and proven"]]},
+vercel:{url:"https://vercel.com",name:"Vercel / Railway",cat:"Deployment",cost:"Free tier",best:"One-click deploys with auto-scaling — push code, it's live.",skill:"For your dev team.",pros:["Deploy on every git push","Preview links per change","Free tier covers early traffic"],cons:["Costs jump at scale","Soft vendor lock-in","Backends fit Railway better"],skip:"Skip Kubernetes/AWS consoles for a long time.",alts:[["Railway","friendlier for backends"],["Render","similar middle ground"]]},
+cursor:{url:"https://cursor.com",name:"GitHub + Cursor",cat:"Team coding",cost:"Free / $20mo",best:"Version control + AI-assisted development — the default modern setup.",skill:"For your dev team.",pros:["AI pair-programming speeds teams","GitHub is where candidates live","Code review keeps quality up"],cons:["AI code still needs review","Per-seat subscription","Juniors over-trust suggestions"],skip:"Nothing — version control is non-negotiable once two people code.",alts:[["Claude Code","agentic coding in the terminal"],["VS Code + Copilot","the incumbent"]]},
+linear:{url:"https://linear.app",name:"Linear",cat:"Product management",cost:"Free tier",best:"Issue tracking for dev teams — fast, opinionated, keeps the roadmap honest.",skill:"Beginner.",pros:["Fast, keyboard-driven","Cycles/roadmaps without ceremony","Free tier fits small teams"],cons:["Opinionated about process","Less suited to non-dev work","Another tool to maintain"],skip:"Skip Jira at this size.",alts:[["GitHub Issues","if all lives in GitHub"],["Notion","if the team is non-technical"]]},
+figma:{url:"https://figma.com",name:"Figma",cat:"Design",cost:"Free / $15mo",best:"The shared canvas where designers and developers stop talking past each other.",skill:"Beginner to comment; designer to drive.",pros:["Real-time collaboration","Dev mode = exact specs","Industry standard"],cons:["Per-editor seat cost","Easy to polish instead of ship","File hygiene needs an owner"],skip:"Skip a design system until you have a designer.",alts:[["Penpot","open-source"],["Sketch","Mac-only veteran"]]},
+canva:{url:"https://canva.com",name:"Canva",cat:"Design tool",cost:"Free",best:"Designing and formatting anything visual without being a designer — ebooks, planners, cards, covers, slides.",skill:"Zero.",pros:["Templates for every product type","Exports print-ready PDFs","Brand kit keeps it consistent"],cons:["Can look templated — customize","Some assets are Pro-only","Limited fine layout control"],skip:"Skip Adobe until Canva actually blocks you.",alts:[["Adobe Express","Adobe ecosystem"],["Affinity Publisher","one-time pro layout"]]},
+gumroad:{url:"https://gumroad.com",name:"Gumroad",cat:"Selling platform",cost:"10% per sale",best:"Selling any digital download with the quickest setup — link, price, done.",skill:"Zero.",pros:["Live in 15 minutes","Handles payment, delivery, EU VAT","Pay only when you sell"],cons:["10% steep at volume","Zero traffic — you market","Minimal storefront"],skip:"Skip if fees bother you — Payhip does it for 5%.",alts:[["Payhip","same, 5% fee"],["Lemon Squeezy","better for software/subs"]]},
+payhip:{url:"https://payhip.com",name:"Payhip",cat:"Selling platform",cost:"5% per sale",best:"Gumroad's job at half the fee — digital downloads, memberships, courses.",skill:"Zero.",pros:["5% free plan, 0% on paid","Handles EU VAT","Coupons, affiliates built in"],cons:["Smaller ecosystem","No traffic of its own","Plain design options"],skip:"Skip if your buyers are already searching Etsy.",alts:[["Gumroad","bigger name"],["Ko-fi Shop","0% shop fees"]]},
+etsy:{url:"https://etsy.com",name:"Etsy",cat:"Marketplace",cost:"$0.20/listing + 6.5%",best:"Printables, templates, designs — a huge audience already searching for these.",skill:"Zero to list; beginner for SEO.",pros:["Buyers come to you","Etsy SEO is real — listings get found","Trusted checkout converts"],cons:["Fees stack up","Fierce competition in popular niches","Etsy controls your shop's fate"],skip:"Skip if you have your own audience — Payhip keeps more.",alts:[["Creative Market","design-savvy buyers, 40%"],["Creative Fabrica","craft files, fonts"]]},
+kdp:{url:"https://kdp.amazon.com",name:"Amazon KDP",cat:"Print-on-demand publishing",cost:"Free (35–70% royalty)",best:"Coloring books, journals, books — Amazon prints, ships, brings the audience. Zero inventory.",skill:"Beginner — formatting takes one afternoon.",pros:["Free to publish; Amazon prints/ships","Massive built-in buyer base","Physical + Kindle from one upload"],cons:["Modest royalties at low prices","Discovery hard without reviews","Strict specs; rejections happen"],skip:"Skip paid 'KDP course' gurus — Amazon's docs cover it.",alts:[["Etsy (digital)","sell the PDF directly"],["IngramSpark","wider distribution, fees"]]},
+teachable:{url:"https://teachable.com",name:"Teachable",cat:"Course platform",cost:"Free tier → paid",best:"Hosting a course on your own turf — keep the margin and the student relationship.",skill:"Beginner.",pros:["You own pricing, branding, the list","Drip, coupons, bundles","No marketplace price race"],cons:["Zero traffic — your audience or none","Fees on lower plans","Jack of all trades"],skip:"Skip if you have no audience — Udemy first to validate.",alts:[["Podia","downloads + courses, friendly"],["Kajabi","all-in-one, $149/mo"]]},
+udemy:{url:"https://udemy.com",name:"Udemy",cat:"Course marketplace",cost:"~50% rev share",best:"Validating a course with zero audience — Udemy's traffic finds you.",skill:"Zero.",pros:["Huge built-in student base","Their promos do your marketing","Reviews build reusable credibility"],cons:["Discounting tanks price ($12–15)","You don't own the relationship","Steep share when they bring buyer"],skip:"Skip if you have a list — Teachable keeps 5–10× more.",alts:[["Skillshare","royalty-pool model"],["Teachable","when you own the audience"]]},
+loom:{url:"https://loom.com",name:"Loom + Canva + Notion",cat:"Course creation stack",cost:"Free tiers",best:"Recording and structuring a course without studio gear: screen + voice, slides, curriculum.",skill:"Zero.",pros:["Record a lesson the day you outline","Done beats cinematic","Notion keeps scope honest"],cons:["Loom free caps length","Audio matters — get a $30 mic","Easy to over-record"],skip:"Skip cameras, lighting, editing software for v1.",alts:[["OBS","free, more control"],["Descript","edit video via transcript"]]},
+midjourney:{url:"https://midjourney.com",name:"Midjourney",cat:"AI image generation",cost:"From $10/mo",best:"Illustrations for kids' books, cover art, and assets you couldn't draw.",skill:"Beginner — prompt craft grows fast.",pros:["Best-in-class illustration quality","Consistent style across a book","Commercial use on paid plans"],cons:["No free tier","Character consistency takes technique","Check marketplace AI-art policies"],skip:"Skip if Canva's stock illustrations cover it.",alts:[["DALL·E","inside ChatGPT"],["Ideogram","best at text in images"]]},
+buffer:{url:"https://buffer.com",name:"Buffer",cat:"Social scheduling",cost:"Free → $15/mo",best:"Scheduling posts across platforms from one calm dashboard — the beginner-right choice.",skill:"Zero.",pros:["Free tier covers 3 channels","Clean, unintimidating UI","Best-time suggestions"],cons:["Basic analytics on free","Schedules, doesn't automate","IG features lag native"],skip:"Skip Make/n8n for posting until scheduling actually hurts.",alts:[["Later","stronger for IG grids"],["Publer","more per dollar"]]},
+opusclip:{url:"https://opus.pro",name:"Opus Clip / Descript",cat:"Content repurposing",cost:"Free tiers",best:"Turning one long video into many short clips — the highest-leverage content move.",skill:"Zero to beginner.",pros:["AI finds clip-worthy moments","Auto-captions","One recording = a week of posts"],cons:["AI picks are hit-and-miss","Watermarks on free","Descript editor has a curve"],skip:"Skip if you don't make long-form video yet.",alts:[["CapCut","manual but free"],["Descript","full editing control"]]},
+manychat:{url:"https://manychat.com",name:"ManyChat",cat:"DM automation",cost:"Free tier",best:"Instagram DM automation — 'comment LINK and I'll send it' funnels.",skill:"Beginner.",pros:["Comment-to-DM funnel converts","Official Meta partner","Templates for common flows"],cons:["Free tier caps contacts","Flows get spaghetti-like","Over-automation reads as spam"],skip:"Skip under 1,000 followers — reply by hand and learn.",alts:[["Chatfuel","similar"],["By hand","underrated at small scale"]]},
+zapier:{url:"https://zapier.com",name:"Zapier",cat:"Automation",cost:"Free (limited)",best:"Connecting any two apps with the gentlest curve — forms to sheets, emails to Slack.",skill:"Zero to beginner.",pros:["Largest app library","Thousands of templates","Free tier proves the concept"],cons:["Tight free tier","Costs climb with volume","Multi-step gets pricey"],skip:"Skip if your workflow is many steps — Make is cheaper.",alts:[["Make","better value for complexity"],["n8n","free self-hosted"]]},
+make:{url:"https://make.com",name:"Make (Integromat)",cat:"Automation",cost:"Free tier",best:"Complex multi-step workflows on a visual canvas — where Zapier's pricing hurts.",skill:"Beginner to intermediate.",pros:["Visual flow shows the pipeline","More ops per dollar than Zapier","Branching/routers/errors built in"],cons:["Steeper first hour","Debugging takes patience","Fewer one-click templates"],skip:"Skip for one simple two-step automation — Zapier has it ready.",alts:[["Zapier","simpler, pricier"],["n8n","free if you self-host"]]},
+n8n:{url:"#",name:"n8n",cat:"Automation (self-hosted)",cost:"Free",best:"Unlimited automation with no monthly fee — if you can host it yourself.",skill:"Intermediate — the technical option.",pros:["No per-task fees ever","Most flexible logic","Data stays on your machine"],cons:["You host and maintain it","Smallest template library","Too technical for most beginners"],skip:"Skip if 'self-hosted' raised your pulse — use Make.",alts:[["Make","hosted, nearly as capable"],["Zapier","simplest"]]},
+kit:{url:"https://kit.com",name:"Kit (ConvertKit)",cat:"Email automation",cost:"Free to 1k",best:"Welcome sequences and creator email automation — tag by behavior, send the right thing.",skill:"Beginner.",pros:["Automations on free tier","Built for creators","Landing pages included"],cons:["Deliberately plain design","Costs grow with list","Deliverability depends on content"],skip:"Skip SMS and 'growth stacks' — email + a form wins for years.",alts:[["Mailchimp","fine to 500"],["Brevo","email + SMS free tier"]]},
+hubspot:{url:"https://hubspot.com",name:"HubSpot Free",cat:"CRM",cost:"Free",best:"A real sales pipeline when leads gain stages — contacted, demo, proposal, won.",skill:"Beginner.",pros:["Genuinely useful free CRM","Email tracking + meeting links","Grows into marketing tools"],cons:["Constant upsell pressure","Heavy for simple needs","Sticky migration out"],skip:"Skip until 20+ active leads — Notion handles it.",alts:[["Notion","lighter, free"],["Pipedrive","focused pipeline, paid"]]},
+tidio:{url:"https://tidio.com",name:"Tidio / custom GPT",cat:"Support chatbot",cost:"Free tier",best:"Answering the same five customer questions automatically, 24/7.",skill:"Beginner.",pros:["Live in an afternoon","Deflects repetitive questions","Hands off when stuck"],cons:["Bad answers cost trust — review weekly","Free tier limits chats","Needs your FAQ first"],skip:"Skip until support volume hurts — answering is market research.",alts:[["Intercom","powerful, funded-startup priced"],["Claude API + docs","custom but technical"]]},
+claudeapi:{url:"https://console.anthropic.com",name:"Claude API + Make",cat:"AI automation",cost:"Usage-based",best:"AI inside workflows: summarize emails, tag data, draft from templates — automatically.",skill:"Intermediate — Make plumbs, you prompt.",pros:["Repetitive thinking becomes a pipeline","Pay only for use — cents at small scale","Prompts editable by non-devs"],cons:["Needs careful prompt testing","Errors compound silently — add checks","API keys/billing to manage"],skip:"Skip until you've done the task manually 20+ times.",alts:[["OpenAI API","equivalent pattern"],["Zapier AI actions","simpler, less control"]]},
+printful:{url:"https://printful.com",name:"Etsy + Printful",cat:"Print on demand",cost:"Free (per-item cost)",best:"Design once, sell forever: shirts, mugs, posters printed and shipped only when someone buys.",skill:"Beginner.",pros:["Zero inventory, zero upfront stock","Printful integrates with Etsy","Etsy brings the buyers"],cons:["Thin margins (~$5–12) — volume game","Print costs floor your price","Quality control is out of your hands"],skip:"Skip a Shopify store first — validate on Etsy's traffic.",alts:[["Amazon Merch","Amazon's traffic, applied"],["Redbubble","easiest, lowest margin"]]},
+clickbank:{url:"https://clickbank.com",name:"ClickBank + Beacons",cat:"Affiliate marketing",cost:"Free",best:"Earning 30–75% commission promoting digital products — paired with a link-in-bio.",skill:"Beginner.",pros:["Digital products pay far more than Amazon","No product or support burden","Beacons organizes your links"],cons:["Quality varies — only promote what you'd buy","Needs an audience or content engine","Disclosure legally required"],skip:"Skip paid ads for affiliate offers as a beginner.",alts:[["Amazon Associates","easy, 1–4%"],["Shopify Affiliate","recurring"]]},
+fiverr:{url:"https://fiverr.com",name:"Fiverr",cat:"Freelance marketplace",cost:"20% commission",best:"Productized services — package one skill as a fixed-scope, fixed-price gig.",skill:"Zero to list; your craft is the skill.",pros:["Buyers come to the marketplace","Fixed scope protects your time","Reviews compound into pricing power"],cons:["20% commission","Entry-level price race — niche down","Rewards fast response; demanding"],skip:"Skip a portfolio site — your gig page is the portfolio.",alts:[["Upwork","longer engagements"],["Contra","commission-free"]]},
+upwork:{url:"https://upwork.com",name:"Upwork",cat:"Freelance marketplace",cost:"10% fee",best:"Longer client engagements — hourly or project work where relationships compound.",skill:"Your craft + proposal writing.",pros:["Bigger projects than gigs","Hourly time-tracking protection","Long clients lower the fee"],cons:["Proposals cost time + 'connects'","Global rate competition","Profile approval can take tries"],skip:"Skip 50 templated applications — 10 tailored beat them.",alts:[["Toptal","premium, tough screen"],["Reedsy","writing/editing"]]},
+userfeel:{url:"https://userfeel.com",name:"Userfeel (+ Swagbucks)",cat:"Micro-task income",cost:"Free to join",best:"Zero-barrier income today: UX testing pays ~$10 per 20-minute website test.",skill:"Zero — think aloud while clicking.",pros:["Per-hour rate beats survey sites","No audience, skill, or setup","Real money this week"],cons:["Test availability fluctuates","Surveys pay poorly — last resort","Income never compounds"],skip:"Skip survey sites as a main plan — testing pays 5× better.",alts:[["UserTesting","more tests"],["Prolific","academic, fair pay"]]},
+shopifyds:{url:"https://shopify.com",name:"Shopify + DSers",cat:"Dropshipping",cost:"$29/mo + ads",best:"Selling physical products without inventory — supplier ships to your customer.",skill:"Beginner to set up; intermediate to profit.",pros:["No inventory risk","DSers automates fulfillment","Full brand and pricing control"],cons:["High competition, thin margins","Ad spend is the real cost","Shipping times test patience"],skip:"Skip dropshipping unless you have a niche and a marketing edge.",alts:[["Print on demand","better margins for creatives"],["Affiliate","no fulfillment at all"]]},
+ytstack:{url:"https://youtube.com/studio",name:"YouTube + Descript",cat:"Content monetization",cost:"Free to start",best:"Long-form video that compounds: one good video earns views for years.",skill:"Beginner — consistency over gear.",pros:["Partner Program pays at scale","Old videos keep earning","Descript edits like a doc"],cons:["Needs 1k subs + 4k hours","First 30 videos are practice","Thumbnails/titles are half the job"],skip:"Skip the camera upgrade. Phone + window + $30 mic.",alts:[["Beehiiv","writing-first compounding"],["Spotify for Podcasters","audio-first"]]},
+substack:{url:"https://substack.com",name:"Beehiiv / Substack",cat:"Newsletter monetization",cost:"Free",best:"Writing that earns: free to publish, monetize via subs or Beehiiv's ad network.",skill:"Zero — the writing is the work.",pros:["You own the subscriber list","Ad network monetizes before you charge","Recommendation networks grow it"],cons:["Slow growth until it isn't","Paid conversion 1–5%","Consistency is the whole game"],skip:"Skip a custom website — your publication page is it.",alts:[["Substack","simpler, 10% of paid"],["Kit","more automation"]]},
+circle:{url:"https://circle.so",name:"Circle / Skool",cat:"Community platform",cost:"From $39–99/mo",best:"Paid memberships and communities — recurring revenue that beats one-time sales at scale.",skill:"Beginner; the hard part is showing up daily.",pros:["Recurring revenue compounds","Members retain each other","Skool bundles courses + community"],cons:["A ghost town refunds itself","Monthly fee before you earn","Moderation is ongoing work"],skip:"Skip until you have an audience that interacts.",alts:[["Discord","free, chaotic, fine for v1"],["Patreon","membership without community work"]]},
+gemini:{url:"https://gemini.google.com",name:"Gemini",cat:"AI research",cost:"Free",best:"Web-integrated AI analysis — a strong second opinion next to Perplexity.",skill:"Zero.",pros:["Google-grounded answers","Strong on long documents","Capable free tier"],cons:["Less consistent citations","Verify before deciding","Output style varies"],skip:"Skip running three AIs on every question — two is plenty.",alts:[["Perplexity","when citations matter"],["Claude","when thinking matters"]]},
+claudecode:{url:"#",name:"Claude Code",cat:"Agentic coding",cost:"Usage / subscription",best:"Letting an AI agent read, write, and run your codebase from the terminal or IDE — the most capable option when you can read code.",skill:"Intermediate — you steer, it edits.",pros:["Works across a whole repo, not one file","Runs commands and tests itself","Strong at multi-step refactors"],cons:["Best when you can review its diffs","Costs scale with usage","Overkill for a one-screen prototype"],skip:"Skip if you've never touched a terminal — start with a browser builder.",alts:[["Cursor","editor-first, same idea"],["Windsurf","agentic IDE alternative"]]},
+windsurf:{url:"https://codeium.com/windsurf",name:"Windsurf",cat:"AI IDE",cost:"Free / paid",best:"An AI-native editor that keeps context across your project as you build.",skill:"Beginner to intermediate.",pros:["Agentic edits with project awareness","Clean, approachable IDE","Generous free tier"],cons:["Still a code editor — you see code","Larger projects need guidance","Newer, smaller ecosystem"],skip:"Skip if a no-code builder already ships your idea.",alts:[["Cursor","most popular AI editor"],["Claude Code","terminal-first agent"]]},
+lovable:{url:"https://lovable.dev",name:"Lovable",cat:"AI app builder",cost:"Free tier → paid",best:"Describing a full web app in plain language and getting a working, deployable result with a database and auth.",skill:"Zero to beginner.",pros:["Full-stack output from a prompt","Hosting and database handled","Fast from idea to live link"],cons:["Complex logic still gets fragile","Less control than raw code","Credits cap the free tier"],skip:"Skip if a single static page is all you need — Carrd is faster.",alts:[["Bolt.new","similar in-browser builder"],["Replit","more control, more setup"]]},
+anakin:{url:"https://anakin.ai",name:"Anakin AI",cat:"AI app / agent builder",cost:"Free tier → paid",best:"Assembling AI-powered apps and agents from building blocks without wiring everything yourself.",skill:"Beginner.",pros:["No-code AI workflows and chatbots","Many pre-built templates","Connects to multiple models"],cons:["Opinionated about structure","Less suited to general web apps","Pricing scales with use"],skip:"Skip if your app isn't really AI-centric.",alts:[["Lovable","for general web apps"],["Make + Claude API","more flexible AI plumbing"]]},
+v0:{url:"https://v0.dev",name:"v0 by Vercel",cat:"AI UI generation",cost:"Free tier → paid",best:"Generating polished React/Tailwind UI from a prompt — fastest path to a real-looking front end.",skill:"Beginner to use; intermediate to ship.",pros:["High-quality component output","Exports clean React code","Tight Vercel deploy path"],cons:["UI only — no backend logic","You assemble the app around it","Credit-limited free tier"],skip:"Skip if you don't intend to touch the generated code.",alts:[["Lovable","full app, not just UI"],["Framer","design-first, no-code"]]},
+bolt:{url:"https://bolt.new",name:"Bolt.new",cat:"AI full-stack builder",cost:"Free tier → paid",best:"Building and running a full-stack app entirely in the browser from a description.",skill:"Beginner.",pros:["Whole app in one browser tab","Edits and previews instantly","No local setup"],cons:["Token limits hit fast on free","Larger apps get unwieldy","Less mature than IDE agents"],skip:"Skip for a static landing page.",alts:[["Lovable","comparable builder"],["Replit","more durable for bigger apps"]]},
+expo:{url:"https://expo.dev",name:"Expo",cat:"Mobile framework",cost:"Free / paid",best:"Building real iOS and Android apps from one React Native codebase — for when it truly must be a native app.",skill:"Intermediate — it's a real framework.",pros:["One codebase, both stores","Huge React Native ecosystem","Over-the-air updates"],cons:["Requires real coding","Store review still applies","More than most early ideas need"],skip:"Skip if a mobile-friendly website would do.",alts:[["FlutterFlow","no-code native"],["Glide","installable web app"]]},
+};
+
+const PROMPTS = {
+ideacheck:{tool:"Claude",stage:"Ideation",title:"Stress-test your startup idea",text:`I have a startup idea: [describe it in 2–3 sentences].
+My target customer is [describe them].
+
+Act as a Series A investor reviewing this. Tell me:
+1. What breaks first.
+2. What assumption I am not testing.
+3. The fastest way to validate this without building anything.
+
+Do NOT be encouraging for its own sake. Format as three short numbered sections.`},
+market:{tool:"Perplexity",stage:"Research",title:"Market size with cited sources",text:`You are a market research analyst. Estimate the market for [product/idea] aimed at [customer type] in [country/region].
+
+Give me:
+1. Market size with linked sources.
+2. The 5 closest competitors and their pricing.
+3. One trend from the last 12 months that affects this market.
+
+Do NOT use numbers you cannot cite. Format as a short brief with a source list.`},
+landing:{tool:"Claude",stage:"Validation",title:"Landing page copy that converts",text:`You are a conversion copywriter. Write landing page copy for [product idea] aimed at [target customer].
+
+The page has one job: get a visitor to leave their email.
+
+Include: a headline under 10 words, a subheadline explaining who it's for, 3 benefit bullets in plain language, and a CTA button label.
+
+Do NOT use hype words (revolutionary, game-changing). Write at the reading level of a text to a friend.`},
+replitpilot:{tool:"Replit",stage:"Pilot",title:"Build a no-auth feedback page",text:`Build a single-page web app with no login and no database setup.
+
+It should: [describe the one thing it does].
+
+The user is [describe them]. Keep it clean and mobile-friendly. Do NOT add accounts, payments, or an admin panel. When done, give me the shareable link.`},
+devbrief:{tool:"Claude",stage:"MVP → hiring",title:"Write a developer brief",text:`You are a technical product manager. I'm a non-technical founder. Turn my plain-language description into a developer brief.
+
+My product: [describe what it does and for whom].
+What exists today: [no-code tool / prototype / nothing].
+What users want that I can't build: [list].
+
+Output: a one-page brief with user stories, must-have vs nice-to-have, and the questions a developer will ask me first.`},
+ebook:{tool:"Claude",stage:"Digital product",title:"Ebook outline from your expertise",text:`You are a non-fiction book editor. Turn my expertise into a sellable ebook outline.
+
+My topic: [topic]. My reader: [who they are, what they struggle with]. What they should DO after reading: [outcome].
+
+Give me: a title + subtitle, a 7–10 chapter outline where each chapter is one actionable step, and a one-paragraph sales-page description.
+
+Do NOT pad with theory. Every chapter must change what the reader does.`},
+captions:{tool:"Claude",stage:"Creator",title:"5 Instagram caption variations",text:`You are a social media copywriter. Write 5 different Instagram captions for: [describe the post].
+
+My audience: [who follows you]. My voice: [e.g. direct, no emojis].
+
+Make them genuinely different: hook-question, story, contrarian, how-to, short punchy. Each ends with a soft CTA. Max 3 relevant hashtags.`},
+automation:{tool:"Make",stage:"Automation",title:"Design your workflow before building",text:`You are an automation consultant. I want to automate: [describe the repetitive task].
+
+Tools I already use: [list].
+
+Output: the workflow as numbered steps (trigger → actions), which tool should run it (Zapier/Make/n8n) and why, what could silently fail, and the one manual check to keep.`},
+pricing:{tool:"Claude",stage:"Selling",title:"Price your digital product",text:`You are a pricing strategist for digital products. My product: [what it is]. My buyer: [who, and what it's worth to them]. Comparable products sell for: [range].
+
+Recommend a launch price, a normal price, and whether a bundle makes sense. Explain the psychology in 3 sentences. Do NOT default to underpricing.`},
+listing:{tool:"Claude",stage:"Selling",title:"Etsy / Gumroad listing copy",text:`You are an e-commerce copywriter who understands Etsy search. Write a listing for: [product].
+
+Include: a title under 140 characters front-loaded with search terms buyers type, a description that opens with what the buyer gets, a bulleted contents list, and 13 Etsy tags.
+
+Do NOT write like a brand ad. Write like the most helpful seller in the results.`},
+};
+
+const PILLARS = [
+ {id:"startup",num:"01",name:"Build a startup",short:"Startup",desc:"From a 2am idea to a funded company — eight stages, each a different flow.",tools:8,time:"2 weeks → 2 years"},
+ {id:"product",num:"02",name:"Sell a digital product",short:"Digital product",desc:"Ebooks, planners, courses, templates — create it, price it, sell it.",tools:6,time:"1 week → 2 months"},
+ {id:"automate",num:"03",name:"Automate a workflow",short:"Automation",desc:"Make the repetitive parts of your work run themselves.",tools:5,time:"1 day → 1 week"},
+ {id:"creator",num:"04",name:"Build a creator page",short:"Creator",desc:"Instagram, YouTube, a newsletter, a podcast — pick a lane and a stack.",tools:5,time:"Ongoing"},
+ {id:"ai",num:"05",name:"Use AI effectively",short:"Use AI",desc:"Prompting, researching, building, generating — the right AI for the job.",tools:4,time:"Immediate"},
+ {id:"earn",num:"06",name:"Earn money online",short:"Earn online",desc:"No product, no startup — turn time, skills, or designs into income.",tools:6,time:"Today → 6 months"},
+];
+
+const pillarColors = {
+  startup: "var(--neon)",
+  product: "var(--neon2)",
+  automate: "var(--neon3)",
+  creator: "var(--neon4)",
+  ai: "var(--neon5)",
+  earn: "var(--neon)"
+};
+
+const QUESTIONS = {
+startup:[
+ {id:"stage",q:"Where are you, honestly?",sub:"No jargon — pick the sentence that sounds like you.",opts:[
+   {v:"idea",s:"Idea",b:"I have an idea, nothing else yet",h:"It lives in my head or a notes app."},
+   {v:"validation",s:"Validation",b:"I want real people to react to something they can click",h:"I need proof before going further."},
+   {v:"mvp",s:"Seed / MVP",b:"People want it — now I need a version they can use",h:"Signups or promises exist; product doesn't."},
+   {v:"seriesa",s:"Series A",b:"People pay me — I'm building a team and infrastructure",h:"The no-code phase is ending."},
+   {v:"late",s:"Series B+",b:"We're past all that — big rounds, enterprise, exit",h:"Series B and beyond."}]},
+ {id:"idea_validated",showIf:a=>a.stage==="idea",q:"Have you talked to anyone who isn't a friend or family?",sub:"The honest signal that separates ideas from startups.",opts:[
+   {v:"yes",s:"Yes",b:"Yes — strangers have reacted to it",h:"Good. That feedback is the asset."},
+   {v:"no",s:"Not yet",b:"No — I haven't told anyone yet",h:"Customer discovery is step one."},
+   {v:"some",s:"A few",b:"I've mentioned it but got vague responses",h:"Vague reactions mean more specificity needed."}]},
+ {id:"team",showIf:a=>["validation","mvp","seriesa"].includes(a.stage),q:"Are you building alone or with a team?",sub:"Solo vs co-founder changes what to use and how.",opts:[
+   {v:"solo",s:"Solo",b:"Just me right now",h:"Tools become your leverage."},
+   {v:"cofounder",s:"Co-founder",b:"Me and a co-founder",h:"Communication tools matter early."},
+   {v:"small",s:"Small team",b:"A small team (3–10 people)",h:"Process and async tools unlock here."}]},
+ {id:"apptype",showIf:a=>a.stage==="mvp",q:"What kind of thing are you building?",sub:"This decides which no-code builder fits.",opts:[
+   {v:"marketplace",s:"People interact",b:"People interact with each other",h:"A marketplace, community, profiles."},
+   {v:"data",s:"Data-driven",b:"It's built around data I already have",h:"A directory or tool driven by a spreadsheet."},
+   {v:"tool",s:"Single tool",b:"One simple tool that does one job",h:"A calculator, quiz, generator."},
+   {v:"mobile",s:"Mobile app",b:"It truly has to be a phone app",h:"App Store / Play Store."}]},
+ {id:"budget",showIf:a=>["idea","validation","mvp"].includes(a.stage),q:"What can you spend per month right now?",sub:"There's a real flow at every number, including zero.",opts:[
+   {v:"zero",s:"€0",b:"Nothing — it has to be free",h:"Completely fine at this stage."},
+   {v:"small",s:"<€30/mo",b:"Up to about €30 a month",h:"One or two paid tiers if they earn it."},
+   {v:"flex",s:"Flexible",b:"Money isn't the constraint, time is",h:"You'll pay for speed."}]},
+ {id:"biggest_fear",showIf:a=>["idea","validation"].includes(a.stage),q:"What's your biggest worry right now?",sub:"Different fears, different first moves.",opts:[
+   {v:"nobody_wants",s:"Nobody wants it",b:"I don't know if anyone will actually want this",h:"Validation sprint is the answer."},
+   {v:"cant_build",s:"Can't build it",b:"I want it but don't know how to build it",h:"No-code tools remove this blocker."},
+   {v:"copied",s:"Someone will copy it",b:"Someone will steal the idea if I test publicly",h:"Ideas aren't the moat. Speed is."},
+   {v:"not_enough",s:"Not good enough",b:"I'm not experienced/smart/funded enough",h:"Every founder feels this. Ship anyway."}]},
+],
+product:[
+ {id:"ptype",q:"What are you making?",sub:"Each type has a different creation tool, channel, and price range.",opts:[
+   {v:"ebook",s:"Ebook",b:"An ebook, PDF guide, or study guide",h:"Your knowledge, packaged."},
+   {v:"printable",s:"Printables",b:"Printable planners, journals, diaries",h:"Designed PDFs people print at home."},
+   {v:"flashcards",s:"Flashcards",b:"Flashcards or study packs",h:"For students and learners."},
+   {v:"templates",s:"Templates",b:"Templates or design assets",h:"Notion, Canva, Figma; covers; graphics."},
+   {v:"kidsbook",s:"Kids' book",b:"A kids' book or coloring book",h:"Story + illustrations."},
+   {v:"course",s:"Course",b:"An online course or video training",h:"Teach what you know, at scale."},
+   {v:"membership",s:"Membership",b:"A membership or community",h:"Recurring revenue from a group."}]},
+ {id:"ebook_stage",showIf:a=>a.ptype==="ebook",q:"Where is your ebook right now?",sub:"Honest — it changes everything about what to do next.",opts:[
+   {v:"idea",s:"Just an idea",b:"I haven't started writing yet",h:"Clean slate, fastest path."},
+   {v:"draft",s:"Draft exists",b:"I have a draft but it's rough",h:"Editing and design come next."},
+   {v:"written",s:"Written & done",b:"Content is done, just needs design + listing",h:"Design sprint is your next move."},
+   {v:"live",s:"Already live",b:"It's live but not selling well",h:"Listing copy and promotion, not the product."}]},
+ {id:"ebook_design",showIf:a=>a.ptype==="ebook"&&["written","draft"].includes(a.ebook_stage),q:"Does your ebook have a professional cover page?",sub:"The cover is what sells the click on any platform.",opts:[
+   {v:"yes",s:"Has cover",b:"Yes, I have a designed cover",h:"Good — move on to the listing."},
+   {v:"no",s:"No cover",b:"No cover yet — it's just text",h:"Canva has a 5-minute fix for this."},
+   {v:"basic",s:"Basic cover",b:"I made something but it looks DIY",h:"We can upgrade it without starting over."}]},
+ {id:"ebook_price",showIf:a=>a.ptype==="ebook"&&a.ebook_stage,q:"What price range are you thinking?",sub:"Price anchors the design, the copy, and where to list.",opts:[
+   {v:"low",s:"€5–€12",b:"€5–€12 — impulse buy range",h:"Volume play. Etsy and Gumroad."},
+   {v:"mid",s:"€15–€30",b:"€15–€30 — considered purchase",h:"Needs a stronger cover + listing copy."},
+   {v:"high",s:"€40+",b:"€40+ — premium",h:"Premium packaging and a strong landing page."}]},
+ {id:"audience",showIf:a=>a.ptype&&a.ptype!=="membership",q:"Do you already have an audience?",sub:"This single answer decides where you should sell.",opts:[
+   {v:"yes",s:"Has audience",b:"Yes — people follow me or read my emails",h:"Even a few hundred counts."},
+   {v:"no",s:"No audience",b:"No — I need the platform to bring buyers",h:"Most people start here."}]},
+ {id:"speed",showIf:a=>a.ptype&&a.ptype!=="membership",q:"How fast do you want the first sale?",sub:"Both answers are right — different plans.",opts:[
+   {v:"week",s:"This week",b:"As fast as possible — this week if I can",h:"Minimum viable, list it, learn."},
+   {v:"proper",s:"Properly",b:"I'd rather take a few weeks and do it properly",h:"More polish before the first buyer."}]},
+ {id:"printable_niche",showIf:a=>a.ptype==="printable",q:"Do you have a niche in mind?",sub:"Niche printables rank on Etsy; general ones don't.",opts:[
+   {v:"yes",s:"Clear niche",b:"Yes — I know my niche and buyer",h:"Great starting position."},
+   {v:"unsure",s:"Not sure yet",b:"I have a few ideas but haven't chosen",h:"Claude can help narrow it in 10 min."},
+   {v:"general",s:"General",b:"I want to make general planners",h:"Harder to rank, still possible — needs more tags work."}]},
+ {id:"course_format",showIf:a=>a.ptype==="course",q:"What format works for your content?",sub:"Format determines which platform and how much gear you need.",opts:[
+   {v:"video",s:"Video",b:"Screen recordings or talking-head video",h:"Higher perceived value, more setup."},
+   {v:"text",s:"Text + worksheets",b:"Written lessons and downloadable worksheets",h:"Lowest barrier. Teachable handles it."},
+   {v:"live",s:"Live cohorts",b:"I want to teach live groups",h:"Higher price point, more delivery work."}]},
+],
+automate:[
+ {id:"area",q:"What keeps eating your time?",sub:"Automate one thing well before automating everything.",opts:[
+   {v:"social",s:"Social media",b:"Posting and managing social media",h:"Scheduling, captions, repurposing, DMs."},
+   {v:"email",s:"Email & leads",b:"Emails and following up with leads",h:"Sequences, capture forms, pipelines."},
+   {v:"ops",s:"Business ops",b:"Business busywork",h:"Invoices, bookings, moving data."},
+   {v:"aiauto",s:"AI thinking-work",b:"Repetitive thinking work",h:"Summarizing, tagging, drafting."}]},
+ {id:"comfort",q:"How do you feel about a bit of setup?",sub:"Honest answers get better recommendations.",opts:[
+   {v:"simple",s:"Keep it simple",b:"Give me the simplest thing that works",h:"Rather pay a little than configure a lot."},
+   {v:"tinker",s:"Happy to tinker",b:"Happy to tinker if it's free or more powerful",h:"A visual builder doesn't scare me."}]},
+],
+creator:[
+ {id:"lane",q:"Where do you want to show up?",sub:"One platform done well beats four done weakly.",opts:[
+   {v:"instagram",s:"Instagram / TikTok",b:"Instagram / TikTok",h:"Short visual content, fastest feedback."},
+   {v:"youtube",s:"YouTube",b:"YouTube",h:"Long-form video that compounds."},
+   {v:"newsletter",s:"Newsletter",b:"A newsletter",h:"Writing, and owning your audience."},
+   {v:"podcast",s:"Podcast",b:"A podcast",h:"Audio, low production floor."}]},
+ {id:"why",q:"Why are you doing this?",sub:"The goal changes what 'success' means.",opts:[
+   {v:"business",s:"Feed a business",b:"To bring attention to a business or product",h:"Content as a channel."},
+   {v:"income",s:"Direct income",b:"To earn money from the content itself",h:"Ads, sponsors, subscriptions."},
+   {v:"craft",s:"Craft / portfolio",b:"For the craft or to see where it goes",h:"Legitimate — changes the advice."}]},
+ {id:"creator_stage",q:"How long have you been creating on this platform?",sub:"Stage changes the priority — growth vs monetisation vs consistency.",opts:[
+   {v:"new",s:"Just starting",b:"I haven't started yet or I'm brand new",h:"Content pillars and consistency first."},
+   {v:"some",s:"Some content",b:"I have some content but growth is slow",h:"Hook strategy and posting cadence."},
+   {v:"growing",s:"Growing",b:"I'm growing — want to monetise now",h:"Monetisation paths unlock here."}]},
+ {id:"creator_gear",showIf:a=>a.lane==="youtube"||a.lane==="podcast",q:"What gear do you currently have?",sub:"Honest — we'll tell you what actually matters.",opts:[
+   {v:"none",s:"Phone only",b:"Just my phone — nothing else",h:"More than enough to start."},
+   {v:"basic",s:"Basic setup",b:"A decent mic and maybe a camera",h:"You're set. Ship."},
+   {v:"good",s:"Proper setup",b:"A full recording setup — I just need the strategy",h:"Gear isn't the bottleneck. Content is."}]},
+],
+ai:[
+ {id:"goal",q:"What do you want AI to do for you?",sub:"Different jobs, different AIs.",opts:[
+   {v:"prompting",s:"Better prompting",b:"Get better answers out of AI in general",h:"The structure that makes prompts work."},
+   {v:"research",s:"Research",b:"Research with sources I can trust",h:"Data, competitors, facts with citations."},
+   {v:"building",s:"Build software",b:"Build software without coding",h:"Describe it, get a working thing."},
+   {v:"generating",s:"Generate content",b:"Generate content and images",h:"Posts, ebooks, illustrations."}]},
+ {id:"ai_experience",q:"How much have you used AI tools so far?",sub:"No judgement — shapes the depth of advice we give.",opts:[
+   {v:"never",s:"Barely",b:"Rarely or never — I'm starting fresh",h:"We'll go step by step."},
+   {v:"casual",s:"Casually",b:"I use ChatGPT or Claude occasionally",h:"You're ready for structure."},
+   {v:"regular",s:"Regularly",b:"I use AI tools daily for real work",h:"We'll skip basics and go deeper."}]},
+ {id:"ai_blocker",q:"What's actually slowing you down with AI?",sub:"Specific problem, specific fix.",opts:[
+   {v:"bad_outputs",s:"Bad outputs",b:"I keep getting generic or wrong answers",h:"Prompt structure is the fix."},
+   {v:"dont_trust",s:"Can't trust it",b:"I don't trust whether it's accurate",h:"Perplexity with citations is the fix."},
+   {v:"dont_know_what",s:"Don't know what to ask",b:"I don't know what to use it for",h:"The use-case library solves this."},
+   {v:"too_slow",s:"Takes too long",b:"Setting up prompts and getting results takes forever",h:"Saved prompt templates fix this."}]},
+],
+earn:[
+ {id:"path",q:"What do you have to work with?",sub:"Every path is real — they differ in barrier and ceiling.",opts:[
+   {v:"designs",s:"Designs (POD)",b:"I can make (or AI-generate) designs",h:"Print on demand."},
+   {v:"skill",s:"A skill (freelance)",b:"I have a skill people pay for",h:"Freelancing."},
+   {v:"voice",s:"Content creation",b:"I like creating content",h:"YouTube, newsletter, podcast."},
+   {v:"audience",s:"An audience (affiliate)",b:"I have an audience already",h:"Affiliate marketing."},
+   {v:"time",s:"Just time",b:"Just my time — I need money soon",h:"Micro-tasks and testing."},
+   {v:"hustle",s:"Dropshipping?",b:"I keep hearing about dropshipping",h:"We'll give you the honest version."}]},
+ {id:"urgency",q:"How soon do you need the money?",sub:"Some paths pay this week, some in a year.",opts:[
+   {v:"now",s:"This month",b:"Within weeks — this matters now",h:"Front-loads the fastest-paying steps."},
+   {v:"later",s:"Medium term",b:"I'm building something for later",h:"Optimizes for ceiling, not speed."}]},
+ {id:"earn_hours",q:"How many hours a week can you actually commit?",sub:"Be honest — more hours is rarely better if it's not sustainable.",opts:[
+   {v:"few",s:"1–5 hrs/wk",b:"A few hours a week, maximum",h:"Passive income paths only."},
+   {v:"part",s:"5–15 hrs/wk",b:"Part-time effort — maybe evenings and weekends",h:"Most freelance + POD paths work here."},
+   {v:"full",s:"20+ hrs/wk",b:"I can treat this like a second job",h:"Fastest ceiling — content + freelance stack."}]},
+ {id:"skill_type",showIf:a=>a.path==="skill",q:"What kind of skill do you have?",sub:"The skill type sets the platform and the price.",opts:[
+   {v:"writing",s:"Writing / Copy",b:"Writing, copywriting, content creation",h:"Fiverr, Upwork, newsletters."},
+   {v:"design",s:"Design",b:"Graphic design, UI, video editing",h:"Fiverr, Contra, 99designs."},
+   {v:"tech",s:"Tech / Dev",b:"Coding, automation, data work",h:"Upwork, Toptal, direct clients."},
+   {v:"other",s:"Other skill",b:"Something else — coaching, consulting, teaching",h:"Productize it: fixed price, fixed scope."}]},
+],
+};
+
+
+const RESOURCES = {
+ideas50:{
+  type:"ideas", icon:"🗂️",
+  title:"50 proven digital products to bundle",
+  sub:"A ready-made catalogue of low-effort, high-demand templates. Pick a niche, bundle 5–10, sell the set.",
+  items:["Habit Tracker","Sales Tracker","Monthly Budget Planner","Bill Payment Tracker","Paycheck Budget","52-Week Saving Tracker","Saving Planner","Financial Tracker","Bill Tracker","Income Tracker","Shopping List","Facebook Post Planner","X (Twitter) Planner","LinkedIn Post Planner","Password Logbook","Yoga Logbook","Self-Care Planner","Undated Digital Planner","Mental Health Journal","Daily Routine Planner","12-Month Calendar","Monthly Savings Tracker","Weekly Chore List","Income & Expenses Log","Monthly Goals Planner","Pregnancy Journal","Mom's Planner","Baby Shower Notebook","Daily Affirmation Journal","Devotional Journal","5-Minute Gratitude Journal","Gratitude Journal","Crystal Journal","Spirituality Journal","Wedding Planner","Homeschool Planner","Sinking Funds Tracker","Self-Love Journal","Self-Discovery Journal","Yoga Class Planner","Study Session Planner","Summer Activity Booklet","Travel Planner","Manifestation Journal","Meal Planner","Workout Log","Reading Tracker","Cleaning Schedule","Project Planner","Goal-Setting Workbook"],
+  note:"<b>The honest math:</b> if a $20 bundle sells 4 times a day, that's ~$2,400/month — but only after listings rank and you've built some traffic. Treat it as a marathon: list consistently, study which packs sell, and make more of the winner. Early days mean a few sales a week, not a day."
+},
+acq100:{
+  type:"acq", icon:"🎯",
+  title:"Get your first 100 users",
+  sub:"Seventeen real channels. You don't need all of them — pick three that fit where your people already are, and check them off.",
+  items:["Launch on Product Hunt","Post in relevant Reddit communities","Share progress on X daily","Write on Indie Hackers","Cold-DM ideal users (genuinely, not spammily)","Do basic SEO on your landing page","Launch on Hacker News","Share short tutorials on YouTube","Reach out to micro-influencers","List on BetaList","Submit to AlternativeTo","List on SaaSHub","Offer free beta access","Create a free companion tool","Partner with small newsletters","Run a small cold-email outreach","Add a referral reward"]
+},
+launch15:{
+  type:"timeline", icon:"⏱️",
+  title:"The 15-hour launch sprint",
+  sub:"One focused weekend from blank page to live, paid product. Map the phases to the tools you already have here.",
+  steps:[
+    {hours:"Hours 1–4",title:"Create the product",desc:"Generate the ideas, structure, and content for your digital product.",tools:["claude"]},
+    {hours:"Hours 5–6",title:"Design it into a PDF",desc:"Drop the content into a template and export a clean, buyable PDF.",tools:["canva"]},
+    {hours:"Hours 7–10",title:"Set up the shop & sales page",desc:"Create your store, write the listing, and host the file for delivery.",tools:["gumroad","payhip"]},
+    {hours:"Hours 11–12",title:"Wire up payments",desc:"Connect Stripe so money actually lands when someone buys.",tools:["stripe"]},
+    {hours:"Hours 13–15",title:"Make 6 pieces of launch content",desc:"Cut short-form clips and posts to start promoting on TikTok and beyond.",tools:["opusclip","canva"]},
+    {hours:"Hour 16+",title:"Enjoy the payment notifications",desc:"Watch what converts, then repeat the sprint for product two.",tools:[],final:true}
+  ]
+},
+tier_vibe:{
+  type:"tier", icon:"🏆",
+  title:"Vibe-coding tool tier list",
+  sub:"How the popular AI-assisted build tools stack up right now. Tap any tool for the full breakdown.",
+  caveat:"Rankings are an opinionated community snapshot, not gospel — this space shifts every few months, and the right tool is the one that ships your specific idea.",
+  tiers:[
+    {rank:"S",tools:[["Claude Code","claudecode"],["Windsurf","windsurf"],["Cursor","cursor"]]},
+    {rank:"A",tools:[["Lovable","lovable"],["Anakin AI","anakin"]]},
+    {rank:"B",tools:[["Framer","framer"],["v0","v0"]]},
+    {rank:"C",tools:[["Bolt.new","bolt"],["Expo","expo"],["Replit","replit"]]}
+  ]
+}
+};
+
+function resourcesFor(pillar,a){
+  const keys=[];
+  if(pillar==="product"){ keys.push("ideas50","launch15"); if(a.audience==="no") keys.push("acq100"); }
+  if(pillar==="startup" && (a.stage==="validation"||a.stage==="mvp")) keys.push("acq100");
+  if(pillar==="ai" && a.goal==="building") keys.push("tier_vibe");
+  if(pillar==="earn" && a.path==="designs") keys.push("ideas50");
+  if(pillar==="earn" && a.path==="hustle") keys.push("launch15");
+  return keys;
+}
+
+function baseResult(pillar,a){
+const R = {
+startup:(function(){const m = {
+ idea:{eyebrow:"Startup · Idea",title:"Find out if it's real before spending a euro",sub:"Test the idea against reality with zero build and zero budget — one focused week.",
+  steps:[["claude","Stress-test the idea","20 min","Free","ideacheck"],["perplexity","Market size + competitors, cited","1 hour","Free","market"],["typeform","Demand survey — 10 real responses","1 hour","Free"],["carrd","Landing page that collects emails","1 hour","Free","landing"],["beehiiv","Capture signups to email later","30 min","Free"]],
+  skips:[["A developer","Nothing validated to build yet."],["Replit / Bubble","Building before validating is the classic mistake."],["A mobile app","A web link reaches everyone."],["Logo & branding","A name and a Carrd page is enough."]],
+  grad:{trigger:"10 strangers gave you their email without being asked twice.",then:"Take the Validation path — prototyping tools unlock there."}},
+ validation:{eyebrow:"Startup · Validation",title:"Put a real, clickable thing in front of real humans",sub:"Not a product — a prop people can see, click, and react to.",
+  steps:[["replit","Describe the prototype, get a link","Half a day","Free","replitpilot"],["framer","Upgrade the landing page","2 hours","Free tier"],["typeform","Feedback form after the prototype","30 min","Free"],["calendly","Book discovery calls","15 min","Free"],["beehiiv","Nurture the waitlist","Ongoing","Free"]],
+  skips:[["User accounts & login","Friction kills validation traffic."],["Payments","Validate willingness — ask, don't charge, yet."],["A database","Typeform responses are your database."],["A custom domain","The free link works."]],
+  grad:{trigger:"50 people said they would pay for it.",then:"Take the Seed / MVP path. Now you build something people can use."}},
+ mvp:{eyebrow:"Startup · Seed / MVP",title:({marketplace:"Build the marketplace MVP",data:"Turn your spreadsheet into an app",tool:"Ship the single-purpose tool",mobile:"Build mobile-first"}[a.apptype]||"Build a working MVP"),sub:"A working product, the pipes to take money, the instruments to learn — still no engineers.",
+  steps:[[{marketplace:"bubble",data:"glide",tool:"replit",mobile:"flutterflow"}[a.apptype]||"bubble",{marketplace:"Build accounts, database, core workflow",data:"Connect your sheet, shape the app",tool:"Describe the tool, iterate",mobile:"Visual-build, deploy to both stores"}[a.apptype],"1–3 weeks",{marketplace:"Free → $29/mo",data:"Free → $25/mo",tool:"Free",mobile:"Free tier"}[a.apptype]],["stripe","Take real money — Payment Links first","1 hour","~1.4% + fee"],["posthog","See where users get stuck","2 hours","Free tier"],["notion","Track users, feedback, roadmap","1 hour","Free"]],
+  skips:[["Hiring developers","No-code carries you to first paying users."],["A full-stack rewrite","Rewrite only when the platform blocks you."],["Paid ads","Acquiring before retention exists burns money."]],
+  grad:{trigger:"10 people have actually paid — money has moved.",then:"You're approaching Series A: real engineering, real team tooling."}},
+ seriesa:{eyebrow:"Startup · Series A",title:"Real engineering, real team, scalable architecture",sub:"Tool picks become engineering decisions. This stack is chosen for documentation and hiring pool — boring on purpose.",
+  steps:[["claude","Write the developer brief before hiring","2 hours","Free","devbrief"],["fullstack","Migrate to a stack you own","Quarter","Scales"],["vercel","One-click deploys, preview links","Day one","Free tier"],["cursor","Version control + AI-assisted dev","Day one","Free / $20mo"],["linear","Issue tracking the team uses","1 day","Free tier"],["figma","Shared design/engineering canvas","Ongoing","Free / $15mo"]],
+  skips:[["No-code tools","You've graduated — keep them for internal ops only."],["Microservices & Kubernetes","A monolith serves you for years."],["Enterprise software","Procurement belongs to the next stage."]],
+  grad:{trigger:"The team ships without you in the critical path.",then:"Series B+ is vendor evaluation and procurement."}},
+ late:{eyebrow:"Startup · Series B+",title:"From tool picks to vendor evaluation",sub:"Tools stop being the answer. Decisions are procurement, due-diligence-ready stacks, acquisition readiness — where advisory becomes the product.",
+  steps:[["claude","Build vendor evaluation scorecards","Per decision","Free"],["notion","Maintain a due-diligence data room","Ongoing","Free"],["linear","Audit engineering process maturity","Quarterly","Free tier"]],
+  skips:[["Free-tier thinking","Reliability and SLAs now outweigh cost."],["Tool-of-the-week adoption","Each new tool is a migration and a security review."],["Solo decisions","Procurement needs your CTO/CISO."]],
+  grad:{trigger:"You're preparing for IPO or acquisition.",then:"Fractional-CTO territory: stack audits, due diligence, exit readiness."}},
+};return m[a.stage]})(),
+product:(function(){
+ const own = ["payhip","Sell where you keep the margin","30 min","5% per sale"];
+ const m = {
+ ebook:{eyebrow:"Digital product · Ebook",title:"From expertise to a $9–$27 PDF people buy",sub:"Buyer pays → platform processes → PDF delivers automatically → money lands. Free until you sell.",
+  steps:[["claude","Outline, then draft chapter by chapter","2–5 days","Free","ebook"],["canva","Design and format into a PDF","1 day","Free"],["claude","Listing copy and price","1 hour","Free","pricing"],a.audience==="yes"?own:["gumroad","List it — share the link everywhere","30 min","10% per sale","listing"]],
+  skips:[["A custom website","Your product page is the website."],["Email automation","Sell the first 10 copies by hand."],["Paid ads","Margin on a $15 PDF can't fund ads."]],
+  grad:{trigger:"25 sales to people who aren't friends or family.",then:"Consider the Course path — same knowledge, 10× price."}},
+ printable:{eyebrow:"Digital product · Printables",title:"Planners and journals that sell while you sleep",sub:"$3–$12 per pack. Etsy SEO is real — a well-titled listing gets found with no promotion.",
+  steps:[["canva","Design the pack — export PDF Print","1–3 days","Free"],["claude","Search-front-loaded titles + 13 tags","1 hour","Free","listing"],a.audience==="yes"?own:["etsy","List where printable buyers search","1 hour","$0.20 + 6.5%"],["claude","Price it — bundles outsell singles","20 min","Free","pricing"]],
+  skips:[["Shopify","A storefront with no traffic is a desert kiosk."],["Any paid platform","Nothing justifies a monthly fee yet."],["Instagram growth first","List first; Etsy brings buyers."]],
+  grad:{trigger:"First 50 sales, or one listing on Etsy page one.",then:"Scale horizontally — more packs in the same niche."}},
+ flashcards:{eyebrow:"Digital product · Flashcards",title:"Turn subject knowledge into $4–$15 study packs",sub:"Claude generates the Q&A, Canva makes it beautiful, Etsy brings the students.",
+  steps:[["claude","Generate accurate, levelled Q&A sets","1 day","Free"],["canva","Design the card layout","1 day","Free"],a.audience==="yes"?own:["etsy","List the packs; Creative Fabrica too","1 hour","$0.20 + 6.5%","listing"]],
+  skips:[["Building a study app","Sell PDFs first."],["Quizlet/Anki as the product","Use as free bonus delivery."],["Paid platforms","Zero monthly cost until revenue."]],
+  grad:{trigger:"Consistent weekly sales in one subject.",then:"Bundle subjects, raise prices, add an Anki premium tier."}},
+ templates:{eyebrow:"Digital product · Templates",title:"Make the tool make the product",sub:"$7–$49. Template bundles outsell individual designs 4:1.",
+  steps:[["canva","Build the template — bundle from day one","2–5 days","Free"],["claude","Listing copy + a demo script","1 hour","Free","listing"],a.audience==="yes"?own:["gumroad","Sell direct; Etsy for search","1 hour","10% / Etsy fees"]],
+  skips:[["Your own marketplace","Sell on existing rails first."],["Custom licensing pages","Standard licenses are fine."],["AppSumo","Later, for software-adjacent tools."]],
+  grad:{trigger:"One bundle selling weekly without promotion.",then:"Expand it, raise the price, submit to the tool's own marketplace."}},
+ kidsbook:{eyebrow:"Digital product · Kids' book",title:"Story + illustrations + zero inventory risk",sub:"Amazon KDP is free to publish and handles printing. $8–$20 physical, $3–$8 digital.",
+  steps:[["claude","Write the story — read-aloud rhythm","2 days","Free"],["midjourney","Consistent illustrations across pages","2–4 days","From $10/mo"],["canva","Lay out to KDP print specs","1–2 days","Free"],["kdp","Publish — Amazon prints and ships","1 day","Free (royalties)"]],
+  skips:[["Hiring an illustrator","Validate with AI art first."],["Print runs & inventory","KDP exists so you never do this."],["A publisher","Self-publish, keep control."]],
+  grad:{trigger:"10 organic reviews on your first title.",then:"Series time — same characters, next adventure."}},
+ course:{eyebrow:"Digital product · Course",title:"Teach it once, sell it forever",sub:"$27–$197 self-paced; $297–$997 cohort. The decision: marketplace traffic (Udemy) vs owning the margin (Teachable).",
+  steps:[["claude","Curriculum — each module changes behaviour","1 day","Free","ebook"],["loom","Record screen + voice; structure in Notion","1–2 weeks","Free"],(a.audience==="yes"?["teachable","Host it yourself — keep the margin","2 days","Free tier →"]:["udemy","Launch where students search","2 days","~50% rev share"]),["claude","Sales page + price tier","2 hours","Free","pricing"]],
+  skips:[["Camera, lights, studio","Screen + voice + $30 mic."],["Kajabi at $149/mo","All-in-one is for proven courses."],["A community add-on","Add the cohort after self-paced sells."]],
+  grad:{trigger:"First $1,000 in course revenue.",then:a.audience==="yes"?"Add a cohort tier at 3–5× the price.":"Move to Teachable, raise the price, keep the next students."}},
+ membership:{eyebrow:"Digital product · Membership",title:"Recurring revenue from a room people want to be in",sub:"$9–$49/mo. Prerequisite: an audience that already interacts. A ghost town refunds itself.",
+  steps:[["claude","Define the weekly member promise","Half a day","Free"],["circle","Set up the space (Skool for gamification)","2 days","From $39–99/mo"],["stripe","Subscriptions via platform or Stripe","1 hour","~1.4–2.9%"],["beehiiv","Launch to founding members at a locked price","1 week","Free"]],
+  skips:[["Launching to strangers","Communities of strangers stay silent."],["Custom forums","Circle/Skool/Discord solved this."],["A yearly-only plan","Monthly lowers the barrier."]],
+  grad:{trigger:"50 paying members, month-two retention above 80%.",then:"Raise the price for new members; add a course tier inside."}},
+ };return m[a.ptype]})(),
+automate:(function(){const m = {
+ social:{eyebrow:"Automation · Social media",title:"Post everywhere without living everywhere",sub:"From daily chore to weekly batch session.",
+  steps:a.comfort==="simple"?[["notion","Content calendar — plan a week","1 hour","Free"],["claude","Batch caption variations","30 min/wk","Free","captions"],["buffer","Schedule the week in one session","30 min/wk","Free → $15/mo"],["opusclip","Repurpose long video into shorts","1 hour/wk","Free tier"]]:[["notion","Calendar as the source of truth","1 hour","Free"],["claude","Captions wired into the pipeline","30 min/wk","Free","captions"],["make","Auto-post from Notion to platforms","Half a day","Free tier","automation"],["manychat","Comment-to-DM funnels","2 hours","Free tier"]],
+  skips:a.comfort==="simple"?[["Make / n8n","Too technical for this — Buffer is right."],["ManyChat","Under 1k followers, answer DMs by hand."],["Four platforms at once","Master one, syndicate later."]]:[["n8n","Self-hosting is real work — Make covers this."],["Two pipelines","Pick one."],["Engagement pods","Poisons your only data."]],
+  grad:{trigger:"You batch a week of content in under 2 hours.",then:"Add the next platform via repurposing, not more production."}},
+ email:{eyebrow:"Automation · Email & leads",title:"Every lead gets a perfect follow-up — automatically",sub:"Capture, welcome, and track without touching a keyboard twice.",
+  steps:[["typeform","Lead capture form anywhere","1 hour","Free"],["kit","Welcome sequence that runs itself","Half a day","Free to 1k"],["zapier","Pipe form fills into list + tracker","1 hour","Free"],a.comfort==="tinker"?["hubspot","Pipeline stages when leads need managing","2 hours","Free"]:["notion","A simple table of leads + status","1 hour","Free"]],
+  skips:[["SMS marketing","Email alone wins for years."],["Funnel builders","A form + a sequence IS the funnel."],["Buying a lead list","Tanks deliverability and trust."]],
+  grad:{trigger:"The sequence runs untouched a month and people reply.",then:"Add one behavior tag and a second sequence."}},
+ ops:{eyebrow:"Automation · Business ops",title:"Make the busywork run itself",sub:"Invoices, bookings, signatures, and the data shuffling between them.",
+  steps:[[a.comfort==="simple"?"zapier":"make","Connect the apps that don't talk","Half a day",a.comfort==="simple"?"Free (5 zaps)":"Free tier","automation"],["calendly","Bookings without ping-pong","30 min","Free"],["notion","One ops hub for docs + tracking","2 hours","Free"],["tidio","Auto-answer the five FAQs","Afternoon","Free tier"]],
+  skips:a.comfort==="simple"?[["n8n","'Self-hosted' isn't your weekend plan."],["ERP software","You are not an enterprise."],["Automating everything at once","One reliable beats five flaky."]]:[["Zapier at volume","Multi-step costs 4× there vs Make."],["Custom scripts","Make covers it, no maintenance."],["ERP software","Still no."]],
+  grad:{trigger:"Five hours a week back, measured honestly.",then:"Now automate the thinking-work — the AI path is next."}},
+ aiauto:{eyebrow:"Automation · AI-powered",title:"Automate the thinking, not just the clicking",sub:"Repetitive cognition becomes a pipeline. Rule one: automate patterns, not guesses.",
+  steps:[["claude","Do the task with AI 20× — find the stable prompt","1 week","Free"],["claudeapi","Wire the proven prompt into Make","1–2 days","Usage-based","automation"],["zapier","Light version: summarize emails","2 hours","Free + usage"],["notion","Log outputs for weekly review","1 hour","Free"]],
+  skips:[["Automating unproven prompts","Errors compound silently."],["Fine-tuning models","Prompting solves 95% of cases."],["Removing the human check","Keep the weekly review forever."]],
+  grad:{trigger:"One pipeline running a month, under 5% needing correction.",then:"Add the second. You now have leverage most businesses never build."}},
+};return m[a.area]})(),
+creator:(function(){const m = {
+ instagram:{eyebrow:"Creator · Instagram / TikTok",title:"Short-form: the fastest feedback loop online",sub:"Batch creation, scheduled posting, and a link-in-bio that converts attention into something you keep.",
+  steps:[["notion","Content calendar — themes beat improvisation","1 hour","Free"],["canva","Templates for your post formats","Half a day","Free"],["claude","Caption variations in your voice","30 min/wk","Free","captions"],["buffer","Schedule the week","30 min/wk","Free"],["clickbank","Link-in-bio — convert visits to emails","1 hour","Free"]],
+  skips:[["ManyChat","Under 1k followers, manual DMs are research."],["Paid promotion","Boosting weak posts makes them expensively weak."],["Every trend","Trends in your niche only."]],
+  grad:{trigger:"1,000 followers and a DM question you've answered 5+ times.",then:"That repeated question is your first digital product."}},
+ youtube:{eyebrow:"Creator · YouTube",title:"Long-form video that pays rent in three years",sub:"Compounding: a good video earns views for years. The first 30 are practice.",
+  steps:[["claude","Title + thumbnail concepts before scripting","1 hour/vid","Free"],["ytstack","Record simply, edit in Descript","Per video","Free"],["opusclip","Cut shorts from every long video","1 hour/vid","Free tier"],["notion","Ideas pipeline: 3 ideas per 1 filmed","Ongoing","Free"]],
+  skips:[["Camera & studio upgrades","Phone + window light + $30 mic."],["Subscriber-count watching","Watch time and CTR are the dials."],["Daily uploads","Weekly and good beats daily and burned out."]],
+  grad:{trigger:"1k subs + 4k watch hours — Partner Program.",then:"Ad revenue starts; your own product pays 10× more."}},
+ newsletter:{eyebrow:"Creator · Newsletter",title:"Own your audience outright",sub:"The subscriber list is the most durable asset online.",
+  steps:[["substack","Set up on Beehiiv — free tier, ad network","1 day","Free"],["claude","Edit drafts, subject-line variants","1 hour/issue","Free"],["typeform","Annual reader survey","1 hour/yr","Free"],["canva","Header + consistent identity","2 hours","Free"]],
+  skips:[["A custom website","Your publication page IS the website."],["Paid subs at launch","Charge after consistency is proven."],["Growth hacking","Recommendations beat tricks."]],
+  grad:{trigger:"1,000 subscribers at 40%+ open rates.",then:"Monetize: ad network, a paid tier, or your own product."}},
+ podcast:{eyebrow:"Creator · Podcast",title:"Conversations with a low floor and a long tail",sub:"Free hosting, text-based editing, and clips that feed every platform.",
+  steps:[["claude","Episode structure + question maps","1 hour/ep","Free"],["ytstack","Record; edit in Descript by transcript","Per episode","Free"],["opusclip","Clip the best 60 seconds","1 hour/ep","Free tier"],["substack","A short companion newsletter","1 day","Free"]],
+  skips:[["A professional studio","A quiet room and a $60 mic."],["Video podcast pressure","Audio-first is fine."],["Sponsor hunting early","Sponsors follow audiences."]],
+  grad:{trigger:"20 published episodes — past the podfade cliff.",then:"Pitch niche sponsors or launch a listener product."}},
+};return m[a.lane]})(),
+ai:(function(){const m = {
+ prompting:{eyebrow:"AI · Better prompting",title:"The five-part structure that fixes most prompts",sub:"Role → task → audience → constraints → format. Constraints are where quality comes from.",
+  steps:[["claude","Rewrite one prompt into the 5-part structure","30 min","Free","ideacheck"],["claude","Build a personal prompt file","Ongoing","Free"],["perplexity","Learn which job belongs to which AI","1 hour","Free"]],
+  skips:[["Prompt marketplaces","Your context beats generic mega-prompts."],["Paid prompt courses","The structure here is the course."],["One AI for everything","Job-fit beats model loyalty."]],
+  grad:{trigger:"Reused prompts give consistent quality without re-explaining.",then:"Browse the Prompt Library — every prompt follows this structure."}},
+ research:{eyebrow:"AI · Research with sources",title:"Facts you can cite, not vibes you can repeat",sub:"Perplexity finds and cites, Gemini cross-checks, Claude synthesizes.",
+  steps:[["perplexity","Primary research, every claim sourced","Per question","Free","market"],["gemini","Second opinion on real decisions","Per question","Free"],["claude","Synthesize into a brief or a plan","Per project","Free"]],
+  skips:[["Trusting one AI's numbers","Cross-check anything money depends on."],["Paid research databases","Free AI + primary sources cover early needs."],["Endless research","Set a deadline."]],
+  grad:{trigger:"You can produce a sourced one-page brief in an hour.",then:"Point it at your own idea — the Startup path is this skill applied."}},
+ building:{eyebrow:"AI · Build without coding",title:"Describe it. Get a working thing. Iterate.",sub:"Replit for single tools, Glide when data leads, Bubble when users interact.",
+  steps:[["replit","Build your first tool from a description","Half a day","Free","replitpilot"],["glide","Data-shaped idea: sheet in, app out","1 day","Free tier"],["bubble","When users need accounts + interaction","1 week+","Free tier"]],
+  skips:[["Learning to code first","Build first; learn code if the ceiling appears."],["Bubble for a simple tool","One-job tools don't need auth + database."],["Perfectionism","V1's job is feedback, not beauty."]],
+  grad:{trigger:"Something you built is used weekly by someone who isn't you.",then:"You have validation instincts now — the Startup path will feel natural."}},
+ generating:{eyebrow:"AI · Generate content & images",title:"A content engine on free tiers",sub:"Claude writes, Midjourney illustrates, Canva assembles.",
+  steps:[["claude","Long-form: ebooks, scripts, captions","Ongoing","Free","ebook"],["midjourney","Illustrations beyond stock","Ongoing","From $10/mo"],["canva","Assemble into branded deliverables","Ongoing","Free"]],
+  skips:[["Publishing raw AI output","Editing is the difference between content and noise."],["Every new image model","Depth beats novelty-hopping."],["AI-detection paranoia","Quality and honesty matter."]],
+  grad:{trigger:"A weekly production rhythm that doesn't exhaust you.",then:"Point the engine at income: Digital Product or Creator."}},
+};return m[a.goal]})(),
+earn:(function(){const m = {
+ designs:{eyebrow:"Earn online · Print on demand",title:"Design once. Sell forever. Hold nothing.",sub:"Printed and shipped only when someone buys. Thin margins, zero inventory, compounding catalog.",
+  steps:[["canva","Create designs (Midjourney for art)","Ongoing","Free"],["printful","Connect Printful to Etsy — no stock","1 day","Free (per-item)"],["claude","Etsy-search titles and tags","1 hour","Free","listing"]],
+  skips:[["A Shopify store first","Validate on Etsy's traffic."],["50 niches at once","Ten designs deep beats one design in ten."],["Paid ads","POD margins can't fund ads."]],
+  grad:{trigger:"One design selling weekly on its own.",then:"Make ten variations of the winner. Then Amazon Merch."}},
+ skill:{eyebrow:"Earn online · Freelancing",title:"Package one skill. Let buyers come to you.",sub:"Productize the service: fixed scope, fixed price, clear deliverable.",
+  steps:[["claude","Define the productized offer","2 hours","Free"],["fiverr","List the gig — it's your portfolio","Half a day","20% commission"],["upwork","10 tailored proposals beat 50 templated","Ongoing","10% fee"],["calendly","Frictionless booking for calls","30 min","Free"]],
+  skips:[["A portfolio website","The gig page does this for free."],["Underpricing 'for reviews'","Niche down instead."],["Every job category","One sharp service ranks; generalists drown."]],
+  grad:{trigger:"Booked solid two weeks ahead.",then:"Raise prices 25%. Repeat until demand balances."}},
+ voice:{eyebrow:"Earn online · Content monetization",title:"Slow burn, real ceiling",sub:"The only path here where income compounds for years. Choose the format you'll sustain.",
+  steps:[["ytstack","Video lane: publish weekly, learn from CTR","Weekly","Free"],["substack","Writing lane: Beehiiv + ad network","Weekly","Free"],["opusclip","Repurpose into shorts for discovery","1 hour/wk","Free tier"]],
+  skips:[["All three formats","One lane, one year."],["Monetization in month one","Audience first; money follows."],["Gear","Phone, window light, $30 mic."]],
+  grad:{trigger:"YT: 1k subs + 4k hours. Newsletter: 1k at 40% opens.",then:"Ads turn on — and your own product pays 10× the ads."}},
+ audience:{eyebrow:"Earn online · Affiliate",title:"Recommend what you'd buy. Earn the commission.",sub:"With an audience this is the fastest monetization. Digital products pay 30–75% vs Amazon's 1–4%.",
+  steps:[["clickbank","Pick 2–3 products you genuinely endorse","Half a day","Free"],["claude","Honest review content, disclosure included","Per product","Free","captions"],["substack","An email list multiplies each rec","Ongoing","Free"]],
+  skips:[["Promoting what you haven't used","One bad rec spends years of trust."],["Paid ads for affiliate links","The classic budget-shredder."],["Amazon-only","1–4% needs huge volume."]],
+  grad:{trigger:"First $500/month in commissions.",then:"Your own product keeps 100% — Digital Product path."}},
+ time:{eyebrow:"Earn online · Micro-tasks",title:"Honest money this week — eyes open about the ceiling",sub:"No skill, no audience, no setup. The trade: income never compounds.",
+  steps:[["userfeel","UX testing: ~$10 per 20-min test","Today","Free to join"],["claude","Inventory your skills for freelancing","1 hour","Free"]],
+  skips:[["Survey sites as the plan","Pennies per hour."],["'Get paid to watch ads'","Your time is worth more."],["Paying to join anything","Legit platforms never charge workers."]],
+  grad:{trigger:"First $100 earned and one sellable skill found.",then:"Move to Freelancing — same effort, compounding returns."}},
+ hustle:{eyebrow:"Earn online · Dropshipping (honest version)",title:"Here's what the gurus don't say",sub:"High competition, thin margins, ad spend is the real cost. Worth it only with a niche and a marketing edge.",
+  steps:[["claude","Pressure-test the niche: who, why you, why now","Half a day","Free","ideacheck"],["shopifyds","If it survives: Shopify + DSers","1 week","$29/mo + ads"],["printful","Better fit for most: print on demand","1 day","Free"]],
+  skips:[["Guru courses","Everything they sell is free elsewhere."],["Generic AliExpress products","No niche, no edge, no margin."],["Scaling ads on an unproven product","Test at $5/day."]],
+  grad:{trigger:"Profitable after ad spend for 30 straight days.",then:"Scale carefully — or take the marketing skill somewhere with better margins."}},
+};return m[a.path]})(),
+};
+return R[pillar];
+}
+
+function applyMods(r,pillar,a){
+  const out=JSON.parse(JSON.stringify(r));out.tunes=[];
+  const addSkip=(w,why)=>out.skips.unshift([w,why]);
+  if(pillar==="startup"){
+    if(a.budget==="zero"){out.tunes.push("€0 budget");addSkip("Anything with a monthly fee","Every step has a free tier — stay on them until revenue exists.")}
+    if(a.budget==="flex"){out.tunes.push("Paying for speed");out.sub+=" Since time is the constraint, jump to paid tiers the moment a free tier slows you."}
+  }
+  if(pillar==="product"){
+    if(a.speed==="week"){out.tunes.push("First sale this week");addSkip("Perfecting the design","V1 sells the idea; v2 earns the polish.")}
+    if(a.audience==="yes")out.tunes.push("Own audience → keep the margin"); if(a.audience==="no")out.tunes.push("Platform brings buyers");
+  }
+  if(pillar==="creator"){
+    if(a.why==="business")out.tunes.push("Goal: feed a business");
+    if(a.why==="income")out.tunes.push("Goal: direct income");
+    if(a.why==="craft"){out.tunes.push("Goal: craft");addSkip("Monetization tooling","You said this is for the craft — skip the funnel for now.")}
+  }
+  if(pillar==="earn"){if(a.urgency==="now"){out.tunes.push("Money needed soon");out.sub+=" Start step 1 today — it's the fastest-paying step here."}if(a.urgency==="later")out.tunes.push("Building for later")}
+  if(pillar==="automate"){out.tunes.push(a.comfort==="simple"?"Keeping it simple":"Happy to tinker")}
+  return out;
+}
+function getResult(pillar,a){const b=baseResult(pillar,a);return b?applyMods(b,pillar,a):null}
+
+let state={pillar:null,answers:{},history:[]};
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.getElementById("nav-home").setAttribute("aria-current",id!=="screen-library");document.getElementById("nav-library").setAttribute("aria-current",id==="screen-library");window.scrollTo({top:0})}
+function goHome(){state={pillar:null,answers:{},history:[]};show("screen-home")}
+let currentFilter="all";
+function showLibrary(){renderLibrary("all");show("screen-library")}
+function startPillar(pid){state={pillar:pid,answers:{},history:[]};nextQuestion()}
+function pendingQuestions(pillar,answers){return QUESTIONS[pillar].filter(q=>!(q.id in answers)&&(!q.showIf||q.showIf(answers)))}
+function nextQuestion(){const p=pendingQuestions(state.pillar,state.answers);if(p.length===0){renderReady();return}renderQuestion(p[0])}
+function answeredCrumbs(){const p=PILLARS.find(x=>x.id===state.pillar);const c=[["What do you want to build?",""],[p.short,"active"]];QUESTIONS[state.pillar].forEach(q=>{if(q.id in state.answers){const o=q.opts.find(o=>o.v===state.answers[q.id]);if(o)c.push([o.s,"active"])}});return c}
+function crumbHTML(c){return c.map(([t,cls],i)=>`<span class="q-crumb ${cls}">${t}</span>${i<c.length-1?'<span class="sep">→</span>':""}`).join("")}
+
+// Map question IDs to the tools they unlock
+const Q_TOOL_MAP = {
+  // startup
+  stage:{idea:["claude","perplexity"],validation:["replit","typeform"],mvp:["bubble","stripe"],seriesa:["cursor","vercel","linear"],late:["notion"]},
+  apptype:{marketplace:["bubble"],data:["glide"],tool:["replit"],mobile:["flutterflow"]},
+  budget:{zero:[],small:["canva"],flex:["midjourney"]},
+  idea_validated:{yes:["typeform"],no:["claude"],some:["typeform"]},
+  team:{solo:["notion"],cofounder:["notion","linear"],small:["linear","figma"]},
+  biggest_fear:{nobody_wants:["typeform","carrd"],cant_build:["replit","bubble"],copied:[],not_enough:["claude"]},
+  // product
+  ptype:{ebook:["claude","canva"],printable:["canva","etsy"],flashcards:["claude","canva"],templates:["canva","gumroad"],kidsbook:["midjourney","kdp"],course:["loom","teachable"],membership:["circle","stripe"]},
+  ebook_stage:{idea:["claude"],draft:["claude","canva"],written:["canva"],live:["claude"]},
+  ebook_design:{yes:[],no:["canva"],basic:["canva"]},
+  ebook_price:{low:["gumroad"],mid:["gumroad","canva"],high:["payhip","canva"]},
+  audience:{yes:["payhip"],no:["gumroad","etsy"]},
+  speed:{week:["gumroad"],proper:["canva"]},
+  printable_niche:{yes:["canva"],unsure:["claude"],general:["canva"]},
+  course_format:{video:["loom"],text:["teachable"],live:["teachable"]},
+  // automate
+  area:{social:["buffer","notion"],email:["kit","typeform"],ops:["make","calendly"],aiauto:["claude","make"]},
+  comfort:{simple:["zapier","buffer"],tinker:["make","manychat"]},
+  // creator
+  lane:{instagram:["canva","buffer"],youtube:["loom","opusclip"],newsletter:["beehiiv","canva"],podcast:["loom","opusclip"]},
+  why:{business:["notion"],income:["clickbank","stripe"],craft:[]},
+  creator_stage:{new:["canva","notion"],some:["buffer","opusclip"],growing:["stripe","teachable"]},
+  creator_gear:{none:["loom"],basic:["loom"],good:["loom"]},
+  // ai
+  goal:{prompting:["claude"],research:["perplexity","gemini"],building:["replit","bubble"],generating:["claude","midjourney"]},
+  ai_experience:{never:["claude"],casual:["claude","perplexity"],regular:["claudeapi"]},
+  ai_blocker:{bad_outputs:["claude"],dont_trust:["perplexity"],dont_know_what:["claude"],too_slow:["claude"]},
+  // earn
+  path:{designs:["canva","printful"],skill:["fiverr","upwork"],voice:["loom","substack"],audience:["clickbank","beehiiv"],time:["userfeel"],hustle:["shopifyds","printful"]},
+  urgency:{now:[],later:[]},
+  earn_hours:{few:["canva"],part:["fiverr","canva"],full:["fiverr","upwork","loom"]},
+  skill_type:{writing:["fiverr","upwork"],design:["canva","fiverr"],tech:["upwork","claude"],other:["calendly","notion"]},
+};
+
+function renderTrail(){
+  const trail=document.getElementById("q-trail");
+  if(!trail)return;
+  const answeredQs=QUESTIONS[state.pillar].filter(q=>q.id in state.answers);
+  if(!answeredQs.length){trail.innerHTML="";return}
+  let html="";
+  let seenTools=new Set();
+  answeredQs.forEach((q,qi)=>{
+    const ans=state.answers[q.id];
+    const opt=q.opts.find(o=>o.v===ans);
+    const toolKeys=(Q_TOOL_MAP[q.id]&&Q_TOOL_MAP[q.id][ans])||[];
+    const tools=toolKeys.map(k=>TOOLS[k]).filter(Boolean);
+    if(tools.length===0)return;
+    if(qi>0)html+=`<div class="trail-connector"><div class="trail-connector-line"></div><div class="trail-connector-arrow">›</div></div>`;
+    html+=`<div class="trail-node">`;
+    html+=`<div class="trail-q-label">${esc(opt?opt.s:"")}</div>`;
+    html+=`<div style="display:flex;gap:8px;align-items:center;margin-top:4px">`;
+    tools.forEach((t,ti)=>{
+      if(seenTools.has(t.name))return;seenTools.add(t.name);
+      if(ti>0)html+=`<div style="color:var(--text3);font-size:12px">+</div>`;
+      html+=`<a href="${t.url||'#'}" target="_blank" rel="noopener" class="trail-tool" title="Open ${esc(t.name)}">
+        <span class="trail-tool-name">${esc(t.name)}</span>
+        <span class="trail-tool-cat">${esc(t.cat)}</span>
+        <span class="trail-tool-link">↗ Open</span>
+      </a>`;
+    });
+    html+=`</div></div>`;
+  });
+  trail.innerHTML=html;
+}
+
+function renderQuestion(q){
+  const p=PILLARS.find(x=>x.id===state.pillar);
+  const total=QUESTIONS[state.pillar].filter(x=>!x.showIf||x.showIf(state.answers)||(x.id in state.answers)).length;
+  const answered=Object.keys(state.answers).length;
+
+  // Render horizontal trail
+  renderTrail();
+
+  // Progress bars
+  const prog=document.getElementById("q-progress");
+  prog.innerHTML="";
+  for(let i=0;i<total;i++){
+    const bar=document.createElement("div");
+    bar.className="bar"+(i<answered?" done":i===answered?" active":"");
+    bar.innerHTML='<div class="bar-fill"></div>';
+    prog.appendChild(bar);
+  }
+
+  document.getElementById("q-crumbs").innerHTML=crumbHTML(answeredCrumbs());
+  document.getElementById("q-eyebrow").textContent=p.name;
+  document.getElementById("q-h").textContent=q.q;
+  document.getElementById("q-sub").textContent=q.sub||"";
+  const box=document.getElementById("q-opts");box.innerHTML="";
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="q-option";
+    b.innerHTML=`<span class="opt-key">${String.fromCharCode(65+i)}</span><span class="opt-content"><b>${o.b}</b><span class="hint">${o.h||""}</span></span>`;
+    b.onclick=()=>{state.answers[q.id]=o.v;state.history.push(q.id);nextQuestion()};
+    box.appendChild(b);
+  });
+  show("screen-question");
+}
+
+function stepBack(){
+  if(state.history.length===0){goHome();return}
+  const last=state.history.pop();
+  delete state.answers[last];
+  QUESTIONS[state.pillar].forEach(q=>{if(q.showIf&&!q.showIf(state.answers))delete state.answers[q.id]});
+  nextQuestion();
+}
+
+function renderReady(){
+  const r=getResult(state.pillar,state.answers);
+  if(!r){goHome();return}
+  const steps=r.steps.filter(Boolean);
+  const pv=document.getElementById("ready-preview");
+  pv.innerHTML=steps.slice(0,3).map((s,i)=>`<span class="ready-node ${i===0?"first":""}">${TOOLS[s[0]].name}</span>`).join('<span class="ready-arrow">→</span>')+(steps.length>3?'<span class="ready-arrow">→</span><span class="ready-node ready-more">+'+(steps.length-3)+" more</span>":"");
+  document.getElementById("ready-summary").innerHTML=`<b>${r.eyebrow}</b><br>${steps.length} steps, ${steps.every(s=>/^free/i.test(s[3]))?"all free to start":"mostly free to start"}. ${r.tunes.length?"Tuned to: "+r.tunes.join(", ")+".":""}`;
+  show("screen-ready");
+}
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function renderFlow(){
+  const r=getResult(state.pillar,state.answers);if(!r){goHome();return}
+  document.getElementById("f-crumbs").innerHTML=crumbHTML(answeredCrumbs())+'<span class="sep">→</span><span class="q-crumb active">Execution flow</span>';
+  document.getElementById("f-eyebrow").textContent=r.eyebrow;
+  document.getElementById("f-h").textContent=r.title;
+  document.getElementById("f-sub").textContent=r.sub;
+  const steps=r.steps.filter(Boolean);
+  const allFree=steps.every(s=>/^free/i.test(s[3]));
+  document.getElementById("f-chips").innerHTML=`<span class="flow-chip">${steps.length} steps</span><span class="flow-chip ${allFree?"free":""}">${allFree?"Entirely free to start":"Mostly free to start"}</span>`+r.tunes.map(t=>`<span class="flow-chip tune">Tuned: ${esc(t)}</span>`).join("");
+
+  // collect the decisions the user actually made, with the alternatives they didn't pick
+  const decisions=[];
+  QUESTIONS[state.pillar].forEach(q=>{
+    if(q.id in state.answers){
+      const chosen=q.opts.find(o=>o.v===state.answers[q.id]);
+      const others=q.opts.filter(o=>o.v!==state.answers[q.id]);
+      if(chosen) decisions.push({q:q.q,chosen,others});
+    }
+  });
+
+  const flow=document.getElementById("f-flow");
+  flow.className="flowchart";
+  flow.innerHTML="";
+  const pillar=PILLARS.find(p=>p.id===state.pillar);
+  const link=(short)=>`<div class="fc-link${short?' short':''}"><span class="pip"></span></div>`;
+
+  // startup-cycle tracker: shows which stage of the journey this answer lands in
+  let stageCycle="";
+  if(state.pillar==="startup" && state.answers.stage){
+    const stageQ=QUESTIONS.startup.find(q=>q.id==="stage");
+    const stages=stageQ?stageQ.opts:[];
+    const curIdx=stages.findIndex(o=>o.v===state.answers.stage);
+    const cur=stages[curIdx];
+    if(cur){
+      const cells=stages.map((o,i)=>{
+        const cls=i<curIdx?"done":(i===curIdx?"current":"");
+        const mark=i<curIdx?"✓":String(i+1);
+        return `<div class="sc-stage ${cls}"><div class="sc-dot">${mark}</div><div class="sc-name">${esc(o.s)}</div></div>`;
+      }).join("");
+      stageCycle=`<div class="stage-cycle">
+        <div class="sc-head">
+          <span class="sc-eyebrow">Startup cycle · where you are</span>
+          <span class="sc-now">You're at <b>${esc(cur.s)}</b> — ${esc(cur.h||cur.b)}</span>
+        </div>
+        <div class="sc-track">${cells}</div>
+      </div>`+link(true);
+    }
+  }
+
+  // START
+  let html=stageCycle+`<div class="fc-node fc-start">
+      <span class="tag">Start · ${esc(pillar.name)}</span>
+      <span class="pillar">${esc(r.title)}</span>
+      <span class="goal">${esc(r.sub)}</span>
+    </div>`;
+
+  // DECISIONS as diamonds with taken / not-taken branches
+  decisions.forEach((d,idx)=>{
+    const otherLabels=d.others.map(o=>o.s).join(" · ")||"—";
+    html+=link();
+    html+=`<div class="fc-node fc-decision" style="width:100%">
+      <div class="fc-diamond">
+        <div class="d-lbl">Decision ${idx+1}</div>
+        <div class="d-q">${esc(d.q)}</div>
+      </div>
+      <div class="fc-branches">
+        <div class="fc-branch taken">
+          <div class="b-tag"><span class="dot"></span>You chose</div>
+          <div class="b-ans">${esc(d.chosen.b)}</div>
+          <div class="b-note">${esc(d.chosen.h||"This shaped the tools below.")}</div>
+        </div>
+        <div class="fc-branch ghost">
+          <div class="b-tag">Not taken</div>
+          <div class="b-ans">${esc(otherLabels)}</div>
+          <div class="b-note">Would route you to a different stack.</div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // MERGE
+  html+=link();
+  html+=`<div class="fc-node fc-merge"><span class="glyph">⋃</span><span class="lbl">Your choices merge into one execution path</span></div>`;
+
+  // STEPS
+  html+=link();
+  html+=`<div class="fc-node fc-steps" id="fc-steps"></div>`;
+  flow.innerHTML=html;
+
+  const stepsBox=document.getElementById("fc-steps");
+  steps.forEach((s,i)=>{
+    const [key,task,time,cost,promptKey]=s;const t=TOOLS[key];
+    const locked=false;
+    if(i>0) stepsBox.insertAdjacentHTML('beforeend',link(true));
+    const card=document.createElement("div");
+    card.className="fc-step-card"+(locked?" locked":"");
+    card.innerHTML=`
+      <div class="fc-step-top">
+        <span class="fc-step-num">Step ${i+1}${locked?" · Pro":""}</span>
+        <span class="fc-step-tap">${locked?"🔒 Unlock with Pro →":"Tap for how-to + prompt →"}</span>
+      </div>
+      <span class="fc-step-tool">${esc(t.name)}</span>
+      <div class="fc-step-task">${esc(task)}</div>
+      <div class="fc-step-meta">
+        <span class="fnode-chip time">${esc(time)}</span>
+        <span class="fnode-chip cost">${esc(cost)}</span>
+        <span class="fnode-chip">${esc(t.cat)}</span>
+      </div>
+      ${!locked&&t.url&&t.url!=='#'?`<a href="${t.url}" target="_blank" rel="noopener" class="fnode-link" onclick="event.stopPropagation()">Open ${esc(t.name)} ↗</a>`:''}`;
+    card.onclick=()=>locked?openPaywall(i+1):openNode(key,promptKey,i+1);
+    stepsBox.appendChild(card);
+  });
+  // end cap
+  stepsBox.insertAdjacentHTML('beforeend',link(true)+`<div class="fc-node fc-merge"><span class="glyph">✓</span><span class="lbl">${esc(r.grad.trigger)}</span></div>`);
+
+  document.getElementById("f-grad").innerHTML=`<span class="eyebrow">You've outgrown this stage when…</span><p>${esc(r.grad.trigger)}</p><p class="then">${esc(r.grad.then)}</p>`;
+  document.getElementById("f-skips").innerHTML=`<h3><span class="x" aria-hidden="true">✕</span>Skip for now</h3><p class="lead">"You don't need this yet" is the most useful sentence a platform can say. At your stage, ignore:</p>`+r.skips.map(([w,why])=>`<div class="skipitem"><b>${esc(w)}</b><span>${esc(why)}</span></div>`).join("");
+
+  renderResources(resourcesFor(state.pillar,state.answers));
+  show("screen-flow");
+}
+
+/* ============ RESOURCE PANELS ============ */
+function renderResources(keys){
+  const box=document.getElementById("f-resources");
+  box.innerHTML="";
+  if(!keys||!keys.length) return;
+  box.innerHTML=`<div class="res-head"><p class="eyebrow">Go deeper</p><h3>Resources for this path</h3><p>Hand-picked playbooks that fit the flow above. Open what's useful, ignore the rest.</p></div>`;
+  keys.forEach((k,idx)=>{
+    const res=RESOURCES[k];if(!res)return;
+    const panel=document.createElement("div");
+    panel.className="res-panel"+(idx===0?" open":"");
+    panel.innerHTML=`
+      <button class="res-toggle" aria-expanded="${idx===0}">
+        <span class="res-icon">${res.icon}</span>
+        <span class="res-meta"><span class="rt">${esc(res.title)}</span><span class="rs">${esc(res.sub)}</span></span>
+        <span class="res-chev">›</span>
+      </button>
+      <div class="res-body">${resourceBody(k,res)}</div>`;
+    const btn=panel.querySelector(".res-toggle");
+    btn.onclick=()=>{const open=panel.classList.toggle("open");btn.setAttribute("aria-expanded",open);};
+    box.appendChild(panel);
+    wireResource(k,res,panel);
+  });
+}
+
+function resourceBody(k,res){
+  if(res.type==="ideas"){
+    return `<div class="ideas-tools">
+        <input class="ideas-search" type="search" placeholder="Filter 50 product ideas…" aria-label="Filter product ideas">
+        <span class="ideas-count"></span>
+      </div>
+      <div class="ideas-grid">${res.items.map((it,i)=>`<div class="idea" data-name="${esc(it.toLowerCase())}"><span class="i-num">${String(i+1).padStart(2,'0')}</span>${esc(it)}</div>`).join("")}</div>
+      <div class="ideas-note">${res.note}</div>`;
+  }
+  if(res.type==="acq"){
+    return `<div class="acq-status"><b class="acq-done">0</b> / ${res.items.length} channels picked</div>
+      <div class="acq-bar"><div class="acq-fill"></div></div>
+      <div class="acq-list">${res.items.map((it,i)=>`<div class="acq-item" role="checkbox" aria-checked="false" tabindex="0"><span class="acq-box">✓</span><span class="acq-num">${String(i+1).padStart(2,'0')}</span><span class="acq-lbl">${esc(it)}</span></div>`).join("")}</div>`;
+  }
+  if(res.type==="timeline"){
+    return `<div class="timeline">${res.steps.map(s=>`<div class="tl-step${s.final?' final':''}">
+        <div class="tl-hours">${esc(s.hours)}</div>
+        <div class="tl-title">${esc(s.title)}</div>
+        <div class="tl-desc">${esc(s.desc)}</div>
+        ${s.tools&&s.tools.length?`<div class="tl-tools">${s.tools.map(tk=>TOOLS[tk]?`<button class="tl-tool" data-tool="${tk}">${esc(TOOLS[tk].name)}</button>`:"").join("")}</div>`:""}
+      </div>`).join("")}</div>`;
+  }
+  if(res.type==="tier"){
+    return `<p class="tier-caveat">${esc(res.caveat)}</p>${res.tiers.map(t=>`<div class="tier ${t.rank}">
+        <div class="tier-rank">${t.rank}</div>
+        <div class="tier-tools">${t.tools.map(([label,key])=>TOOLS[key]?`<button class="tier-chip" data-tool="${key}">${esc(label)}</button>`:`<span class="tier-chip static">${esc(label)}</span>`).join("")}</div>
+      </div>`).join("")}`;
+  }
+  return "";
+}
+
+function wireResource(k,res,panel){
+  if(res.type==="ideas"){
+    const input=panel.querySelector(".ideas-search");
+    const count=panel.querySelector(".ideas-count");
+    const items=[...panel.querySelectorAll(".idea")];
+    const refresh=()=>{const q=input.value.trim().toLowerCase();let shown=0;
+      items.forEach(el=>{const hit=!q||el.dataset.name.includes(q);el.style.display=hit?"":"none";if(hit)shown++;});
+      count.textContent=shown+" / "+items.length+" shown";};
+    input.addEventListener("input",refresh);refresh();
+  }
+  if(res.type==="acq"){
+    const fill=panel.querySelector(".acq-fill");
+    const done=panel.querySelector(".acq-done");
+    const items=[...panel.querySelectorAll(".acq-item")];
+    const refresh=()=>{const n=items.filter(i=>i.classList.contains("done")).length;
+      done.textContent=n;fill.style.width=(n/items.length*100)+"%";};
+    items.forEach(it=>{
+      const toggle=()=>{const on=it.classList.toggle("done");it.setAttribute("aria-checked",on);refresh();};
+      it.addEventListener("click",toggle);
+      it.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();}});
+    });
+  }
+  if(res.type==="timeline"||res.type==="tier"){
+    panel.querySelectorAll("[data-tool]").forEach(el=>{
+      el.addEventListener("click",e=>{e.stopPropagation();const key=el.dataset.tool;if(TOOLS[key])openNode(key,null,null);});
+    });
+  }
+}
+
+
+function openModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("modal-bg").classList.add("open")}
+function closeModal(){document.getElementById("modal-bg").classList.remove("open")}
+function openNode(key,promptKey,n){
+  const t=TOOLS[key];const pr=promptKey&&PROMPTS[promptKey];
+  const urlBtn=t.url&&t.url!=='#'?`<a href="${t.url}" target="_blank" rel="noopener" class="tool-open-btn">Open ${esc(t.name)} ↗</a>`:"";
+  openModal(`
+   <div class="modal-head"><div><div class="mt">${t.name}</div><div class="mc">${n?("Step "+n+" · "):""}${t.cat} · ${t.cost}</div></div><button class="modal-x" onclick="closeModal()" aria-label="Close">✕</button></div>
+   <div class="modal-body">
+     ${urlBtn}
+     <div class="trow"><span class="tl">Best used when</span>${t.best}</div>
+     <div class="trow"><span class="tl">Skill level needed</span>${t.skill}</div>
+     <div class="trow"><span class="tl">Pros</span><ul>${t.pros.map(p=>`<li>${p}</li>`).join("")}</ul></div>
+     <div class="trow"><span class="tl">Cons</span><ul>${t.cons.map(c=>`<li>${c}</li>`).join("")}</ul></div>
+     <div class="trow"><span class="tl">Skip signal</span><div class="skipline">${t.skip}</div></div>
+     ${pr?`<div class="trow"><span class="tl">Ready-to-copy prompt — ${pr.title}</span><div class="promptbox">${pr.text}<button class="copybtn" onclick="copyPrompt(event,'${promptKey}')">Copy</button></div></div>`:""}
+     <div class="trow alts"><span class="tl">Alternatives</span>${t.alts.map(([nm,w])=>`<span><b>${nm}</b> — ${w}</span>`).join("")}</div>
+   </div>`);
+}
+function openPaywall(n){
+  openModal(`<div class="paywall">
+    <div class="lockbig" aria-hidden="true">🔒</div>
+    <h3>Step ${n} is a Pro step</h3>
+    <p>You can see your whole flow for free — every tool, in order. The first two steps come with full how-to, pros, cons, and prompts.</p>
+    <p>Unlock step ${n} and the rest of this flow with Pro.</p>
+    <div class="pricing">
+      <div class="ptier"><div class="pname">Free</div><div class="pprice">€0</div><ul><li>The full flow, drawn</li><li>First 2 steps in detail</li><li>3 library prompts</li></ul></div>
+      <div class="ptier hl"><div class="pname">Pro</div><div class="pprice">€12<small>/mo</small></div><ul><li>Every step unlocked</li><li>All prompts, all flows</li><li>Save & revisit your flows</li></ul></div>
+    </div>
+    <button class="btn-primary" onclick="demoUnlock()" style="margin-top:8px">Unlock everything (demo)</button>
+    <p class="fineprint">This is a prototype — "unlock" just flips the demo plan toggle, no payment.</p>
+  </div>`);
+}
+function demoUnlock(){isPro=true;updatePlanBadge();closeModal();renderFlow()}
+function copyPrompt(e,key){e.stopPropagation();const text=PROMPTS[key].text;const btn=e.target;const done=()=>{btn.textContent="Copied";setTimeout(()=>btn.textContent="Copy",1600)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fb(text,done))}else fb(text,done)}
+function fb(text,done){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+
+function renderLibrary(filter){
+  currentFilter=filter;
+  const tools=[...new Set(Object.values(PROMPTS).map(p=>p.tool))];
+  const fbox=document.getElementById("lib-filters");fbox.innerHTML="";
+  ["all",...tools].forEach(t=>{
+    const b=document.createElement("button");b.className="fbtn";
+    b.textContent=t==="all"?"All tools":t;
+    b.setAttribute("aria-pressed",t===filter);
+    b.onclick=()=>renderLibrary(t);fbox.appendChild(b);
+  });
+  const list=document.getElementById("lib-list");list.innerHTML="";
+  let shown=0;
+  Object.entries(PROMPTS).forEach(([key,p])=>{
+    if(filter!=="all"&&p.tool!==filter)return;
+    const locked=!isPro&&shown>=3;shown++;
+    const d=document.createElement("div");d.className="pitem"+(locked?" locked":"");
+    d.innerHTML=`<div class="pitop"><span class="pititle">${p.title}</span><span class="ptags"><span class="fnode-chip">${p.tool}</span><span class="fnode-chip time">${p.stage}</span></span></div><div class="promptbox">${p.text}<button class="copybtn" onclick="copyPrompt(event,'${key}')">Copy</button></div><div class="lockover"><span style="font-size:24px">🔒</span><b>Pro prompt</b><button class="btn-primary" onclick="demoUnlockLib()">Unlock all prompts</button></div>`;
+    list.appendChild(d);
+  });
+}
+function demoUnlockLib(){isPro=true;updatePlanBadge();renderLibrary(currentFilter)}
+
+const pbox=document.getElementById("pillars");
+PILLARS.forEach(p=>{
+  const b=document.createElement("button");
+  b.className="pillar-card";
+  b.innerHTML=`<div class="pillar-num">PILLAR ${p.num}</div><div class="pillar-name">${p.name}</div><div class="pillar-desc">${p.desc}</div><div class="pillar-meta"><span><span class="dot" style="width:6px;height:6px;border-radius:50%;background:${pillarColors[p.id]}"></span> ${p.tools} tools</span><span>${p.time}</span></div><div class="pillar-arrow">→</div>`;
+  b.onclick=()=>startPillar(p.id);
+  pbox.appendChild(b);
+});
+updatePlanBadge();
+
+/* ============ 3D RING SELECTOR ============ */
+(function initRing(){
+  const ring=document.getElementById("ring");
+  const dotsBox=document.getElementById("ring-dots");
+  if(!ring) return;
+  const N=PILLARS.length;
+  const step=360/N;
+  // radius from card width so neighbours don't overlap
+  const isNarrow=window.matchMedia("(max-width:768px)").matches;
+  const radius=isNarrow?230:300;
+  let angle=0, target=0, current=0;
+  let dragging=false, startX=0, startAngle=0, autoIdle=0, hasInteracted=false;
+
+  PILLARS.forEach((p,i)=>{
+    const card=document.createElement("div");
+    card.className="ring-card";
+    card.style.setProperty("--rc", pillarColors[p.id]);
+    card.style.transform=`rotateY(${i*step}deg) translateZ(${radius}px)`;
+    card.innerHTML=`
+      <span class="rc-glyph">${p.num}</span>
+      <span class="rc-num">PILLAR ${p.num}</span>
+      <span class="rc-name">${p.name}</span>
+      <span class="rc-desc">${p.desc}</span>
+      <span class="rc-meta"><span>${p.tools} tools</span><span>${p.time}</span></span>
+      <span class="rc-go">Click to map this →</span>`;
+    card.dataset.idx=i;
+    card.addEventListener("click",()=>{
+      const idx=+card.dataset.idx;
+      if(card.classList.contains("focused")) startPillar(p.id);
+      else goTo(idx);
+    });
+    ring.appendChild(card);
+    const dot=document.createElement("button");
+    dot.className="ring-dot";dot.setAttribute("role","tab");
+    dot.setAttribute("aria-label","Show "+p.name);
+    dot.addEventListener("click",()=>goTo(i));
+    dotsBox.appendChild(dot);
+  });
+  const cards=[...ring.querySelectorAll(".ring-card")];
+  const dots=[...dotsBox.querySelectorAll(".ring-dot")];
+
+  function frontIndex(){
+    // which card faces the viewer at current rotation
+    let a=((-current%360)+360)%360;
+    return Math.round(a/step)%N;
+  }
+  function updateFocus(){
+    const fi=frontIndex();
+    cards.forEach((c,i)=>c.classList.toggle("focused", i===fi));
+    dots.forEach((d,i)=>d.classList.toggle("on", i===fi));
+  }
+  function goTo(i){ target=-i*step; hasInteracted=true; ring.classList.add("snap"); }
+
+  // drag to spin
+  const stage=document.querySelector(".selector");
+  stage.addEventListener("pointerdown",e=>{
+    if(e.target.closest(".ring-btn")||e.target.closest(".ring-dot")) return;
+    dragging=true;hasInteracted=true;startX=e.clientX;startAngle=current;
+    ring.classList.remove("snap");stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener("pointermove",e=>{
+    if(!dragging)return;
+    current=startAngle+(e.clientX-startX)*0.35;target=current;
+    ring.style.transform=`rotateY(${current}deg)`;updateFocus();
+  });
+  const endDrag=()=>{ if(!dragging)return;dragging=false;
+    // snap to nearest card
+    const nearest=Math.round(current/step);target=nearest*step;ring.classList.add("snap"); };
+  stage.addEventListener("pointerup",endDrag);
+  stage.addEventListener("pointercancel",endDrag);
+
+  document.getElementById("ring-next").onclick=()=>{hasInteracted=true;target-=step;ring.classList.add("snap");};
+  document.getElementById("ring-prev").onclick=()=>{hasInteracted=true;target+=step;ring.classList.add("snap");};
+  stage.setAttribute("tabindex","0");
+  stage.addEventListener("keydown",e=>{
+    if(e.key==="ArrowRight"){hasInteracted=true;target-=step;ring.classList.add("snap");}
+    if(e.key==="ArrowLeft"){hasInteracted=true;target+=step;ring.classList.add("snap");}
+    if(e.key==="Enter"){startPillar(PILLARS[frontIndex()].id);}
+  });
+
+  function tick(){
+    if(!dragging){
+      if(!hasInteracted && !reduceMotion){ target-=0.18; } // gentle auto-spin until first interaction
+      current+=(target-current)*(ring.classList.contains("snap")?0.12:0.2);
+      if(Math.abs(target-current)<0.02){current=target;ring.classList.remove("snap");}
+      ring.style.transform=`rotateY(${current}deg)`;
+      updateFocus();
+    }
+    requestAnimationFrame(tick);
+  }
+  updateFocus();
+  if(reduceMotion){ ring.style.transform="rotateY(0deg)"; updateFocus(); }
+  tick();
+})();
+</script>
+</body>
+</html>
