@@ -577,28 +577,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
 /* ===== STEP TOOL LINK in flow ===== */
 .fnode-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--neon);font-family:'JetBrains Mono',monospace;text-decoration:none;border:1px solid rgba(0,240,255,0.2);border-radius:99px;padding:3px 10px;margin-top:6px;transition:all 0.25s;background:rgba(0,240,255,0.04)}
 .fnode-link:hover{background:rgba(0,240,255,0.1);border-color:var(--neon);box-shadow:0 0 12px rgba(0,240,255,0.15)}
-
-/* ===== EARLY ACCESS / EMAIL CAPTURE ===== */
-.ea-section{padding:20px 0 80px}
-.ea-card{display:flex;gap:30px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:linear-gradient(135deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border2);border-radius:var(--radius);padding:32px 36px;box-shadow:var(--depth-2)}
-.ea-copy{flex:1 1 320px;min-width:280px}
-.ea-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-0.02em;margin:10px 0 8px}
-.ea-desc{color:var(--text2);font-size:15px;line-height:1.6;max-width:460px}
-.ea-form{display:flex;gap:12px;flex-wrap:wrap;flex:1 1 300px;min-width:280px}
-.ea-input{flex:1;min-width:200px;background:var(--void2);border:1px solid var(--border2);border-radius:99px;padding:14px 20px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;outline:none;transition:border-color .25s,box-shadow .25s}
-.ea-input:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,240,255,0.12)}
-.ea-status{margin-top:16px;font-size:14px;color:var(--text2);min-height:20px;font-family:'JetBrains Mono',monospace}
-.ea-status.ok{color:var(--neon4)}
-.ea-status.err{color:var(--neon3)}
-
-/* ===== RESOURCES ===== */
-.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
-.res-card{display:flex;flex-direction:column;gap:10px;text-decoration:none;background:linear-gradient(135deg,var(--glass-hi),var(--glass-lo));border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--depth-1);transition:transform .25s,border-color .25s,box-shadow .25s}
-.res-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:var(--depth-2)}
-.res-tag{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--neon);border:1px solid var(--border2);border-radius:99px;padding:4px 12px;background:rgba(0,240,255,0.05)}
-.res-card-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;line-height:1.3;color:var(--text)}
-.res-card-desc{font-size:14px;color:var(--text2);line-height:1.6;flex:1}
-.res-link{font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:var(--neon)}
 </style>
 </head>
 <body>
@@ -618,7 +596,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
     <nav aria-label="Main">
       <button class="navbtn" id="nav-home" aria-current="true" onclick="goHome()">Navigator</button>
       <button class="navbtn" id="nav-library" aria-current="false" onclick="showLibrary()">Prompt Library</button>
-      <button class="navbtn" id="nav-resources" aria-current="false" onclick="showResources()">Resources</button>
       <span class="plan" id="planBadge" onclick="togglePlanDemo()" title="Demo: click to toggle Free/Pro">FREE PLAN</span>
     </nav>
   </div>
@@ -668,28 +645,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
         <p class="section-desc">Each pillar contains branching decision trees that adapt to your exact situation — budget, timeline, skills, and goals.</p>
       </div>
       <div class="pillars-grid" id="pillars"></div>
-    </div>
-  </div>
-
-  <!-- ============ EARLY ACCESS / EMAIL CAPTURE ============
-       TO COLLECT REAL EMAILS: open the script near the bottom of this file and
-       set EARLY_ACCESS_ENDPOINT to your form URL (Formspree, Getform, Tally, or
-       a Beehiiv/ConvertKit form action). Until you do, sign-ups are saved only
-       in the visitor's own browser so you can test the flow. -->
-  <div class="ea-section">
-    <div class="wrap">
-      <div class="ea-card">
-        <div class="ea-copy">
-          <p class="section-eyebrow">Early access</p>
-          <h2 class="ea-title">Be first in when TechNav opens.</h2>
-          <p class="ea-desc">Built for non-technical founders and builders. Drop your email and you'll get an invite, plus the founder resource pack.</p>
-        </div>
-        <form class="ea-form" id="ea-form" novalidate>
-          <input class="ea-input" id="ea-email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Your email address" required>
-          <button class="btn-primary" type="submit">Get early access &rarr;</button>
-        </form>
-      </div>
-      <p class="ea-status" id="ea-status" role="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
@@ -770,47 +725,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
         <li><b>Audience / context</b> — who this is for and what stage they're at.</li>
         <li><b>Constraints</b> — what to leave out. This is where quality comes from.</li>
         <li><b>Output format</b> — exactly what shape the answer should take.</li>
-      </ol>
-    </div>
-  </div>
-</section>
-
-<section class="screen" id="screen-resources" aria-labelledby="res-h">
-  <div class="wrap">
-    <div class="section-header" style="text-align:left;margin-bottom:30px">
-      <p class="section-eyebrow">Founder resource pack</p>
-      <h2 class="section-title" id="res-h">Resources</h2>
-      <p class="section-desc" style="margin:0">Short, practical guides for non-technical founders and builders — the same plain-language approach as the Navigator. Free to read.</p>
-    </div>
-    <div class="res-grid">
-      <!-- Each card is a self-contained link. To use your own file: create a
-           folder named "resources" next to this HTML file, drop your PDF in it,
-           then set href to e.g. "resources/my-guide.pdf" and edit the text. -->
-      <a class="res-card" href="resources/launch-checklist.pdf" target="_blank" rel="noopener">
-        <span class="res-tag">Checklist</span>
-        <h3 class="res-card-title">The Non-Technical Founder's Launch Checklist</h3>
-        <p class="res-card-desc">Everything to have in place before you put your idea in front of real users — written for people who don't code.</p>
-        <span class="res-link">Open &rarr;</span>
-      </a>
-      <a class="res-card" href="resources/pick-your-stack.pdf" target="_blank" rel="noopener">
-        <span class="res-tag">Guide</span>
-        <h3 class="res-card-title">Pick Your Stack in 10 Minutes</h3>
-        <p class="res-card-desc">How to choose the right tools without drowning in options — the thinking behind every TechNav flow.</p>
-        <span class="res-link">Open &rarr;</span>
-      </a>
-      <a class="res-card" href="resources/idea-to-first-user.pdf" target="_blank" rel="noopener">
-        <span class="res-tag">Playbook</span>
-        <h3 class="res-card-title">From Idea to First User</h3>
-        <p class="res-card-desc">A simple week-by-week path from "I have an idea" to "someone is actually using it."</p>
-        <span class="res-link">Open &rarr;</span>
-      </a>
-    </div>
-    <div class="anatomy" style="max-width:760px">
-      <h3>Add your own resources</h3>
-      <ol>
-        <li>Create a folder called <b>resources</b> in the same place as this HTML file.</li>
-        <li>Drop a PDF (or any file) into it, e.g. <b>resources/my-guide.pdf</b>.</li>
-        <li>In a card above, set the <b>href</b> to that path and edit the title and description.</li>
       </ol>
     </div>
   </div>
@@ -1422,11 +1336,10 @@ function applyMods(r,pillar,a){
 function getResult(pillar,a){const b=baseResult(pillar,a);return b?applyMods(b,pillar,a):null}
 
 let state={pillar:null,answers:{},history:[]};
-function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.getElementById("nav-home").setAttribute("aria-current",id!=="screen-library"&&id!=="screen-resources");document.getElementById("nav-library").setAttribute("aria-current",id==="screen-library");var _r=document.getElementById("nav-resources");if(_r)_r.setAttribute("aria-current",id==="screen-resources");window.scrollTo({top:0})}
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.getElementById("nav-home").setAttribute("aria-current",id!=="screen-library");document.getElementById("nav-library").setAttribute("aria-current",id==="screen-library");window.scrollTo({top:0})}
 function goHome(){state={pillar:null,answers:{},history:[]};show("screen-home")}
 let currentFilter="all";
 function showLibrary(){renderLibrary("all");show("screen-library")}
-function showResources(){show("screen-resources")}
 function startPillar(pid){state={pillar:pid,answers:{},history:[]};nextQuestion()}
 function pendingQuestions(pillar,answers){return QUESTIONS[pillar].filter(q=>!(q.id in answers)&&(!q.showIf||q.showIf(answers)))}
 function nextQuestion(){const p=pendingQuestions(state.pillar,state.answers);if(p.length===0){renderReady();return}renderQuestion(p[0])}
@@ -1923,53 +1836,6 @@ updatePlanBadge();
   updateFocus();
   if(reduceMotion){ ring.style.transform="rotateY(0deg)"; updateFocus(); }
   tick();
-})();
-</script>
-
-<script>
-/* ===== EARLY-ACCESS EMAIL CAPTURE =====
-   Set EARLY_ACCESS_ENDPOINT to your form URL to collect emails centrally.
-   Examples:
-     Formspree -> "https://formspree.io/f/yourid"
-     Getform   -> "https://getform.io/f/yourid"
-   Leave it as "" to store sign-ups locally (per browser) just for testing. */
-const EARLY_ACCESS_ENDPOINT = "";
-(function(){
-  const form = document.getElementById("ea-form");
-  if(!form) return;
-  const email = document.getElementById("ea-email");
-  const status = document.getElementById("ea-status");
-  const isValid = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  form.addEventListener("submit", async function(e){
-    e.preventDefault();
-    const v = (email.value || "").trim();
-    if(!isValid(v)){ status.textContent = "Please enter a valid email address."; status.className = "ea-status err"; email.focus(); return; }
-    status.textContent = "Saving\u2026"; status.className = "ea-status";
-    try{
-      if(EARLY_ACCESS_ENDPOINT){
-        const res = await fetch(EARLY_ACCESS_ENDPOINT, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json", "Accept":"application/json" },
-          body: JSON.stringify({ email: v, source:"technav-early-access" })
-        });
-        if(!res.ok) throw new Error("Request failed");
-      } else {
-        try{
-          const key = "technav_signups";
-          let list = JSON.parse(localStorage.getItem(key) || "[]");
-          if(!Array.isArray(list)) list = [];
-          if(!list.includes(v)) list.push(v);
-          localStorage.setItem(key, JSON.stringify(list));
-        }catch(_){ /* storage blocked — fine, flow still succeeds */ }
-      }
-      form.reset();
-      status.textContent = "You're on the list. Check the Resources tab for the founder pack.";
-      status.className = "ea-status ok";
-    }catch(err){
-      status.textContent = "Something went wrong — please try again in a moment.";
-      status.className = "ea-status err";
-    }
-  });
 })();
 </script>
 </body>
