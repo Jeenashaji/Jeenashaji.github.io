@@ -1,469 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jeena Shaji | Data & Machine Learning Engineer</title>
-  <meta name="description" content="Jeena Shaji – Data and machine learning engineer in Oldenburg, Germany. AWS data engineering, time-series analysis, optimization and HCI.">
-  <meta name="author" content="Jeena Shaji">
-  <meta property="og:title" content="Jeena Shaji | Data & Machine Learning Engineer">
-  <meta property="og:description" content="Data and ML engineer: 3 years AWS data engineering at TCS, applied research at DLR, OFFIS and the University of Oldenburg.">
-  <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    :root {
-      --bg: #0d1117;
-      --bg-alt: #11161e;
-      --card: #161b22;
-      --card-hover: #1b212a;
-      --border: #262d37;
-      --text: #e6edf3;
-      --text-2: #a3adba;
-      --muted: #7d8794;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.1);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jeena Shaji – Data and Machine Learning Engineer</title>
+<meta name="description" content="Data and machine learning engineer: AWS data pipelines, time-series ML and optimization research. Case studies with tools, actions and results.">
+<meta property="og:title" content="Jeena Shaji – Data and Machine Learning Engineer">
+<meta property="og:description" content="Three years of AWS data engineering at TCS, then applied ML and optimization research at DLR, OFFIS and the University of Oldenburg.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--panel-2:#eef1f4;--ink:#16212c;--mute:#566474;--line:#dbe0e6;--acc:#1d5c8a;--acc-bg:#e6f0f7;--ok:#2f6b4f;--rs:#5a7d6e;--rs-bg:#e4efe9;--rs-ink:#2f6b4f}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:1.5rem}
+body{font:16px/1.6 "Hanken Grotesk",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:var(--acc)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 1.25rem;display:grid;grid-template-columns:260px minmax(0,1fr);gap:3.5rem}
+aside{position:sticky;top:0;align-self:start;padding:2.5rem 0;height:100vh;display:flex;flex-direction:column;gap:1.5rem}
+.photo{width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--line);background:var(--panel);margin-bottom:1rem;display:block}
+aside h1{font:600 1.7rem/1.15 Newsreader,Georgia,serif}
+aside .role{color:var(--mute);margin-top:.35rem;font-size:.95rem}
+nav ul{list-style:none;padding:0;display:grid;gap:.1rem}
+nav a{display:block;padding:.35rem .6rem;margin-left:-.6rem;border-radius:6px;text-decoration:none;color:var(--ink);font-weight:500}
+nav a:hover,nav a.on{background:var(--acc-bg);color:var(--acc)}
+.links{display:grid;gap:.25rem;font-size:.92rem;margin-top:auto}
+.cv{display:inline-block;margin-top:.4rem;padding:.45rem .9rem;border-radius:6px;background:var(--acc);color:#fff;font-weight:600;text-decoration:none;text-align:center}
+.cv:hover{background:#164a70}
+main{padding:2.5rem 0 5rem}
+section{margin-bottom:3.5rem}
+h2{font:600 1.55rem/1.2 Newsreader,Georgia,serif;margin-bottom:1rem}
+.lede{font:500 1.35rem/1.45 Newsreader,Georgia,serif;max-width:40rem}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin:1.75rem 0;padding:1.1rem 0;border-block:1px solid var(--line);font-size:.93rem}
+.facts b{display:block;font-weight:600}
+.facts span{color:var(--mute)}
+.pick{margin:1.5rem 0 1.25rem}
+.pick p{font-weight:600;margin-bottom:.5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{font:inherit;font-weight:500;padding:.45rem .95rem;border:1px solid var(--line);background:var(--panel);border-radius:99px;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--acc)}
+.chip[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.note{color:var(--mute);font-size:.92rem;margin-top:.6rem}
+.case{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;margin-bottom:1rem}
+.case.rs{border-left-color:var(--rs)}
+.case[hidden]{display:none}
+.head{padding:1.25rem 1.4rem 1rem}
+.head h3{font:600 1.2rem/1.3 Newsreader,Georgia,serif}
+.meta{color:var(--mute);font-size:.9rem;margin:.15rem 0 .6rem}
+.status{display:inline-block;font-size:.82rem;font-weight:600;padding:.1rem .55rem;border-radius:5px;margin-right:.4rem;background:var(--acc-bg);color:var(--acc)}
+.status.res{background:var(--rs-bg);color:var(--rs-ink)}
+.tools{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.8rem;list-style:none;padding:0}
+.tools li{font-size:.83rem;padding:.1rem .5rem;border:1px solid var(--line);border-radius:5px;color:var(--mute)}
+.result-line{margin-top:.7rem;padding-left:.8rem;border-left:3px solid var(--ok)}
+.repo{display:inline-block;margin-top:.7rem;font-size:.9rem;font-weight:600}
+details{border-top:1px solid var(--line)}
+summary{cursor:pointer;padding:.8rem 1.4rem;font-weight:600;color:var(--acc);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";display:inline-block;width:1.2rem;font-weight:500}
+details[open] summary::before{content:"–"}
+.star{padding:0 1.4rem 1.3rem;display:grid;gap:.85rem}
+.star div{display:grid;grid-template-columns:5.5rem 1fr;gap:1rem}
+.star dt{font-weight:600}
+.star dd{max-width:44rem}
+.star ul{padding-left:1.1rem}
+.star li{margin-bottom:.25rem}
+.caveat{color:var(--mute);font-size:.9rem;margin-top:.5rem}
+.flow{margin:1.5rem 0 0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+.flow svg{width:100%;height:auto;display:block}
+.flow rect{fill:#fff;stroke:var(--line)}
+.flow text{font-family:inherit;font-size:13px;fill:var(--ink)}
+.flow .s{fill:var(--mute);font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.card{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--acc);border-radius:10px;padding:1.1rem 1.2rem}
+.card:nth-child(even){border-top-color:var(--rs)}
+.card h3{font:600 1.05rem/1.3 Newsreader,Georgia,serif}
+.card .meta{margin:.15rem 0 .5rem}
+.card p{font-size:.93rem}
+.mini{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem;margin-bottom:.8rem}
+.mini h3{font:600 1.05rem/1.3 Newsreader,Georgia,serif}
+.mini p{font-size:.93rem;margin-top:.2rem}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:.93rem}
+th,td{text-align:left;padding:.6rem .9rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;background:var(--panel-2)}
+tr:last-child td{border-bottom:0}
+tr[hidden]{display:none}
+.scroll{overflow-x:auto}
+.tl{list-style:none;padding:0;display:grid;gap:1rem}
+.tl li{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem}
+.tl time{color:var(--mute);font-size:.92rem}
+.tl b{font-weight:600}
+.tl span{color:var(--mute);display:block;font-size:.93rem}
+h3.sub{font:600 1.1rem/1.3 Newsreader,Georgia,serif;margin:2rem 0 .8rem}
+.certs{padding-left:1.1rem;display:grid;gap:.25rem;font-size:.95rem}
+.small{font-size:.93rem;color:var(--mute)}
+footer{border-top:1px solid var(--line);padding-top:1.5rem}
 
-    /* Nav */
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(13, 17, 23, 0.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-container {
-      max-width: 1100px; margin: 0 auto; padding: 0.9rem 1.5rem;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .logo { color: var(--text); font-weight: 600; font-size: 1.05rem; }
-    .logo:hover { text-decoration: none; }
-    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
-    .nav-links a { color: var(--text-2); font-size: 0.9rem; font-weight: 500; }
-    .nav-links a:hover, .nav-links a.active { color: var(--text); text-decoration: none; }
-    .menu-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.3rem; cursor: pointer; }
-
-    /* Layout */
-    section { padding: 5rem 1.5rem; }
-    section.alt { background: var(--bg-alt); }
-    .container { max-width: 1100px; margin: 0 auto; }
-    .section-title { font-size: 1.9rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .section-title::after {
-      content: ''; display: block; width: 40px; height: 3px;
-      background: var(--accent); border-radius: 2px; margin-top: 0.6rem;
-    }
-    .section-intro { color: var(--text-2); margin: 1rem 0 2.5rem; max-width: 700px; }
-    .group-title {
-      font-size: 1rem; font-weight: 600; color: var(--text-2);
-      text-transform: uppercase; letter-spacing: 1px;
-      margin: 2.5rem 0 1rem; display: flex; align-items: center; gap: 0.6rem;
-    }
-    .group-title i { color: var(--accent); }
-    .group-title:first-of-type { margin-top: 0; }
-
-    /* Hero */
-    .hero { padding: 9rem 1.5rem 5rem; }
-    .hero .container { display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; }
-    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.15; }
-    .hero .role { font-size: 1.2rem; color: var(--accent); font-weight: 500; margin: 0.6rem 0 1.4rem; }
-    .hero p { color: var(--text-2); font-size: 1.05rem; max-width: 620px; }
-    .hero p.looking { color: var(--text); margin-top: 0.9rem; font-size: 1rem; }
-    .facts { display: flex; flex-wrap: wrap; gap: 0.5rem 1.8rem; margin: 1.6rem 0 2rem; color: var(--text-2); font-size: 0.92rem; }
-    .facts span { display: flex; align-items: center; gap: 0.5rem; }
-    .facts i { color: var(--accent); }
-    .buttons { display: flex; gap: 0.8rem; flex-wrap: wrap; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.7rem 1.3rem; border-radius: 8px; font-weight: 500; font-size: 0.92rem;
-      border: 1px solid var(--border); color: var(--text); background: var(--card);
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn:hover { border-color: var(--accent); text-decoration: none; }
-    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; }
-    .btn-primary:hover { background: #7dd3fc; border-color: #7dd3fc; }
-    .photo {
-      width: 230px; height: 230px; border-radius: 50%; object-fit: cover;
-      border: 3px solid var(--border); background: var(--card);
-    }
-
-
-    /* Expandable cards */
-    .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; align-items: start; }
-    details.card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    details.card:hover { border-color: #384150; }
-    details.card[open] { border-color: var(--accent); background: var(--card-hover); }
-    details.card summary {
-      list-style: none; cursor: pointer; padding: 1.2rem 1.3rem;
-      display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 1rem;
-    }
-    details.card summary::-webkit-details-marker { display: none; }
-    .card-title { font-size: 1.05rem; font-weight: 600; color: var(--text); }
-    .card-meta { font-size: 0.85rem; color: var(--muted); grid-column: 1; }
-    .card-summary { font-size: 0.92rem; color: var(--text-2); grid-column: 1; margin-top: 0.4rem; }
-    .card-date { font-size: 0.82rem; color: var(--accent); white-space: nowrap; grid-row: 1; grid-column: 2; padding-top: 0.15rem; }
-    .chevron {
-      grid-column: 2; grid-row: 2 / span 2; align-self: end; justify-self: end;
-      color: var(--muted); font-size: 0.8rem; transition: transform 0.2s;
-    }
-    details.card[open] .chevron { transform: rotate(180deg); color: var(--accent); }
-    .card-tags { grid-column: 1; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
-    .tag {
-      font-size: 0.75rem; color: var(--text-2); background: var(--bg);
-      border: 1px solid var(--border); border-radius: 5px; padding: 0.15rem 0.55rem;
-    }
-    .badge {
-      grid-column: 1; justify-self: start; font-size: 0.75rem; font-weight: 500;
-      color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 5px;
-      padding: 0.1rem 0.5rem; margin-top: 0.5rem;
-    }
-    .card-body { padding: 0 1.3rem 1.3rem; border-top: 1px solid var(--border); margin: 0 1.3rem; padding: 1rem 0 1.3rem; }
-    .card-body ul { list-style: none; }
-    .card-body li {
-      color: var(--text-2); font-size: 0.9rem; padding-left: 1.1rem; position: relative; margin-bottom: 0.5rem;
-    }
-    .card-body li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-    .card-body p { color: var(--text-2); font-size: 0.9rem; margin-bottom: 0.8rem; }
-    .card-links { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 0.9rem; font-size: 0.88rem; font-weight: 500; }
-    .card-links a { display: inline-flex; align-items: center; gap: 0.4rem; }
-    .expand-hint { color: var(--muted); font-size: 0.85rem; margin: -1.5rem 0 2rem; }
-
-
-    /* Tabs */
-    .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-    .tab {
-      background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
-      color: var(--text-2); font: inherit; font-size: 0.92rem; font-weight: 500;
-      padding: 0.7rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;
-    }
-    .tab i { font-size: 0.85rem; }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--text); border-bottom-color: var(--accent); }
-    .tab.active i { color: var(--accent); }
-    .tab-panel[hidden] { display: none; }
-    .tab-panel .fade-in { opacity: 1; transform: none; }
-    @media (max-width: 720px) {
-      .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-      .tabs::-webkit-scrollbar { display: none; }
-      .tab { padding: 0.6rem 0.7rem; font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; }
-    }
-
-
-    /* Flashcards */
-    .fc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .fc-grid[hidden] { display: none; }
-    .fc {
-      background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-      display: flex; flex-direction: column; cursor: pointer; transition: border-color 0.2s, transform 0.2s;
-    }
-    .fc:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .fc-icon {
-      height: 84px; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #0f2230, var(--card)); color: var(--accent); font-size: 1.9rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .fc-body { padding: 1.1rem 1.2rem 1.2rem; display: flex; flex-direction: column; flex: 1; }
-    .fc-date { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.3rem; }
-    .fc-title { font-size: 1.02rem; font-weight: 600; line-height: 1.35; }
-    .fc-org { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
-    .fc-badge { font-size: 0.75rem; color: #fbbf24; margin-top: 0.4rem; }
-    .fc-main { font-size: 0.88rem; color: var(--text-2); margin: 0.6rem 0 0.8rem; }
-    .fc-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.9rem; }
-    .fc-actions { margin-top: auto; display: flex; gap: 1.1rem; flex-wrap: wrap; }
-    .fc-link {
-      background: none; border: none; padding: 0; font: inherit; cursor: pointer;
-      color: var(--accent); font-size: 0.86rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.4rem;
-    }
-    .fc-link:hover { text-decoration: underline; }
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 200; background: rgba(0, 0, 0, 0.7);
-      display: none; align-items: center; justify-content: center; padding: 1.5rem;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal {
-      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-      max-width: 720px; width: 100%; max-height: 88vh; overflow-y: auto; padding: 2rem 2rem 1.6rem; position: relative;
-    }
-    .modal-close {
-      position: absolute; top: 1rem; right: 1rem; width: 34px; height: 34px; border-radius: 8px;
-      background: var(--bg); border: 1px solid var(--border); color: var(--text-2); cursor: pointer;
-    }
-    .modal-close:hover { color: var(--text); border-color: var(--accent); }
-    .modal-head { margin-bottom: 1.4rem; padding-right: 2.5rem; }
-    .modal-head h2 { font-size: 1.3rem; font-weight: 600; }
-    .modal-meta { color: var(--muted); font-size: 0.88rem; margin-top: 0.2rem; }
-    .modal h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 1rem 0 0.4rem; }
-    .modal p { color: var(--text-2); font-size: 0.92rem; }
-    .modal ul { list-style: none; }
-    .modal li { color: var(--text-2); font-size: 0.92rem; padding-left: 1.1rem; position: relative; margin-bottom: 0.45rem; }
-    .modal li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-    .star { display: grid; grid-template-columns: 30px 1fr; gap: 0.9rem; padding: 0.8rem 0; border-top: 1px solid var(--border); }
-    .star:first-of-type { border-top: none; }
-    .star h4 { margin-top: 0.2rem; }
-    .star-l {
-      width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
-      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
-    }
-    .modal-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.2rem; }
-    .modal-links { display: flex; gap: 1.2rem; margin-top: 1rem; font-size: 0.9rem; font-weight: 500; }
-    .modal-links a { display: inline-flex; align-items: center; gap: 0.4rem; }
-    @media (max-width: 1000px) { .fc-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 640px) {
-      .fc-grid { grid-template-columns: 1fr; }
-      .modal { padding: 1.5rem 1.2rem; }
-      .modal-overlay { padding: 0.8rem; }
-    }
-
-    /* Skills */
-    .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    .skill-group { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.3rem; }
-    .skill-group h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem; }
-    .skill-group h3 i { color: var(--accent); width: 1rem; }
-    .skill-group .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-    .skill-group .tag { font-size: 0.82rem; padding: 0.2rem 0.65rem; }
-
-    /* Education */
-    .edu-list { display: grid; gap: 1rem; }
-    .edu {
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.3rem;
-      display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 1rem;
-    }
-    .edu h3 { font-size: 1.05rem; font-weight: 600; }
-    .edu .card-meta { grid-column: 1; }
-    .edu p { grid-column: 1 / -1; color: var(--text-2); font-size: 0.9rem; margin-top: 0.5rem; }
-    .cert-list { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem 2rem; margin-top: 1rem; }
-    .cert-list li { color: var(--text-2); font-size: 0.92rem; padding-left: 1.1rem; position: relative; }
-    .cert-list li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-
-    /* Footer */
-    .footer { border-top: 1px solid var(--border); padding: 3rem 1.5rem 2rem; }
-    .footer .container { display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; align-items: flex-start; }
-    .footer h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .footer p { color: var(--text-2); font-size: 0.9rem; max-width: 460px; }
-    .footer-links { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; }
-    .footer-links a, .footer-links span { color: var(--text-2); display: flex; align-items: center; gap: 0.6rem; }
-    .footer-links a:hover { color: var(--accent); text-decoration: none; }
-    .footer-links i { width: 1rem; color: var(--accent); }
-    .copyright { max-width: 1100px; margin: 2rem auto 0; color: var(--muted); font-size: 0.82rem; }
-
-    /* Fade-in */
-    .fade-in { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
-    .fade-in.visible { opacity: 1; transform: none; }
-
-    @media (max-width: 860px) {
-      .hero .container { grid-template-columns: 1fr; gap: 2rem; }
-      .hero .photo-wrap { order: -1; }
-      .photo { width: 150px; height: 150px; }
-      .hero { padding-top: 7rem; }
-      .card-grid, .skills-grid, .cert-list { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 720px) {
-      .nav-links {
-        position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0;
-        background: var(--bg); border-bottom: 1px solid var(--border); display: none;
-      }
-      .nav-links.open { display: flex; }
-      .nav-links a { display: block; padding: 0.8rem 1.5rem; }
-      .menu-toggle { display: block; }
-      section { padding: 3.5rem 1.2rem; }
-      details.card summary { grid-template-columns: 1fr; }
-      .card-date { grid-row: auto; grid-column: 1; padding-top: 0; }
-      .chevron { display: none; }
-      .edu { grid-template-columns: 1fr; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .fade-in { opacity: 1; transform: none; transition: none; }
-    }
-  </style>
+.ptabs{display:flex;gap:.25rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1.2rem}
+.ptab{font:inherit;font-weight:500;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:.55rem .9rem;color:var(--mute);cursor:pointer;display:flex;gap:.45rem;align-items:center}
+.ptab:hover{color:var(--ink)}
+.ptab.active{color:var(--acc);border-bottom-color:var(--acc)}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.fc-grid[hidden]{display:none}
+.fc{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.fc:hover{border-color:var(--acc);box-shadow:0 6px 16px rgba(22,33,44,.08)}
+.fc-icon{height:72px;display:flex;align-items:center;justify-content:center;background:var(--acc-bg);color:var(--acc);font-size:1.6rem}
+.fc-body{padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;flex:1}
+.fc-date{font-size:.82rem;color:var(--mute)}
+.fc-title{font:600 1.05rem/1.3 Newsreader,Georgia,serif;margin-top:.15rem}
+.fc-badge{font-size:.78rem;font-weight:600;color:#8a5a12;background:#fbf1dd;border-radius:5px;padding:.1rem .5rem;margin-top:.4rem;align-self:flex-start}
+.fc-badge i{display:none}
+.fc-main{font-size:.9rem;margin:.5rem 0 .7rem}
+.fc-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.8rem}
+.fc-tags .tag,.modal-tags .tag{font-size:.8rem;padding:.05rem .45rem;border:1px solid var(--line);border-radius:5px;color:var(--mute)}
+.fc-actions{margin-top:auto;display:flex;gap:1rem;flex-wrap:wrap}
+.fc-link{background:none;border:0;padding:0;font:inherit;font-size:.9rem;font-weight:600;color:var(--acc);cursor:pointer;text-decoration:none;display:inline-flex;gap:.35rem;align-items:center}
+.fc-link:hover{text-decoration:underline}
+.modal-overlay{position:fixed;inset:0;z-index:50;background:rgba(22,33,44,.45);display:none;align-items:center;justify-content:center;padding:1.2rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--panel);border-radius:12px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:1.8rem 1.8rem 1.5rem;position:relative;box-shadow:0 20px 50px rgba(22,33,44,.25)}
+.modal-close{position:absolute;top:.9rem;right:.9rem;width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--mute);cursor:pointer}
+.modal-head{margin-bottom:1rem;padding-right:2.2rem}
+.modal-head h2{font:600 1.35rem/1.25 Newsreader,Georgia,serif;margin:0}
+.modal-meta{color:var(--mute);font-size:.9rem}
+.modal h4{font-size:.95rem;font-weight:600;margin:1rem 0 .3rem}
+.modal ul{padding-left:1.1rem}
+.modal li{margin-bottom:.25rem}
+.modal-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:1.1rem}
+.modal-links{display:flex;gap:1.2rem;margin-top:1rem;font-weight:600}
+.modal-links a{display:inline-flex;gap:.35rem;align-items:center;text-decoration:none}
+@media(max-width:860px){
+ .wrap{grid-template-columns:1fr;gap:0}
+ .wrap>*{min-width:0}
+ nav{min-width:0}
+ .cv{display:block;max-width:220px}
+ aside{position:static;height:auto;padding:1.5rem 0 0}
+ .photo{width:72px;height:72px}
+ nav ul{grid-auto-flow:column;overflow-x:auto;gap:.25rem}
+ nav a{white-space:nowrap}
+ .links{margin-top:0}
+ .star div,.tl li{grid-template-columns:1fr;gap:.1rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
+<div class="wrap">
+<aside>
+ <div>
+  <img src="images/jeena.png" alt="Jeena Shaji" class="photo">
+  <h1>Jeena Shaji</h1>
+  <p class="role">Data and machine learning engineer<br>Oldenburg, Germany</p>
+ </div>
+ <nav aria-label="Sections">
+  <ul>
+   <li><a href="#about">Summary</a></li>
+   <li><a href="#work">Selected work</a></li>
+   <li><a href="#more">More projects</a></li>
+   <li><a href="#skills">Skills and evidence</a></li>
+   <li><a href="#beyond">Beyond the code</a></li>
+   <li><a href="#experience">Experience</a></li>
+   <li><a href="#contact">Contact</a></li>
+  </ul>
+ </nav>
+ <div class="links">
+  <a href="mailto:jeena.shaji@uni-oldenburg.de">jeena.shaji@uni-oldenburg.de</a>
+  <a href="https://www.linkedin.com/in/jeena-shaji-19020716a/" target="_blank" rel="noopener">LinkedIn</a>
+  <a href="https://github.com/Jeenashaji" target="_blank" rel="noopener">GitHub</a>
+  <a class="cv" href="https://drive.google.com/file/d/1TG76mToDo8Bmh5W3gK05MWX1d5HGGfGI/view?usp=sharing" target="_blank" rel="noopener">Download CV</a>
+ </div>
+</aside>
 
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="#home" class="logo">Jeena Shaji</a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#education">Education</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+<main>
+<section id="about">
+ <p class="lede">I build the data pipelines and the time-series models that sit on top of them: three years of AWS data engineering for a client, then research-level ML on energy and sensor data.</p>
+ <div class="flow"><svg viewBox="0 0 760 92" role="img" aria-label="Where my projects sit along the data to decision path">
+  <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8z" fill="#8895a3"/></marker></defs>
+  <g stroke="#8895a3" stroke-width="1.5" marker-end="url(#ar)"><line x1="138" y1="34" x2="158" y2="34"/><line x1="296" y1="34" x2="316" y2="34"/><line x1="454" y1="34" x2="474" y2="34"/><line x1="612" y1="34" x2="632" y2="34"/></g>
+  <g><rect x="4" y="12" width="132" height="44" rx="7"/><rect x="160" y="12" width="134" height="44" rx="7"/><rect x="318" y="12" width="134" height="44" rx="7"/><rect x="476" y="12" width="134" height="44" rx="7"/><rect x="634" y="12" width="122" height="44" rx="7"/></g>
+  <g text-anchor="middle"><text x="70" y="38">Ingest</text><text x="227" y="38">Validate</text><text x="385" y="38">Features</text><text x="543" y="38">Models</text><text x="695" y="38">Decisions</text>
+  <text class="s" x="70" y="78">Kinesis, MQTT</text><text class="s" x="227" y="78">Glue, tests, reconciliation</text><text class="s" x="385" y="78">Windows, wavelets</text><text class="s" x="543" y="78">LSTM, transformer, LP</text><text class="s" x="695" y="78">Streamlit, dashboards</text></g>
+ </svg></div>
+ <div class="facts">
+  <p><b>Production experience</b><span>3 years at Tata Consultancy Services (2020–2023), on-site with a Belgian client</span></p>
+  <p><b>Research experience</b><span>OFFIS, DLR and University of Oldenburg, 2024–present</span></p>
+  <p><b>Now</b><span>Finishing my M.Eng. thesis at DLR. Looking for data engineering or ML engineering roles in Germany or the EU.</span></p>
+  <p><b>Domains</b><span>Energy, industrial heating systems, logistics, brain imaging, asset management</span></p>
+ </div>
+ <div class="pick">
+  <p id="pl">Show the work most relevant to:</p>
+  <div class="chips" role="group" aria-labelledby="pl">
+   <button class="chip" data-f="all" aria-pressed="true">Everything</button>
+   <button class="chip" data-f="de" aria-pressed="false">Data engineering</button>
+   <button class="chip" data-f="ml" aria-pressed="false">Machine learning</button>
+  </div>
+  <p class="note">Each project opens into Situation, Task, Action and Result. Where a result is unmeasured or unvalidated, it says so.</p>
+ </div>
+</section>
 
-  <!-- Hero -->
-  <section class="hero" id="home">
-    <div class="container">
-      <div>
-        <h1>Jeena Shaji</h1>
-        <div class="role">Data &amp; Machine Learning Engineer</div>
-        <p>I build data pipelines and machine learning models in Python. Three years of AWS data engineering at Tata Consultancy Services (Redshift, Glue/PySpark, Airflow), then applied research at DLR, OFFIS and the University of Oldenburg on time-series clustering, optimization and PyTorch models. With a Master's in Human-Computer Interaction, I care about making results usable for the people who rely on them.</p>
-        <p class="looking">Looking for Data Engineer, ML Engineer and Applied AI roles in Germany or the EU from late 2026.</p>
-        <div class="facts">
-          <span><i class="fas fa-location-dot"></i> Oldenburg, Germany</span>
-          <span><i class="fas fa-briefcase"></i> 3 yrs industry · 2.5 yrs research</span>
-          <span><i class="fas fa-graduation-cap"></i> M.Eng., thesis at DLR</span>
-        </div>
-        <div class="buttons">
-          <a href="https://drive.google.com/file/d/1TG76mToDo8Bmh5W3gK05MWX1d5HGGfGI/view?usp=sharing" class="btn btn-primary" target="_blank" rel="noopener"><i class="fas fa-file-lines"></i> View CV</a>
-          <a href="https://www.linkedin.com/in/jeena-shaji-19020716a/" class="btn" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>
-          <a href="https://github.com/Jeenashaji" class="btn" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
-        </div>
-      </div>
-      <div class="photo-wrap">
-        <img src="images/jeena.png" alt="Jeena Shaji" class="photo">
-      </div>
-    </div>
-  </section>
+<section id="work">
+ <h2>Selected work</h2>
 
-  <!-- Experience -->
-  <section id="experience">
-    <div class="container">
-      <h2 class="section-title">Experience</h2>
-      <p class="section-intro">Pick an area. Open a card for the full story (situation, task, action, result).</p>
-      <div class="tabs" role="tablist">
-        <button class="tab active" role="tab" aria-selected="true" data-target="experience-0"><i class="fas fa-database"></i> Data Engineering</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="experience-1"><i class="fas fa-brain"></i> ML &amp; Research</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="experience-2"><i class="fas fa-chalkboard-user"></i> Teaching &amp; Founding</button>
-      </div>
-      <div class="fc-grid tab-panel" id="experience-0" role="tabpanel">
-        <article class="fc" onclick="openModal('m-tcs-be')">
-          <div class="fc-icon"><i class="fab fa-aws"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Oct 2021 – Oct 2023</div>
-            <h3 class="fc-title">System Engineer – AWS Data Engineering</h3>
-            <div class="fc-org">Tata Consultancy Services · Belgian client</div>
-            <p class="fc-main">Built and ran AWS data pipelines and daily reporting for a Belgian client; led the reporting-factory team.</p>
-            <div class="fc-tags"><span class="tag">AWS</span><span class="tag">Redshift</span><span class="tag">PySpark</span><span class="tag">Airflow</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-        <article class="fc" onclick="openModal('m-offis')">
-          <div class="fc-icon"><i class="fas fa-bolt"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Apr 2024 – Mar 2025</div>
-            <h3 class="fc-title">Research Assistant – Redispatch 3.0</h3>
-            <div class="fc-org">OFFIS – Institute for Information Technology, Oldenburg</div>
-            <p class="fc-main">Real-time energy data streaming and monitoring for a household energy management system.</p>
-            <div class="fc-tags"><span class="tag">MQTT</span><span class="tag">InfluxDB</span><span class="tag">Grafana</span><span class="tag">Docker</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-        <article class="fc" onclick="openModal('m-tcs-us')">
-          <div class="fc-icon"><i class="fas fa-gears"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Oct 2020 – Oct 2021</div>
-            <h3 class="fc-title">Agile Developer – IBM Maximo</h3>
-            <div class="fc-org">Tata Consultancy Services · Enterprise asset management</div>
-            <p class="fc-main">Python and SQL automation, daily data-integrity checks and Maximo enhancements in an Agile team.</p>
-            <div class="fc-tags"><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PowerShell</span><span class="tag">IBM Maximo</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-      </div>
-      <div class="fc-grid tab-panel" id="experience-1" role="tabpanel" hidden>
-        <article class="fc" onclick="openModal('m-dlr')">
-          <div class="fc-icon"><i class="fas fa-chart-area"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Oct 2025 – Present</div>
-            <h3 class="fc-title">Research Assistant – Master's Thesis</h3>
-            <div class="fc-org">German Aerospace Center (DLR)</div>
-            <p class="fc-main">Benchmarked time-series aggregation for optimization models; showed the best-fitting method gave the worst storage sizing.</p>
-            <div class="fc-tags"><span class="tag">Time-Series Clustering</span><span class="tag">LP/MILP</span><span class="tag">Pyomo</span><span class="tag">Streamlit</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-        <article class="fc" onclick="openModal('m-pdm')">
-          <div class="fc-icon"><i class="fas fa-microchip"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">2026 – Present</div>
-            <h3 class="fc-title">Physics-Informed Predictive Maintenance</h3>
-            <div class="fc-org">Funded research project, University of Oldenburg</div>
-            <p class="fc-main">PyTorch models for degradation and fault prediction when labelled failure data is scarce.</p>
-            <div class="fc-tags"><span class="tag">PyTorch</span><span class="tag">LSTM</span><span class="tag">Physics-Informed ML</span><span class="tag">Wavelets</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-        <article class="fc" onclick="openModal('m-move')">
-          <div class="fc-icon"><i class="fas fa-person-walking"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Jul 2025 – Dec 2025</div>
-            <h3 class="fc-title">Research Assistant – Movement Analysis</h3>
-            <div class="fc-org">University of Oldenburg</div>
-            <p class="fc-main">Video-to-time-series pipeline and Transformer model for Parkinson's movement data.</p>
-            <div class="fc-tags"><span class="tag">MediaPipe</span><span class="tag">PyTorch</span><span class="tag">Transformers</span><span class="tag">Time Series</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-        <article class="fc" onclick="openModal('m-bids')">
-          <div class="fc-icon"><i class="fas fa-code"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Sep 2024 – Dec 2025</div>
-            <h3 class="fc-title">Research Assistant – ancp-bids</h3>
-            <div class="fc-org">University of Oldenburg · Open-source contributor</div>
-            <p class="fc-main">Schema automation, performance improvements and tests for an open-source Python library for brain-imaging (BIDS) data.</p>
-            <div class="fc-tags"><span class="tag">Python</span><span class="tag">pytest</span><span class="tag">Open Source</span><span class="tag">LLM Evaluation</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button><a href="https://github.com/ANCPLabOldenburg/ancp-bids" target="_blank" rel="noopener" class="fc-link"><i class="fab fa-github"></i> GitHub</a></div>
-          </div>
-        </article>
-      </div>
-      <div class="fc-grid tab-panel" id="experience-2" role="tabpanel" hidden>
-        <article class="fc" onclick="openModal('m-ta')">
-          <div class="fc-icon"><i class="fas fa-chalkboard-user"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Oct 2024 – Present</div>
-            <h3 class="fc-title">Teaching Assistant</h3>
-            <div class="fc-org">University of Oldenburg</div>
-            <p class="fc-main">Introduction to AI (since Apr 2026); previously Algorithms and Problem Solving.</p>
-            <div class="fc-tags"><span class="tag">AI</span><span class="tag">Machine Learning</span><span class="tag">Algorithms</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-        <article class="fc" onclick="openModal('m-exist')">
-          <div class="fc-icon"><i class="fas fa-lightbulb"></i></div>
-          <div class="fc-body">
-            <div class="fc-date">Mar 2026 – Present</div>
-            <h3 class="fc-title">EXIST-Women Fellow</h3>
-            <div class="fc-org">BMWK Gründungsheldinnen Programme, Oldenburg</div>
-            <p class="fc-main">Selected for a BMWK-backed founder programme; product discovery for an industrial AI product.</p>
-            <div class="fc-tags"><span class="tag">Product Discovery</span><span class="tag">Value Proposition</span><span class="tag">Pitching</span></div>
-            <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
+ <article class="case" id="aws" data-t="de">
+  <div class="head">
+   <h3>AWS streaming and reporting pipelines</h3>
+   <p class="meta"><span class="status">Client project</span>Tata Consultancy Services, Belgian client project, 2021–2023</p>
+   <p>Ingested streaming application data into a Redshift warehouse and kept client reports complete and correct. I worked on-site with the client in Belgium and led the reporting-factory team.</p>
+   <p class="result-line">Around 100,000 records a day through Kinesis and Glue, daily reporting over 1–2 million records, and automated tests gating every promotion to production.</p>
+   <ul class="tools"><li>Kinesis</li><li>Glue (PySpark)</li><li>S3</li><li>Redshift and Spectrum</li><li>Athena</li><li>Lambda</li><li>Airflow (MWAA)</li><li>DynamoDB</li><li>CodePipeline</li><li>JUnit</li><li>SQL</li><li>Python</li></ul>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>The client needed regular business reports from an application whose source schemas changed and whose data came partly from third-party systems. The warehouse held terabytes of data.</dd></div>
+    <div><dt>Task</dt><dd>Build and maintain the pipelines feeding the warehouse and make sure reports could be trusted. That meant gathering requirements in person with business and application teams, writing the business requirement documentation, and leading the reporting-factory team.</dd></div>
+    <div><dt>Action</dt><dd><ul>
+     <li>Ran requirements sessions and client meetings on-site in Belgium, and visited the site where the client's product is used to understand what the business needed from reporting.</li>
+     <li>Wrote Glue jobs in PySpark that read from Kinesis Data Streams, parse dynamic schemas, load incrementally and map fields through dictionaries into three target tables.</li>
+     <li>Wrote Redshift stored procedures for transformation, validation and reporting logic, scheduled with Airflow (MWAA). Used Redshift Spectrum to query data in S3.</li>
+     <li>Built Python and SQL ETL and Lambda functions for loading, and supported the migration of on-premise data to AWS (EC2, S3, RDS).</li>
+     <li>Set up JUnit tests in CodePipeline across test, QA and production, with checks for anomalies, type-casting and insertion errors.</li>
+     <li>Reconciled Redshift reports against application records in DynamoDB to find missing data, and worked with third-party application teams on their schemas and data gaps.</li>
+     <li>Raised fixes and feature requests on the application team's Jira scrum board and took part in agile planning.</li>
+    </ul></dd></div>
+    <div><dt>Result</dt><dd><ul>
+     <li>Daily refreshes ran on a schedule, and about 100,000 records a day were ingested from Kinesis.</li>
+     <li>Reconciliation exposed missing records. I documented pipeline failures caused by upstream application issues and coordinated fixes with those teams.</li>
+     <li>Presented weekly KPI and data-quality reports in Power BI to client stakeholders, and led knowledge transfer to the team with Confluence documentation.</li>
+    </ul></dd></div>
+   </dl>
+  </details>
+ </article>
 
-  <!-- Projects -->
-  <section id="projects" class="alt">
-    <div class="container">
-      <h2 class="section-title">Projects</h2>
-      <p class="section-intro">Pick a category. Open a card for details.</p>
-      <div class="tabs" role="tablist">
-        <button class="tab active" role="tab" aria-selected="true" data-target="projects-0"><i class="fas fa-robot"></i> AI &amp; Data</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="projects-1"><i class="fas fa-user-gear"></i> HCI &amp; Systems</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="projects-2"><i class="fas fa-clock-rotate-left"></i> Earlier Work</button>
-      </div>
-      <div class="fc-grid tab-panel" id="projects-0" role="tabpanel">
+ <article class="case rs" id="tsa" data-t="ml de">
+  <div class="head">
+   <h3>Time-series aggregation for industrial energy-system optimisation</h3>
+   <p class="meta"><span class="status res">Research project, thesis in progress</span>German Aerospace Center (DLR), 2025–present</p>
+   <p>Tested whether the usual accuracy metric for compressing a year of hourly prices predicts the quality of the optimisation built on it.</p>
+   <p class="result-line">In my benchmark the method with the best nRMSE gave the worst storage sizing (r = −0.96). A quantile-based representation I designed cut sizing error to below 2%.</p>
+   <ul class="tools"><li>Python</li><li>tsam</li><li>scikit-learn</li><li>oemof.solph</li><li>Pyomo</li><li>HiGHS</li><li>TESPy</li><li>Streamlit</li><li>pytest</li></ul>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>Optimising an industrial heating system over 8,760 hours is expensive, so models often use a few representative periods. Quality is usually judged by how closely the compressed series matches the original (nRMSE).</dd></div>
+    <div><dt>Task</dt><dd>Find out how the choice of aggregation changes technology selection, operating cost and thermal-storage sizing.</dd></div>
+    <div><dt>Action</dt><dd><ul>
+     <li>Compared six aggregation methods, including hierarchical and distance-based clustering, across a 32-configuration sweep against a full-year reference.</li>
+     <li>Evaluated each with nRMSE, RMSE, load-duration curves and residual distributions, then ran the downstream LP/MILP models.</li>
+     <li>Designed a quantile-based representation after seeing where the others failed.</li>
+     <li>Refactored the research code into a tested package (13 modules, CLI, unit tests) and built a Streamlit app for exploring scenarios.</li>
+    </ul></dd></div>
+    <div><dt>Result</dt><dd>Fit to the original series and downstream decision quality diverged. The best nRMSE gave the worst storage sizing (r = −0.96). The quantile-based representation reduced sizing error from −17% and −30% to below 2%.
+    <p class="caveat">Scope: German electricity-price data and one industrial steam system. Thesis in progress.</p></dd></div>
+   </dl>
+  </details>
+ </article>
+
+ <article class="case rs" id="pv" data-t="ml">
+  <div class="head">
+   <h3>Physics-informed predictive maintenance</h3>
+   <p class="meta"><span class="status res">Research project</span>EXIST-Women venture, University of Oldenburg, 2026–present</p>
+   <p>A PyTorch model that flags equipment degradation when labelled failures are scarce, plus a monitoring dashboard around it.</p>
+   <p class="result-line">A working LSTM-plus-physics model and dashboard, built for scarce-label data.</p>
+   <ul class="tools"><li>PyTorch</li><li>LSTM</li><li>Physics-informed ML</li><li>Wavelets</li><li>Python package</li><li>pytest</li><li>GitLab CI</li></ul>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>Faults in power-electronics equipment are costly, but failure labels are rare in 5-minute telemetry. The research dataset has 16,799 producing observations.</dd></div>
+    <div><dt>Task</dt><dd>Build a model that can run without failure labels, and a dashboard for service and maintenance teams.</dd></div>
+    <div><dt>Action</dt><dd><ul>
+     <li>Version 1 combines an LSTM branch with a physics branch (Arrhenius temperature ageing, Coffin–Manson thermal-cycling fatigue), trained on healthy data only.</li>
+     <li>Explored wavelet features and cross-manufacturer normalisation over JSON, Modbus and cloud interfaces.</li>
+     <li>Structured the code as a tested Python package with CI, and built the dashboard (fleet monitoring, equipment health, warranty tracking and reports).</li>
+    </ul>
+    A co-founder supplied calibrated fault-simulation data and the physics validation. My part was the modelling, data analysis, dashboard and reports.</dd></div>
+    <div><dt>Result</dt><dd>A running version 1 and dashboard. Next step: evaluation against real field failures.</dd></div>
+   </dl>
+  </details>
+ </article>
+
+ <article class="case rs" id="pd" data-t="ml">
+  <div class="head">
+   <h3>Movement analysis pipeline for Parkinson’s patient videos</h3>
+   <p class="meta"><span class="status res">Research project</span>University of Oldenburg, 2025</p>
+   <p>Turned raw patient videos into model-ready time series and trained a transformer encoder on them.</p>
+   <p class="result-line">An end-to-end pipeline from patient video to a trained transformer encoder.</p>
+   <ul class="tools"><li>MediaPipe</li><li>PyTorch</li><li>Transformer encoder</li><li>NumPy</li><li>Python</li></ul>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>The research group wanted to analyse motor symptoms from movement videos, linked to clinical UPDRS scores.</dd></div>
+    <div><dt>Task</dt><dd>Produce clean, structured time-series inputs from the videos for a transformer-based model.</dd></div>
+    <div><dt>Action</dt><dd><ul>
+     <li>Extracted 3D landmarks with MediaPipe, with automated checks for missing detections.</li>
+     <li>Engineered IMU-like features (velocity, acceleration, angular velocity) and cut them into 300-step windows with 67% overlap and 12 features, saved as NPZ files.</li>
+     <li>Trained a transformer encoder (3 layers, 6 attention heads) with label smoothing, cosine learning-rate scheduling and early stopping.</li>
+    </ul></dd></div>
+    <div><dt>Result</dt><dd>The pipeline runs end to end and is reproducible. Results stay unpublished because the data is clinical research data.</dd></div>
+   </dl>
+  </details>
+ </article>
+
+ <article class="case rs" id="rt" data-t="de">
+  <div class="head">
+   <h3>Real-time energy data stack for a smart-grid project</h3>
+   <p class="meta"><span class="status res">Research project</span>OFFIS, Redispatch 3.0, 2024–2025</p>
+   <p>Set up streaming and monitoring for a household energy-management simulation and wrote its control logic.</p>
+   <p class="result-line">A working simulation with live dashboards, used to show system behaviour to project partners.</p>
+   <ul class="tools"><li>MQTT</li><li>Telegraf</li><li>InfluxDB</li><li>Grafana</li><li>Docker</li><li>Python (OOP)</li></ul>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>A German research project needed to simulate and monitor household energy management in real time.</dd></div>
+    <div><dt>Task</dt><dd>Stream the simulation data, make it visible, and implement battery and EV-charging behaviour.</dd></div>
+    <div><dt>Action</dt><dd>Loaded and processed electricity production and consumption profiles in Python, streamed data through MQTT and Telegraf into InfluxDB, containerised the environment with Docker, built Grafana dashboards, and wrote battery charge/discharge logic and dynamic EV-charging prioritisation in object-oriented Python.</dd></div>
+    <div><dt>Result</dt><dd>A reproducible containerised setup with live dashboards.</dd></div>
+   </dl>
+  </details>
+ </article>
+
+ <article class="case rs" id="bids" data-t="de ml">
+  <div class="head">
+   <h3>Open-source contribution: ancp-bids</h3>
+   <p class="meta"><span class="status res">Open source</span>University of Oldenburg, Research Assistant, 2024–2025</p>
+   <p>Contributor to an open-source Python library for brain-imaging datasets in the BIDS standard: schema automation, performance work and tests, with daily commits and pull-request reviews.</p>
+   <p class="result-line">Schema-version updates automated, lower memory use and faster execution, and new features tested before merge.</p>
+   <ul class="tools"><li>Python</li><li>pytest</li><li>Git and GitHub</li><li>Code review</li><li>LLM evaluation</li></ul>
+   <a class="repo" href="https://github.com/ANCPLabOldenburg/ancp-bids" target="_blank" rel="noopener">ancp-bids on GitHub →</a>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>ancp-bids is an open-source Python library for working with brain-imaging datasets in the BIDS standard. The BIDS schema changes between versions, and the library has to follow those changes while staying fast on large datasets.</dd></div>
+    <div><dt>Task</dt><dd>Keep the library in step with schema changes, improve its memory use and speed, and make sure new functionality is tested before it reaches the main repository.</dd></div>
+    <div><dt>Action</dt><dd><ul>
+     <li>Developed automation scripts in Python to update schema versions based on changes in the BIDS dataset.</li>
+     <li>Implemented enhancements such as functions for storing temporary artifacts and lazy loading to improve memory usage and execution time.</li>
+     <li>Wrote pytest unit tests, including parameterised test cases, to validate new functionality before merging into the main repository.</li>
+     <li>Pushed code daily and reviewed pull requests from other contributors.</li>
+     <li>Evaluated different LLMs on token usage, model size, memory efficiency and compute time to choose the best code assistant to integrate.</li>
+    </ul></dd></div>
+    <div><dt>Result</dt><dd><ul>
+     <li>Schema-version updates automated instead of done by hand.</li>
+     <li>Lower memory use and faster execution through lazy loading and artifact caching.</li>
+     <li>New features covered by tests before merge, and a code assistant chosen on measured criteria.</li>
+    </ul></dd></div>
+   </dl>
+  </details>
+ </article>
+
+ <article class="case" id="maximo" data-t="de">
+  <div class="head">
+   <h3>Data quality and automation for IBM Maximo</h3>
+   <p class="meta"><span class="status">Client project</span>Tata Consultancy Services, Agile developer, 2020–2021</p>
+   <p>Kept asset-management data and integrations clean for about 20,000 assets in oil, mining and shipping, working as a developer in an Agile team.</p>
+   <p class="result-line">Daily integrity reports caught data-quality issues before they reached downstream processes, and error-log monitoring was automated.</p>
+   <ul class="tools"><li>Python</li><li>SQL (window functions, views)</li><li>PowerShell</li><li>IBM Maximo</li><li>MXLoader</li><li>ServiceNow</li></ul>
+  </div>
+  <details>
+   <summary>Situation, task, action, result</summary>
+   <dl class="star">
+    <div><dt>Situation</dt><dd>Clients used IBM Maximo for enterprise asset management, connected to external and supply-chain systems. These integrations regularly produced data and interface errors.</dd></div>
+    <div><dt>Task</dt><dd>As a developer in an Agile team, enhance the Maximo applications, keep reference data and integrations clean, and resolve customer issues.</dd></div>
+    <div><dt>Action</dt><dd><ul>
+     <li>Analysed customer requirements, identified potential problems and recommended alternative solutions.</li>
+     <li>Wrote Python automation scripts to clean and transform data from external systems, keeping reference data in the source accurate; built Maximo automation scripts in Python for different launch points and conditions.</li>
+     <li>Wrote complex SQL queries with window functions, views and joins for application development and data retrieval.</li>
+     <li>Ran daily database integrity reports against business rules and fixed the issues in the integration modules.</li>
+     <li>Created and scheduled PowerShell scripts that fetch and monitor error logs in the supply-chain management process.</li>
+     <li>Built Maximo enhancements: Application Designer UI changes, domains, workflows, cron tasks, escalations, actions and data loading with MXLoader.</li>
+     <li>Monitored system health and fixed integration and SRO replication errors; troubleshot data between Maximo and external systems, including Map Manager GIS integration.</li>
+     <li>Debugged with the Agile team and worked with customers on bug fixes, handling ServiceNow tasks, incidents and problems.</li>
+    </ul></dd></div>
+    <div><dt>Result</dt><dd><ul>
+     <li>Data-quality issues caught and fixed daily before they reached downstream processes.</li>
+     <li>Error-log monitoring automated instead of checked by hand.</li>
+     <li>Identified and documented a product defect that was reported to IBM.</li>
+    </ul></dd></div>
+   </dl>
+  </details>
+ </article>
+</section>
+
+<section id="more">
+ <h2>More projects</h2>
+ <div class="ptabs" role="tablist">
+  <button class="ptab active" role="tab" aria-selected="true" data-target="p-0"><i class="fas fa-robot"></i> AI &amp; Data</button>
+  <button class="ptab" role="tab" aria-selected="false" data-target="p-1"><i class="fas fa-user-gear"></i> HCI &amp; Systems</button>
+  <button class="ptab" role="tab" aria-selected="false" data-target="p-2"><i class="fas fa-clock-rotate-left"></i> Earlier Work</button>
+ </div>
+ <div class="fc-grid" id="p-0" role="tabpanel">
         <article class="fc" onclick="openModal('m-energyagent')">
           <div class="fc-icon"><i class="fas fa-robot"></i></div>
           <div class="fc-body">
@@ -508,8 +440,8 @@
             <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button><a href="https://leitlicht.netlify.app" target="_blank" rel="noopener" class="fc-link"><i class="fas fa-arrow-up-right-from-square"></i> Live site</a></div>
           </div>
         </article>
-      </div>
-      <div class="fc-grid tab-panel" id="projects-1" role="tabpanel" hidden>
+ </div>
+ <div class="fc-grid" id="p-1" role="tabpanel" hidden>
         <article class="fc" onclick="openModal('m-heartbeat')">
           <div class="fc-icon"><i class="fas fa-heart-pulse"></i></div>
           <div class="fc-body">
@@ -554,8 +486,8 @@
             <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button></div>
           </div>
         </article>
-      </div>
-      <div class="fc-grid tab-panel" id="projects-2" role="tabpanel" hidden>
+ </div>
+ <div class="fc-grid" id="p-2" role="tabpanel" hidden>
         <article class="fc" onclick="openModal('m-wavelet')">
           <div class="fc-icon"><i class="fas fa-hand"></i></div>
           <div class="fc-body">
@@ -589,295 +521,81 @@
             <div class="fc-actions"><button class="fc-link" type="button"><i class="fas fa-arrow-right"></i> Details</button><a href="v1/index.html" target="_blank" rel="noopener" class="fc-link"><i class="fas fa-arrow-up-right-from-square"></i> View MVP</a></div>
           </div>
         </article>
-      </div>
-    </div>
-  </section>
+ </div>
+</section>
 
-  <!-- Skills -->
-  <section id="skills">
-    <div class="container">
-      <h2 class="section-title fade-in">Skills</h2>
-      <div class="skills-grid" style="margin-top: 2rem;">
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-code"></i> Programming</h3>
-          <div class="tags"><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PL/SQL</span><span class="tag">Java</span><span class="tag">PowerShell</span><span class="tag">pandas</span><span class="tag">NumPy</span><span class="tag">PySpark</span><span class="tag">pytest</span><span class="tag">JUnit</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-database"></i> Data Engineering</h3>
-          <div class="tags"><span class="tag">ETL/ELT</span><span class="tag">Batch &amp; Streaming</span><span class="tag">Airflow (MWAA)</span><span class="tag">AWS Glue</span><span class="tag">Kinesis</span><span class="tag">MQTT / Telegraf</span><span class="tag">Data Validation</span><span class="tag">Reconciliation</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-server"></i> Databases &amp; Analytics</h3>
-          <div class="tags"><span class="tag">Redshift</span><span class="tag">Redshift Spectrum</span><span class="tag">Athena</span><span class="tag">DynamoDB</span><span class="tag">PostgreSQL</span><span class="tag">Oracle</span><span class="tag">InfluxDB</span><span class="tag">Power BI</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-brain"></i> Machine Learning &amp; AI</h3>
-          <div class="tags"><span class="tag">Time-Series Clustering</span><span class="tag">Feature Engineering</span><span class="tag">scikit-learn</span><span class="tag">PyTorch</span><span class="tag">MediaPipe</span><span class="tag">LLM Agents (Gemini API)</span><span class="tag">RAG</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-cloud"></i> Cloud &amp; DevOps</h3>
-          <div class="tags"><span class="tag">AWS (S3, Lambda, EC2, RDS, CodePipeline)</span><span class="tag">GCP (BigQuery, BigQuery ML)</span><span class="tag">Terraform (lab)</span><span class="tag">Docker</span><span class="tag">Git</span><span class="tag">CI/CD</span><span class="tag">Grafana</span><span class="tag">Confluence</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-sliders"></i> Optimization &amp; Tools</h3>
-          <div class="tags"><span class="tag">LP/MILP</span><span class="tag">Pyomo</span><span class="tag">oemof.solph</span><span class="tag">HiGHS</span><span class="tag">TESPy</span><span class="tag">Streamlit</span><span class="tag">Matplotlib</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-user-gear"></i> HCI &amp; Prototyping</h3>
-          <div class="tags"><span class="tag">User-Centred Design</span><span class="tag">Usability Testing</span><span class="tag">Figma</span><span class="tag">Unity3D / AR</span><span class="tag">Arduino / ESP32</span></div>
-        </div>
-        <div class="skill-group fade-in">
-          <h3><i class="fas fa-language"></i> Languages</h3>
-          <div class="tags"><span class="tag">English C1</span><span class="tag">German A2 (learning B1)</span><span class="tag">Malayalam native</span><span class="tag">Hindi fluent</span><span class="tag">Korean A1</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
+<section id="skills">
+ <h2>Skills and where I used them</h2>
+ <p class="small" style="margin-bottom:.8rem">“Client” means delivered for a customer. “Research” and “Prototype” mean used in academic or early-stage work. “Certified” means completed Google Cloud training.</p>
+ <div class="scroll">
+ <table>
+  <thead><tr><th>Skill</th><th>Context</th><th>Evidence</th></tr></thead>
+  <tbody>
+   <tr data-t="de"><td>PySpark, AWS Glue</td><td>Client</td><td><a href="#aws">AWS pipelines</a></td></tr>
+   <tr data-t="de"><td>Redshift, SQL, Airflow</td><td>Client</td><td><a href="#aws">AWS pipelines</a>, <a href="#maximo">Maximo</a></td></tr>
+   <tr data-t="de"><td>Kinesis, S3, Lambda, Athena</td><td>Client</td><td><a href="#aws">AWS pipelines</a></td></tr>
+   <tr data-t="de"><td>Data validation, CI/CD, JUnit</td><td>Client</td><td><a href="#aws">AWS pipelines</a>, <a href="#maximo">Maximo</a></td></tr>
+   <tr data-t="de"><td>Python automation, PowerShell</td><td>Client</td><td><a href="#maximo">Maximo</a></td></tr>
+   <tr data-t="de"><td>GCP (BigQuery, BigQuery ML)</td><td>Certified</td><td><a href="https://partner.skills.google/public_profiles/71a5cb31-e07a-4f03-a5c2-5ad18a2115cf" target="_blank" rel="noopener">Google Cloud badges</a></td></tr>
+   <tr data-t="de"><td>MQTT, InfluxDB, Docker, Grafana</td><td>Research</td><td><a href="#rt">Real-time stack</a></td></tr>
+   <tr data-t="ml"><td>PyTorch (LSTM, transformer)</td><td>Research, prototype</td><td><a href="#pd">Movement analysis</a>, <a href="#pv">Predictive maintenance</a></td></tr>
+   <tr data-t="ml"><td>Time-series clustering and features</td><td>Research</td><td><a href="#tsa">Aggregation study</a>, <a href="#pd">Movement analysis</a></td></tr>
+   <tr data-t="ml"><td>Model evaluation</td><td>Research</td><td><a href="#tsa">Aggregation study</a></td></tr>
+   <tr data-t="ml"><td>LLM agents (Gemini API), RAG, LLM evaluation</td><td>Prototype, research</td><td><a href="#more">More projects</a>, <a href="#bids">ancp-bids</a></td></tr>
+   <tr data-t="ml de"><td>Python packaging, pytest, Git, CI</td><td>Research, open source</td><td><a href="#tsa">Aggregation study</a>, <a href="#bids">ancp-bids</a>, <a href="#pv">Predictive maintenance</a></td></tr>
+   <tr data-t="ml"><td>LP/MILP (Pyomo, oemof.solph, HiGHS)</td><td>Research</td><td><a href="#tsa">Aggregation study</a></td></tr>
+   <tr data-t="ml de"><td>Streamlit, Power BI</td><td>Research, client</td><td><a href="#tsa">Aggregation study</a>, <a href="#aws">AWS pipelines</a></td></tr>
+  </tbody>
+ </table>
+ </div>
+</section>
 
-  <!-- Education -->
-  <section id="education" class="alt">
-    <div class="container">
-      <h2 class="section-title fade-in">Education</h2>
-      <div class="edu-list" style="margin-top: 2rem;">
-        <div class="edu fade-in">
-          <h3>M.Eng. Engineering of Socio-Technical Systems</h3>
-          <span class="card-date">Oct 2023 – Present</span>
-          <span class="card-meta">University of Oldenburg, Germany · Specialisation: Human-Computer Interaction</span>
-          <p>Coursework completed, thesis in progress at DLR. Coursework includes Applied Deep Learning (PyTorch), Machine Learning, Business Intelligence, Statistics and Programming, Systems Engineering and Design of Autonomous Systems.</p>
-        </div>
-        <div class="edu fade-in">
-          <h3>B.Tech. Computer Science and Engineering</h3>
-          <span class="card-date">2016 – 2020</span>
-          <span class="card-meta">Amal Jyothi College of Engineering (APJ Abdul Kalam Technological University), India</span>
-          <p>Coursework includes Data Structures, Object-Oriented Design, Database Design, Data Mining and Warehousing, and Machine Learning.</p>
-        </div>
-      </div>
+<section id="beyond">
+ <h2>Beyond the code</h2>
+ <div class="cards">
+  <div class="card"><h3>Teaching assistant</h3><p class="meta">University of Oldenburg, 2024–present</p><p>Introduction to AI (since 2026) and Algorithms and Problem Solving: tutorials, exercise sheets, grading and feedback.</p></div>
+  <div class="card"><h3>EXIST-Women fellow</h3><p class="meta">BMWK Gründungsheldinnen, 2026–present</p><p>Customer problem definition, value proposition and pitching for an industrial AI product, with a co-founder.</p></div>
+  <div class="card"><h3>Client-facing delivery</h3><p class="meta">Tata Consultancy Services</p><p>Weekly progress and KPI presentations to stakeholders, in-person requirements sessions in Belgium, and team lead of the reporting-factory team.</p></div>
+  <div class="card"><h3>TCS Youth Employment Program</h3><p class="meta">2020–2023, volunteer trainer</p><p>Ran technology workshops for rural students, gave mock interviews and feedback, and referred successful candidates to the next stage.</p></div>
+  <div class="card"><h3>NSS volunteer</h3><p class="meta">2017–2019, India</p><p>Two-year tenure, 240+ hours of community service: hospital renovation, old-age-home outreach, environmental clean-up and a rural development camp.</p></div>
+  <div class="card"><h3>Fiction writing</h3><p class="meta">Published author</p><p>Debut novella <i>When Rain Remembers</i>. <a href="novel.html" target="_blank" rel="noopener">Read a story →</a></p></div>
+ </div>
+</section>
 
-      <h3 class="group-title fade-in" style="margin-top: 2.5rem;"><i class="fas fa-certificate"></i> Certifications</h3>
-      <ul class="cert-list fade-in">
-        <li>SQL for Data Science (UC Davis)</li>
-        <li>Create ML Models with BigQuery ML (Google Cloud)</li>
-        <li>Modernizing Data Lakes and Data Warehouses with Google Cloud</li>
-        <li>Google Cloud skill badges – <a href="https://partner.skills.google/public_profiles/71a5cb31-e07a-4f03-a5c2-5ad18a2115cf" target="_blank" rel="noopener">view public profile <i class="fas fa-arrow-up-right-from-square" style="font-size:0.75em"></i></a></li>
-        <li>Data Manipulation in Python</li>
-        <li>PwC Switzerland Power BI virtual job simulation (2023)</li>
-      </ul>
+<section id="experience">
+ <h2>Experience and education</h2>
+ <ul class="tl">
+  <li><time>10/2025 – now</time><div><b>Research Assistant, German Aerospace Center (DLR)</b><span>Master’s thesis on time-series aggregation</span></div></li>
+  <li><time>04/2026 – now</time><div><b>Teaching Assistant, Introduction to AI</b><span>University of Oldenburg. Previously Algorithms and Problem Solving (10/2024 – 03/2025)</span></div></li>
+  <li><time>03/2026 – now</time><div><b>EXIST-Women Fellow, BMWK Gründungsheldinnen programme</b><span>Industrial AI product, with a co-founder</span></div></li>
+  <li><time>07/2025 – 12/2025</time><div><b>Research Assistant, movement analysis</b><span>University of Oldenburg</span></div></li>
+  <li><time>09/2024 – 12/2025</time><div><b>Research Assistant, ancp-bids</b><span>University of Oldenburg, open-source contributor</span></div></li>
+  <li><time>04/2024 – 03/2025</time><div><b>Research Assistant, smart grid</b><span>OFFIS, Oldenburg</span></div></li>
+  <li><time>10/2021 – 10/2023</time><div><b>System Engineer, AWS data engineering</b><span>Tata Consultancy Services, Kochi. Belgian client, including on-site work in Belgium</span></div></li>
+  <li><time>10/2020 – 10/2021</time><div><b>Assistant System Engineer, IBM Maximo</b><span>Tata Consultancy Services, Kochi. Agile developer</span></div></li>
+  <li><time>10/2023 – now</time><div><b>M.Eng. Engineering of Socio-Technical Systems</b><span>University of Oldenburg, specialisation in Human-Computer Interaction. Coursework complete, thesis in progress</span></div></li>
+  <li><time>2016 – 2020</time><div><b>B.Tech. Computer Science and Engineering</b><span>Amal Jyothi College of Engineering (APJ Abdul Kalam Technological University), India</span></div></li>
+ </ul>
 
-      <h3 class="group-title fade-in" style="margin-top: 2.5rem;"><i class="fas fa-hand-holding-heart"></i> Beyond Work</h3>
-      <div class="card-grid">
-        <details class="card fade-in">
-          <summary>
-            <span class="card-title">TCS Youth Employment Program</span>
-            <span class="card-date">2020 – 2023</span>
-            <span class="card-summary">Volunteer trainer for students from rural areas.</span>
-            <i class="fas fa-chevron-down chevron"></i>
-          </summary>
-          <div class="card-body">
-            <p>Workshops on Office tools and technical basics, mock interviews and feedback, and referrals of successful candidates to the next interview stage.</p>
-            <div class="card-links">
-              <a href="https://drive.google.com/file/d/1z2sswFgJsk4J1PH2vlGv6As9eZ14Jknz/view?usp=sharing" target="_blank" rel="noopener"><i class="fas fa-certificate"></i> Certificate 1</a>
-              <a href="https://drive.google.com/file/d/1O2o9VsZUnn_jzXv13Mmy0xTOMw7CRxM7/view?usp=sharing" target="_blank" rel="noopener"><i class="fas fa-certificate"></i> Certificate 2</a>
-            </div>
-          </div>
-        </details>
-        <details class="card fade-in">
-          <summary>
-            <span class="card-title">NSS Volunteer</span>
-            <span class="card-date">2017 – 2019</span>
-            <span class="card-summary">Over 240 hours of community service in India.</span>
-            <i class="fas fa-chevron-down chevron"></i>
-          </summary>
-          <div class="card-body">
-            <p>Hospital renovation, old-age home outreach, an environmental clean-up and the annual rural camp.</p>
-            <div class="card-links"><a href="https://drive.google.com/file/d/1q9oquwNEwgTSctNgVDDb9xrZTibGFRjB/view?usp=sharing" target="_blank" rel="noopener"><i class="fas fa-certificate"></i> Certificate</a></div>
-          </div>
-        </details>
-        <details class="card fade-in">
-          <summary>
-            <span class="card-title">Creative Writing</span>
-            <span class="card-date">Published author</span>
-            <span class="card-summary">Debut novella <em>When Rain Remembers</em>.</span>
-            <i class="fas fa-chevron-down chevron"></i>
-          </summary>
-          <div class="card-body">
-            <p>I write fiction in my free time.</p>
-            <div class="card-links"><a href="novel.html" target="_blank" rel="noopener"><i class="fas fa-book"></i> Read a story</a></div>
-          </div>
-        </details>
-      </div>
-    </div>
-  </section>
+ <h3 class="sub">Certifications</h3>
+ <ul class="certs">
+  <li>SQL for Data Science (UC Davis)</li>
+  <li>Create ML Models with BigQuery ML (Google Cloud)</li>
+  <li>Modernizing Data Lakes and Data Warehouses with Google Cloud</li>
+  <li>Data Manipulation in Python</li>
+  <li>Google Cloud skill badges – <a href="https://partner.skills.google/public_profiles/71a5cb31-e07a-4f03-a5c2-5ad18a2115cf" target="_blank" rel="noopener">public profile</a></li>
+ </ul>
+ <p class="small" style="margin-top:1rem">Languages: English (C1), German (A2, learning towards B1), Hindi (fluent), Malayalam (native), Korean (A1).</p>
+</section>
 
-  <!-- Footer / Contact -->
-  <footer class="footer" id="contact">
-    <div class="container">
-      <div>
-        <h2>Contact</h2>
-        <p>Open to Data Engineer, Machine Learning Engineer and Applied AI roles in Germany and the EU from late 2026.</p>
-      </div>
-      <div class="footer-links">
-        <a href="mailto:jeena.shaji@uni-oldenburg.de"><i class="fas fa-envelope"></i> jeena.shaji@uni-oldenburg.de</a>
-        <a href="https://www.linkedin.com/in/jeena-shaji-19020716a/" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>
-        <a href="https://github.com/Jeenashaji" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
-        <span><i class="fas fa-location-dot"></i> Oldenburg, Germany</span>
-      </div>
-    </div>
-    <div class="copyright">&copy; 2026 Jeena Shaji</div>
-  </footer>
+<footer id="contact">
+ <h2>Contact</h2>
+ <p>I’m looking for data engineering and ML engineering roles in Germany or the EU from late 2026. Email is the quickest way to reach me: <a href="mailto:jeena.shaji@uni-oldenburg.de">jeena.shaji@uni-oldenburg.de</a>.</p>
+</footer>
+</main>
+</div>
 
-  <!-- Detail pop-ups -->
-  <div class="modal-overlay" id="m-tcs-be" role="dialog" aria-modal="true" aria-labelledby="m-tcs-be-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-tcs-be')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-tcs-be-t">System Engineer – AWS Data Engineering</h2>
-        <div class="modal-meta">Tata Consultancy Services · Belgian client · Oct 2021 – Oct 2023</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>The client needed reliable business reporting from its main application and several integrated third-party applications, with data arriving as streams and with changing schemas.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Gather the reporting requirements, build the AWS pipelines and data warehouse, and keep the daily reports complete and correct.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Travelled to Belgium for on-site requirements sessions and client meetings, and visited the site where the client's product is used, to translate business needs into technical specifications.</li><li>Designed data-lake and processing workflows on AWS (Kinesis, S3, Athena, Redshift); loaded the landing layer with Redshift Spectrum and wrote stored procedures for transformation, validation and business logic, scheduled with Airflow (MWAA).</li><li>Developed AWS Glue (PySpark) jobs that parse dynamic schemas and ingest directly from Kinesis Data Streams, with incremental loading into three target tables; built Lambda functions to transform unstructured data and load it into Redshift.</li><li>Led the reporting-factory team: traced pipeline failures to upstream application issues, documented them and raised fixes and feature requests on the application team's Jira scrum board.</li><li>Reconciled Redshift reports against DynamoDB application data, worked with third-party application teams on schemas, data gaps and migration, and supported the move of on-premise data to AWS (EC2, S3, RDS).</li><li>Added automated validation (JUnit, AWS CodePipeline) across test, QA and production, with checks for type-casting, insertion and data-type errors.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>Automated daily reporting over 1–2 million records, with Glue ingestion of about 100,000 records per day.</li><li>Missing records tracked down through reconciliation, and recurring pipeline failures resolved together with the application teams.</li><li>Weekly KPI and data-quality reports in Power BI for client stakeholders; business requirement documents, Confluence runbooks and knowledge transfer for the team.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">AWS</span><span class="tag">Redshift</span><span class="tag">PySpark</span><span class="tag">Airflow</span></div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="m-offis" role="dialog" aria-modal="true" aria-labelledby="m-offis-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-offis')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-offis-t">Research Assistant – Redispatch 3.0</h2>
-        <div class="modal-meta">OFFIS – Institute for Information Technology, Oldenburg · Apr 2024 – Mar 2025</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>In the Redispatch 3.0 research project, households support grid operation through flexible devices such as home batteries and EV chargers.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Contribute to a household energy management system and make its behaviour visible to project stakeholders.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Loaded, processed and visualised electricity production and consumption profiles in Python.</li><li>Implemented battery charge/discharge logic and EV charging with dynamic prioritisation in object-oriented Python.</li><li>Set up a real-time simulation and monitoring stack: data streamed through MQTT and Telegraf into InfluxDB, containerised with Docker, versioned in GitLab.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>Stakeholders could follow system performance live in Grafana dashboards for time-series analysis, demand forecasting and anomaly detection.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">MQTT</span><span class="tag">InfluxDB</span><span class="tag">Grafana</span><span class="tag">Docker</span></div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="m-tcs-us" role="dialog" aria-modal="true" aria-labelledby="m-tcs-us-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-tcs-us')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-tcs-us-t">Agile Developer – IBM Maximo</h2>
-        <div class="modal-meta">Tata Consultancy Services · Oct 2020 – Oct 2021</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>Clients used IBM Maximo to manage about 20,000 assets in oil, mining and shipping. Maximo was connected to external and supply-chain systems, and these integrations regularly produced data and interface errors.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>As a developer in an Agile team, enhance the Maximo applications, keep reference data and integrations clean, and resolve customer issues.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul>
-        <li>Analysed customer requirements, identified potential problems and recommended alternative solutions.</li>
-        <li>Wrote Python automation scripts to clean and transform data from external systems, keeping reference data in the source accurate; built Maximo automation scripts in Python for different launch points and conditions.</li>
-        <li>Wrote complex SQL queries with window functions, views and joins for application development and data retrieval.</li>
-        <li>Ran daily database integrity reports against business rules and fixed the issues in the integration modules.</li>
-        <li>Created and scheduled PowerShell scripts that fetch and monitor error logs in the supply-chain management process.</li>
-        <li>Built Maximo enhancements: Application Designer UI changes, domains, workflows, cron tasks, escalations, actions and data loading with MXLoader.</li>
-        <li>Monitored system health and fixed integration and SRO replication errors; troubleshot data between Maximo and external systems, including Map Manager GIS integration.</li>
-        <li>Debugged with the Agile team and worked with customers on bug fixes, handling ServiceNow tasks, incidents and problems.</li>
-      </ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul>
-        <li>Data-quality issues caught and fixed daily before they reached downstream processes.</li>
-        <li>Error-log monitoring automated instead of checked by hand.</li>
-        <li>Identified and documented a product defect that was reported to IBM.</li>
-      </ul></div></div>
-      <div class="modal-tags"><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PowerShell</span><span class="tag">IBM Maximo</span><span class="tag">Agile</span><span class="tag">ServiceNow</span></div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="m-dlr" role="dialog" aria-modal="true" aria-labelledby="m-dlr-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-dlr')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-dlr-t">Research Assistant – Master's Thesis</h2>
-        <div class="modal-meta">German Aerospace Center (DLR) · Oct 2025 – Present</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>Optimization models of industrial heating systems run over a full year of hourly data (8,760 hours) and get slow. Time-series aggregation shrinks the input, but it is unclear which method still gives reliable investment decisions.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Compare aggregation methods by their effect on the optimization results, not only by how well they reproduce the input data.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Implemented six aggregation methods (including TSAM, hierarchical and distance-based clustering) across a 32-configuration sweep, evaluated with nRMSE, RMSE, duration curves and residual metrics against a full-year reference.</li><li>Built LP/MILP models in Python (oemof.solph, Pyomo, HiGHS, TESPy).</li><li>Refactored research notebooks into a modular Python package (13 modules, CLI, unit tests) with a single results schema for reproducible benchmarking.</li><li>Built a Streamlit app that lets engineers compare steam-system scenarios.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>The method with the best nRMSE gave the worst storage sizing (r = −0.96).</li><li>A quantile-based representation I designed cut storage-sizing error from −17% / −30% to below 2%.</li><li>Engineers can compare scenarios in the app instead of running them manually.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">Time-Series Clustering</span><span class="tag">LP/MILP</span><span class="tag">Pyomo</span><span class="tag">Streamlit</span></div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="m-pdm" role="dialog" aria-modal="true" aria-labelledby="m-pdm-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-pdm')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-pdm-t">Physics-Informed Predictive Maintenance</h2>
-        <div class="modal-meta">Funded research project, University of Oldenburg · 2026 – Present</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>Labelled failure data for power-electronics equipment is rare, so purely data-driven fault prediction is hard to train and to trust.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Build a prediction approach that works with mostly healthy operating data, and make the output usable for service teams.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Developing PyTorch models on 5-minute telemetry (16,799 observations in the current research dataset); version 1 combines an LSTM branch with a physics branch and is trained on healthy data only.</li><li>Built physical degradation relationships into the approach: Arrhenius (temperature-driven ageing) and Coffin–Manson (thermal-cycling fatigue).</li><li>Investigated wavelet transforms for degradation and fault patterns, efficiency behaviour and data normalisation across manufacturers.</li><li>Structured the code as a tested Python package (data, features, models, physics, diagnosis, evaluation) with GitLab CI for tests and linting. A co-founder contributed fault-simulation datasets and physics validation.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>A working version 1 model and a monitoring dashboard (fleet health, warranty tracking, automated reports) with the model running in the background. Validation on real fault data is ongoing.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">PyTorch</span><span class="tag">LSTM</span><span class="tag">Physics-Informed ML</span><span class="tag">Wavelets</span></div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="m-move" role="dialog" aria-modal="true" aria-labelledby="m-move-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-move')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-move-t">Research Assistant – Movement Analysis</h2>
-        <div class="modal-meta">University of Oldenburg · Jul 2025 – Dec 2025</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>Movement videos of Parkinson's patients had to be turned into data a model can learn from, with clinical UPDRS scores as labels.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Build the pipeline from raw video to model-ready time series and train a first model.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Extracted 3D joint landmarks with MediaPipe, with automated quality checks for missing detections.</li><li>Engineered IMU-like kinematic features (velocity, acceleration, angular velocity) and built multivariate windows (300 steps, 67% overlap, 12 features), exported as NPZ.</li><li>Trained a Transformer encoder (3 layers, 6-head self-attention, positional embeddings) with label smoothing, cosine learning-rate scheduling and early stopping.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>An end-to-end pipeline from patient video to model-ready datasets, plus a trained baseline model for analysing motor symptoms.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">MediaPipe</span><span class="tag">PyTorch</span><span class="tag">Transformers</span><span class="tag">Time Series</span></div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="m-bids" role="dialog" aria-modal="true" aria-labelledby="m-bids-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-bids')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-bids-t">Research Assistant – ancp-bids</h2>
-        <div class="modal-meta">Carl von Ossietzky University of Oldenburg · Sep 2024 – Dec 2025</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>ancp-bids is an open-source Python library for working with brain-imaging datasets in the BIDS standard. The BIDS schema changes between versions, and the library has to follow those changes while staying fast on large datasets.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>As a contributor, keep the library in step with BIDS schema changes, improve its memory use and speed, and make sure new functionality is tested before it reaches the main repository.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul>
-        <li>Developed automation scripts in Python to update schema versions based on changes in the BIDS dataset.</li>
-        <li>Implemented enhancements such as functions for storing temporary artifacts and lazy loading to improve memory usage and execution time.</li>
-        <li>Wrote pytest unit tests, including parameterised test cases, to validate new functionality before merging into the main repository.</li>
-        <li>Pushed code daily and reviewed pull requests from other contributors.</li>
-        <li>Evaluated different LLMs on token usage, model size, memory efficiency and compute time to choose the best code assistant to integrate.</li>
-      </ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul>
-        <li>Schema-version updates automated instead of done by hand.</li>
-        <li>Lower memory use and faster execution through lazy loading and artifact caching.</li>
-        <li>New features covered by tests before merge, and a code assistant chosen on measured criteria.</li>
-      </ul></div></div>
-      <div class="modal-tags"><span class="tag">Python</span><span class="tag">pytest</span><span class="tag">Open Source</span><span class="tag">Code Review</span><span class="tag">LLM Evaluation</span></div>
-      <div class="modal-links"><a href="https://github.com/ANCPLabOldenburg/ancp-bids" target="_blank" rel="noopener"><i class="fab fa-github"></i> ancp-bids on GitHub</a></div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="m-ta" role="dialog" aria-modal="true" aria-labelledby="m-ta-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-ta')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-ta-t">Teaching Assistant</h2>
-        <div class="modal-meta">University of Oldenburg · Oct 2024 – Present</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>Large undergraduate courses where students need support beyond the lectures.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Help students understand the core concepts and assess their exercise work.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Introduction to Artificial Intelligence (since Apr 2026): run tutorials and exercise sessions on core AI and machine learning concepts.</li><li>Algorithms and Problem Solving (Oct 2024 – Mar 2025): wrote exercise sheets, graded submissions and gave feedback.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>Students in two courses received regular guidance and feedback on their exercises.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">AI</span><span class="tag">Machine Learning</span><span class="tag">Algorithms</span></div>
-    </div>
-  </div>
-  <div class="modal-overlay" id="m-exist" role="dialog" aria-modal="true" aria-labelledby="m-exist-t">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('m-exist')" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="modal-head">
-        <h2 id="m-exist-t">EXIST-Women Fellow</h2>
-        <div class="modal-meta">BMWK Gründungsheldinnen Programme, Oldenburg · Mar 2026 – Present</div>
-      </div>
-      <div class="star"><span class="star-l">S</span><div><h4>Situation</h4><p>Industrial operators struggle to predict equipment faults when historical data is sparse and noisy.</p></div></div>
-      <div class="star"><span class="star-l">T</span><div><h4>Task</h4><p>Together with a co-founder, turn the research into a product concept.</p></div></div>
-      <div class="star"><span class="star-l">A</span><div><h4>Action</h4><ul><li>Leadership training, mentoring and venture building within the programme.</li><li>Customer-problem definition, value proposition, market analysis and pitching.</li><li>Built the product dashboard as part of a funded university research project.</li></ul></div></div>
-      <div class="star"><span class="star-l">R</span><div><h4>Result</h4><ul><li>A product concept and a working dashboard prototype; customer discovery is ongoing.</li></ul></div></div>
-      <div class="modal-tags"><span class="tag">Product Discovery</span><span class="tag">Value Proposition</span><span class="tag">Pitching</span></div>
-    </div>
-  </div>
+<!-- Project pop-ups -->
   <div class="modal-overlay" id="m-energyagent" role="dialog" aria-modal="true" aria-labelledby="m-energyagent-t">
     <div class="modal">
       <button class="modal-close" onclick="closeModal('m-energyagent')" aria-label="Close"><i class="fas fa-times"></i></button>
@@ -1022,48 +740,35 @@
     </div>
   </div>
 
-  <script>
-    // Mobile menu
-    const navLinks = document.getElementById('navLinks');
-    document.getElementById('menuToggle').addEventListener('click', () => navLinks.classList.toggle('open'));
-    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+<script>
 
-    // Active nav link
-    const sections = document.querySelectorAll('section[id], footer[id]');
-    const navItems = navLinks.querySelectorAll('a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
-      navItems.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-    });
-
-
-
-    // Pop-ups
-    function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
-    document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); }));
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id)); });
-    document.querySelectorAll('.fc a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
-
-    // Tabs
-    document.querySelectorAll('.tabs').forEach(tabs => {
-      const buttons = tabs.querySelectorAll('.tab');
-      buttons.forEach(btn => btn.addEventListener('click', () => {
-        buttons.forEach(b => {
-          const on = b === btn;
-          b.classList.toggle('active', on);
-          b.setAttribute('aria-selected', on);
-          document.getElementById(b.dataset.target).hidden = !on;
-        });
-      }));
-    });
-
-    // Gentle fade-in on scroll
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-  </script>
+function openModal(id){document.getElementById(id).classList.add('active');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('active');document.body.style.overflow=''}
+document.querySelectorAll('.modal-overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)closeModal(o.id)})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal-overlay.active').forEach(function(m){closeModal(m.id)})});
+document.querySelectorAll('.fc a').forEach(function(a){a.addEventListener('click',function(e){e.stopPropagation()})});
+document.querySelectorAll('.ptab').forEach(function(t){t.addEventListener('click',function(){
+ document.querySelectorAll('.ptab').forEach(function(b){var on=b===t;b.classList.toggle('active',on);b.setAttribute('aria-selected',on);document.getElementById(b.dataset.target).hidden=!on});
+})});
+(function(){
+ var chips=document.querySelectorAll('.chip'),items=document.querySelectorAll('[data-t]');
+ function apply(f){
+  chips.forEach(function(c){c.setAttribute('aria-pressed',String(c.dataset.f===f))});
+  items.forEach(function(el){el.hidden=!(f==='all'||el.dataset.t.split(' ').indexOf(f)>-1)});
+ }
+ chips.forEach(function(c){c.addEventListener('click',function(){apply(c.dataset.f)})});
+ var links=document.querySelectorAll('nav a'),secs=[].map.call(links,function(a){return document.querySelector(a.getAttribute('href'))});
+ if('IntersectionObserver' in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+   if(e.isIntersecting){links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id)})}
+  })},{rootMargin:'-20% 0px -70% 0px'});
+  secs.forEach(function(s){if(s)io.observe(s)});
+ }
+ document.querySelectorAll('.star a, table a').forEach(function(a){a.addEventListener('click',function(){
+  var h=a.getAttribute('href');if(h.charAt(0)!=='#')return;
+  var t=document.querySelector(h);if(t&&t.hidden){apply('all')}
+ })});
+})();
+</script>
 </body>
 </html>
